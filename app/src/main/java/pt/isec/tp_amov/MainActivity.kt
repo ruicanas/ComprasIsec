@@ -10,6 +10,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         var TAG = "Test"
-        Log.i(TAG, "This is a test")
+        Log.i(TAG, "[DIOGO]This is a test")
     }
 }
