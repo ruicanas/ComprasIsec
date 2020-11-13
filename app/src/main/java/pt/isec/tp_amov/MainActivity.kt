@@ -9,7 +9,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        var TAG = "Test"
+        val TAG = "Test2"
         Log.i(TAG, "This is a test")
     }
 }
