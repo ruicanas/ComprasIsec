@@ -9,7 +9,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        var TAG = "Test"
-        Log.i(TAG, "[RESOLVED]This is a test")
+
     }
 }
