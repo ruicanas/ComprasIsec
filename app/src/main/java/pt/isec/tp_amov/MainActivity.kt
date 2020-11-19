@@ -9,7 +9,5 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        var TAG = "Test"
-        Log.i(TAG, "[DIOGO]This is a test")
     }
 }
