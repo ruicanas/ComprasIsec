@@ -2,9 +2,19 @@
     <string name="app_name">ListIsec</string>
     <string name="tMainTitle">ListIsec</string>
     <string name="itemCreate">Create</string>
-    <string name="reuse_list">reuseList</string>
-    <string name="new_list">newList</string>
+    <string name="reuse_opt">Reuse List</string>
+    <string name="new_opt">Create List</string>
     <string name="add_list">Add List</string>
     <string name="main_str">Estamos completamente tramados.</string>
     <string name="description">Will enable creation of a list</string>
+    <string name="labelNewList">New List</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_brand">Brand</string>
+    <string name="product_quantity">Quantity</string>
+    <string name="list_name">List Name</string>
+    <string name="hint_list_name">Insert a name</string>
+    <string name="tProducts">Products:</string>
+    <string name="titleRemoveIcon">removeProd</string>
+    <string name="tileEditIcon">editProd</string>
+    <string name="titleAddProd">addProd</string>
 </resources>
