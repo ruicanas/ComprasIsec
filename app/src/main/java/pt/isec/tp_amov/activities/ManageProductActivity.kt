@@ -4,6 +4,11 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import pt.isec.tp_amov.R
 
 /**
  * This activity is going to be responsible for the creation and edition of a product
