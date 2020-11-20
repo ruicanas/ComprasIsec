@@ -18,4 +18,5 @@
     <string name="tileEditIcon">editProd</string>
     <string name="titleAddProd">addProd</string>
     <string name="product_category">Category</string>
+    <string name="product_price">Unit Price</string>
 </resources>

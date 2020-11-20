@@ -6,12 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ManageProductActivity"
-    android:padding="32dp">
+    android:padding="30dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingVertical="8sp">
+
         <EditText
             android:inputType="text"
             android:id="@+id/edName"
@@ -62,30 +64,28 @@
                 />
 
             <EditText
-                android:inputType="text"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="12dp"
-                android:textSize="12sp"
+                android:textSize="15sp"
                 android:maxLines="1"
+                android:inputType="numberDecimal"
+                android:text="1"
                 />
-            <TextView
-                android:hint="default"
-                android:gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textSize="15sp"/>
+
             <Spinner
-                android:id="@+id/spProdUnit"
+                android:id="@+id/spinnerUnit"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:spinnerMode="dropdown"/>
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingVertical="10dp">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -94,11 +94,48 @@
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="12dp"/>
             <Spinner
-                android:id="@+id/spinner1"
-                android:layout_width="match_parent"
+                android:id="@+id/spinnerCat"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="#000000"
-                android:spinnerMode="dropdown"/>
+                android:spinnerMode="dropdown"
+                android:paddingVertical="15sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/product_price"
+                android:textSize="15sp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="12dp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:inputType="numberDecimal"
+                android:textSize="15sp"
+                android:hint="0.00"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="€"
+                android:paddingHorizontal="5sp"
+                />
+
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
