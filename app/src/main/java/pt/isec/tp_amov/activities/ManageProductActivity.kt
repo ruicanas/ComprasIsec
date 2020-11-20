@@ -1,13 +1,9 @@
-package pt.isec.tp_amov
+package pt.isec.tp_amov.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
 
 /**
  * This activity is going to be responsible for the creation and edition of a product
@@ -43,7 +39,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
 
-        
+
     }
 
 

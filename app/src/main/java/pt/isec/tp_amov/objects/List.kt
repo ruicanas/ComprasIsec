@@ -1,4 +1,4 @@
-package pt.isec.tp_amov
+package pt.isec.tp_amov.objects
 
 import android.util.Log
 import java.util.ArrayList
