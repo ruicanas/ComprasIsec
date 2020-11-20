@@ -1,9 +1,8 @@
-package pt.isec.tp_amov
+package pt.isec.tp_amov.activities
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MenuItem
+import pt.isec.tp_amov.R
 
 /**
  * This activity is going to be responsible for the creation and edition of a product

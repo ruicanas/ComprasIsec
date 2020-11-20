@@ -17,11 +17,15 @@
         android:roundIcon="@mipmap/app_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.TP_AMOV">
-        <activity android:name=".ManageProductActivity"></activity>
+        <activity android:name=".activities.ManageProductActivity">
+
+        </activity>
         <activity
-            android:name=".showListActivity"
-            android:label="@string/labelNewList"></activity>
-        <activity android:name=".MainActivity">
+            android:name=".activities.showListActivity"
+            android:label="@string/labelNewList">
+
+        </activity>
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

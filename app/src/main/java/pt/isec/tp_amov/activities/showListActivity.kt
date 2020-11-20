@@ -1,10 +1,11 @@
-package pt.isec.tp_amov
+package pt.isec.tp_amov.activities
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import pt.isec.tp_amov.R
 
 class showListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,7 +20,7 @@ class showListActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.addProd){
-            val intent = Intent(this,ManageProductActivity::class.java)
+            val intent = Intent(this, ManageProductActivity::class.java)
             startActivity(intent)
             return true
         }

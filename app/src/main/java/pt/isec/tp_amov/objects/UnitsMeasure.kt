@@ -1,4 +1,4 @@
-package pt.isec.tp_amov
+package pt.isec.tp_amov.objects
 
 enum class UnitsMeasure {
     KG,
