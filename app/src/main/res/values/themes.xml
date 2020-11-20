@@ -2,13 +2,13 @@
     <!-- Base application theme. -->
     <style name="Theme.TP_AMOV" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/ming</item>
-        <item name="colorPrimaryVariant">@color/midBG</item>
-        <item name="colorOnPrimary">@color/aliceBlue</item>
+        <item name="colorPrimary">#83C5BE</item>
+        <item name="colorPrimaryVariant">#83C5BE</item>
+        <item name="colorOnPrimary">#EDF6F9</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/darkSalmon</item>
-        <item name="colorSecondaryVariant">@color/unSilk</item>
-        <item name="colorOnSecondary">@color/aliceBlue</item>
+        <item name="colorSecondary">#FFDDD2</item>
+        <item name="colorSecondaryVariant">#E29578</item>
+        <item name="colorOnSecondary">#EDF6F9</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Navigation bar color -->
