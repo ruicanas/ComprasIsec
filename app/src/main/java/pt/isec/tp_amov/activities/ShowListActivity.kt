@@ -16,12 +16,15 @@ import pt.isec.tp_amov.objects.ProductListAdapter
 
 class ShowListActivity : AppCompatActivity() {
     var productList = ArrayList<Product>()
+    lateinit var listName: String
     lateinit var list: ListView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_list)
-
+        listName = intent.getStringExtra("listName")!!
+        supportActionBar?.title = listName
+        
         list = findViewById(R.id.productList)
         list.adapter = ProductListAdapter(productList)
     }
