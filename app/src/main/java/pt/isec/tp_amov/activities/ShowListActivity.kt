@@ -26,6 +26,11 @@ class ShowListActivity : AppCompatActivity() {
         list.adapter = ProductListAdapter(productList)
     }
 
+    override fun onResume() {
+        super.onResume()
+
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_options,menu)
         return true
@@ -40,14 +45,13 @@ class ShowListActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == 10) {
-            if (resultCode == RESULT_OK) {
-                val product = data!!.getSerializableExtra("Product") as Product
-                productList.add(product)
-            }
-        }
-
-        super.onActivityResult(requestCode, resultCode, data)
-    }
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        if (requestCode == 10) {
+//            if (resultCode == RESULT_OK) {
+//                val product = data!!.getSerializableExtra("Product") as Product
+//                productList.add(product)
+//            }
+//        }
+//        super.onActivityResult(requestCode, resultCode, data)
+//    }
 }

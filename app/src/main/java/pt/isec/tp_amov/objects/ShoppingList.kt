@@ -3,8 +3,12 @@ package pt.isec.tp_amov.objects
 import android.util.Log
 import java.util.ArrayList
 
-data class List (var name:String) {
-    var productList : ArrayList<Product> = ArrayList()
+data class ShoppingList (var name:String) {
+    val productList : MutableList<Product> = ArrayList()
+
+    fun productExists(prod: Product): Boolean{
+        return productList.contains(prod)
+    }
 
     fun addProduct(prod: Product){
         productList.add(prod)

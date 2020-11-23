@@ -1,19 +1,31 @@
 package pt.isec.tp_amov.activities
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
+import androidx.appcompat.app.AppCompatActivity
 import pt.isec.tp_amov.R
 
 class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         pressAddListBtn()
+
+//        findViewById<TextView>(R.id.lvMainList).apply {
+//
+//        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+//        findViewById<TextView>(R.id.lvMainList).apply {
+//
+//        }
     }
 
     /**
@@ -45,10 +57,22 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
      */
     override fun onMenuItemClick(item: MenuItem): Boolean {
         if(item.itemId == R.id.new_opt){
-            val intent = Intent(this, ShowListActivity::class.java)
-            startActivity(intent)
+            createDialog()
             return true
         }
         return false
+    }
+
+    fun createDialog(){
+        val builder = AlertDialog.Builder(this)
+        val inflater = this.layoutInflater
+        builder.setPositiveButton("Create List") { dialog, id ->
+            val intent = Intent(this, ShowListActivity::class.java)
+            intent.putExtra("listName" , R.id.listNameDlg)
+            startActivity(intent)
+        }
+        builder.setNegativeButton("Cancel") { dialog, id -> dialog.dismiss() }
+        builder.setView(inflater.inflate(R.layout.dialog_ask_list_name, null))
+        builder.show()
     }
 }

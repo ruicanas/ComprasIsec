@@ -20,4 +20,7 @@
     <string name="product_category">Category</string>
     <string name="product_price">Unit Price</string>
     <string name="new_product">New Product</string>
+    <string name="create_list">Create List</string>
+    <string name="cancel_list">Cancel</string>
+    <string name="description_dlg">Write the name of your list</string>
 </resources>

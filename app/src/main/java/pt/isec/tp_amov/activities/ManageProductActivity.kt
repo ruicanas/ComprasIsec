@@ -5,12 +5,10 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.Spinner
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import pt.isec.tp_amov.R
+import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.objects.Categories
 import pt.isec.tp_amov.objects.Product
 import pt.isec.tp_amov.objects.UnitsMeasure
@@ -71,16 +69,16 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     }
 
     private fun returnProduct(product: Product) {
-        val returnIntent = Intent().apply {
-            putExtra("Product", product as Serializable)
-        }
-        setResult(RESULT_OK, returnIntent)
-        finish()
+
+//        val returnIntent = Intent().apply {
+//            putExtra("Product", product as Serializable)
+//        }
+//        setResult(RESULT_OK, returnIntent)
+//        finish()
     }
 
     private fun getCategory(): Categories {
         val prompt = spCategory.selectedItem.toString()
-
         if (prompt.equals(Categories.FRUIT_VEGETABLES))
             return Categories.FRUIT_VEGETABLES
         if (prompt.equals(Categories.DAIRY))
