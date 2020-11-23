@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="unit_array">
-        <item>unit1</item>
-        <item>unit2</item>
-        <item>unit3</item>
-        <item>unit4</item>
-        <item>unit5</item>
+        <item>Units</item>
+        <item>Kg</item>
+        <item>Gram</item>
+        <item>Liter</item>
+        <item>Box</item>
     </string-array>
 </resources>

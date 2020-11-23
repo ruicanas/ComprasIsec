@@ -21,7 +21,7 @@
 
         </activity>
         <activity
-            android:name=".activities.showListActivity"
+            android:name=".activities.ShowListActivity"
             android:label="@string/labelNewList">
 
         </activity>

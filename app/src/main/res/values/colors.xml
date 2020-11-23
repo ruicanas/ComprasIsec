@@ -12,4 +12,8 @@
     <color name="darkSalmon">#E29578</color>
     <color name="midBG">#83C5BE</color>
     <color name="ming">#006D77</color>
+
+    <color name="primaryColor">#83C5BE</color>
+    <color name="secondaryColor">#FFDDD2</color>
+    <color name="secondaryColorVariant">#E29578</color>
 </resources>

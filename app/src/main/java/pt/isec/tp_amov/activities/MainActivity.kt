@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
      */
     override fun onMenuItemClick(item: MenuItem): Boolean {
         if(item.itemId == R.id.new_opt){
-            val intent = Intent(this, showListActivity::class.java)
+            val intent = Intent(this, ShowListActivity::class.java)
             startActivity(intent)
             return true
         }

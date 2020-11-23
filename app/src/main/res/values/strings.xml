@@ -5,10 +5,10 @@
     <string name="reuse_opt">Reuse List</string>
     <string name="new_opt">Create List</string>
     <string name="add_list">Add List</string>
-    <string name="main_str">Estamos completamente tramados.</string>
     <string name="description">Will enable creation of a list</string>
     <string name="labelNewList">New List</string>
     <string name="product_name">Product Name</string>
+    <string name="product_notes">Notes</string>
     <string name="product_brand">Brand</string>
     <string name="product_quantity">Quantity</string>
     <string name="list_name">List Name</string>
@@ -19,4 +19,5 @@
     <string name="titleAddProd">addProd</string>
     <string name="product_category">Category</string>
     <string name="product_price">Unit Price</string>
+    <string name="new_product">New Product</string>
 </resources>

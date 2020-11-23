@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="category_array">
-        <item>cat1</item>
-        <item>cat2</item>
-        <item>unit3</item>
-        <item>unit4</item>
-        <item>unit5</item>
+        <item>Fruit/Vegetables</item>
+        <item>Starchy Food</item>
+        <item>Dairy</item>
+        <item>Protein</item>
+        <item>Fat</item>
     </string-array>
 </resources>

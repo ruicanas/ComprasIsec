@@ -3,50 +3,63 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:padding="32dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.showListActivity">
+    tools:context=".activities.ShowListActivity"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="25dp"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/list_name"
             android:textSize="24sp"
-            android:textColor="@color/ming"
+            android:textColor="@color/primaryColor"
             android:textStyle="bold"
+            android:layout_marginEnd="10dp"
         />
         <EditText
-            android:inputType="text"
-            android:id="@+id/edName"
+            android:inputType="textCapSentences"
+            android:id="@+id/edListName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_list_name"
-            android:textSize="17sp"
-            android:maxLines="1"/>
+            android:textSize="18sp"
+            android:maxLines="1"
+            android:backgroundTint="@color/primaryColor"
+            />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingVertical="12dp">
+        android:paddingVertical="10dp"
+        >
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/tProducts"
-            android:textSize="30sp"
-            android:textColor="@color/darkSalmon"
+            android:textSize="28sp"
+            android:textColor="@color/secondaryColorVariant"
             android:textStyle="bold|italic"
         />
 
+        <ListView
+            android:id="@+id/productList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingVertical="10sp"
+            android:dividerHeight="10sp"
+            android:divider="@android:color/transparent"
+            />
+
     </LinearLayout>
-
-
-
-
 </LinearLayout>

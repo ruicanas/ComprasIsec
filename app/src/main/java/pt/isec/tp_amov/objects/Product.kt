@@ -1,5 +1,6 @@
 package pt.isec.tp_amov.objects
 
-data class Product (var id:Int ,var name:String,var brand:String,var image:String,var amount:Double, var units: UnitsMeasure){
+import java.io.Serializable
 
-}
+data class Product (var id: Int, var name: String, var brand: String, var price: Double, var amount:Double,
+                    var units: UnitsMeasure, var category: Categories, var notes: String, var image: String?): Serializable {}
