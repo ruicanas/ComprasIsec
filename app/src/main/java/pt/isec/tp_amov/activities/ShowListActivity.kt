@@ -18,6 +18,7 @@ class ShowListActivity : AppCompatActivity() {
     var productList = ArrayList<Product>()
     lateinit var listName: String
     lateinit var list: ListView
+    lateinit var adapter: ProductListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,12 +27,13 @@ class ShowListActivity : AppCompatActivity() {
         supportActionBar?.title = listName
         
         list = findViewById(R.id.productList)
-        list.adapter = ProductListAdapter(productList)
+        adapter = ProductListAdapter(productList)
+        list.adapter = adapter
     }
 
     override fun onResume() {
         super.onResume()
-
+        adapter.notifyDataSetChanged()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -42,19 +44,20 @@ class ShowListActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.addProd){
             val intent = Intent(this, ManageProductActivity::class.java)
+            intent.putExtra("ListName", listName)
             startActivityForResult(intent, 10) //todo - create file to store all resultCodes
             return true
         }
         return super.onOptionsItemSelected(item)
     }
 
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        if (requestCode == 10) {
-//            if (resultCode == RESULT_OK) {
-//                val product = data!!.getSerializableExtra("Product") as Product
-//                productList.add(product)
-//            }
-//        }
-//        super.onActivityResult(requestCode, resultCode, data)
-//    }
+    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 10) {
+            if (resultCode == RESULT_OK) {
+                val product = data!!.getSerializableExtra("Product") as Product
+                productList.add(product)
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }*/
 }

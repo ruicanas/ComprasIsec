@@ -26,8 +26,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_product)
 
-        //TODO - this is working properly
-        supportActionBar?.title = R.string.new_product.toString()
+        supportActionBar?.title = getString(R.string.titleAddProd) + " " + intent.getStringExtra("ListName")
 
         spCategory = findViewById(R.id.spinnerCat)
         spUnit = findViewById(R.id.spinnerUnit)
@@ -69,37 +68,35 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     }
 
     private fun returnProduct(product: Product) {
-
-//        val returnIntent = Intent().apply {
-//            putExtra("Product", product as Serializable)
-//        }
-//        setResult(RESULT_OK, returnIntent)
-//        finish()
+        /*val returnIntent = Intent().apply {
+            putExtra("Product", product as Serializable)
+        }
+        setResult(RESULT_OK, returnIntent)
+        finish()*/
     }
 
-    private fun getCategory(): Categories {
+    private fun getCategory(): Categories { //Not ideal strings
         val prompt = spCategory.selectedItem.toString()
-        if (prompt.equals(Categories.FRUIT_VEGETABLES))
+        if (prompt == getString(R.string.fruit_vegetables))
             return Categories.FRUIT_VEGETABLES
-        if (prompt.equals(Categories.DAIRY))
+        if (prompt == getString(R.string.dairy))
             return Categories.DAIRY
-        if (prompt.equals(Categories.FAT))
+        if (prompt == getString(R.string.fat))
             return Categories.FAT
-        if (prompt.equals(Categories.PROTEIN))
+        if (prompt == getString(R.string.protein))
             return Categories.PROTEIN
         return Categories.STARCHY_FOOD
     }
 
-    private fun getUnit(): UnitsMeasure{
+    private fun getUnit(): UnitsMeasure {
         val prompt = spUnit.selectedItem.toString()
-
-        if (prompt.equals(UnitsMeasure.BOXES))
+        if (prompt == getString(R.string.boxes))
             return UnitsMeasure.BOXES
-        if (prompt.equals(UnitsMeasure.KG))
+        if (prompt == getString(R.string.kg))
             return UnitsMeasure.KG
-        if (prompt.equals(UnitsMeasure.GRAMS))
+        if (prompt == getString(R.string.grams))
             return UnitsMeasure.GRAMS
-        if (prompt.equals(UnitsMeasure.LITERS))
+        if (prompt == getString(R.string.liter))
             return UnitsMeasure.LITERS
         return UnitsMeasure.UNITS
     }
@@ -111,6 +108,4 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {}
-
-
 }

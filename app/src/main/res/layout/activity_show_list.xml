@@ -12,42 +12,15 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/list_name"
-            android:textSize="24sp"
-            android:textColor="@color/primaryColor"
-            android:textStyle="bold"
-            android:layout_marginEnd="10dp"
-        />
-        <EditText
-            android:inputType="textCapSentences"
-            android:id="@+id/edListName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/hint_list_name"
-            android:textSize="18sp"
-            android:maxLines="1"
-            android:backgroundTint="@color/primaryColor"
-            />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingVertical="10dp"
+        android:paddingBottom="10dp"
         >
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/tProducts"
-            android:textSize="28sp"
+            android:textSize="26sp"
             android:textColor="@color/secondaryColorVariant"
             android:textStyle="bold|italic"
         />
@@ -57,8 +30,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingVertical="10sp"
-            android:dividerHeight="10sp"
-            android:divider="@android:color/transparent"
+            android:fadingEdge="vertical"
+            android:fadingEdgeLength="15dp"
             />
 
     </LinearLayout>

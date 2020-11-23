@@ -4,9 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.Spinner
 import android.widget.TextView
 import pt.isec.tp_amov.R
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ProductListAdapter(var products: ArrayList<Product>): BaseAdapter() {
     override fun getCount(): Int {
@@ -23,10 +24,11 @@ class ProductListAdapter(var products: ArrayList<Product>): BaseAdapter() {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val layoutInflater = LayoutInflater.from(parent!!.context)
-        val view = layoutInflater.inflate(R.layout.list_layout, parent, false)
+        val view = layoutInflater.inflate(R.layout.product_list_layout, parent, false)
 
-        val pos = view.findViewById<TextView>(R.id.position)
-        pos.text = "$position"
+        val p = position+1
+        val pos = view.findViewById<TextView>(R.id.productPos)
+        pos.text = "$p"
 
         val name = view.findViewById<TextView>(R.id.productName)
         name.text = products[position].name
@@ -40,10 +42,10 @@ class ProductListAdapter(var products: ArrayList<Product>): BaseAdapter() {
         val price = view.findViewById<TextView>(R.id.productPrice)
         price.text = products[position].price.toString()
 
-        val category = view.findViewById<TextView>(R.id.productPrice)
+        val category = view.findViewById<TextView>(R.id.productCategory)
         category.text = products[position].category.toString()
 
-        val unit = view.findViewById<TextView>(R.id.productPrice)
+        val unit = view.findViewById<TextView>(R.id.productUnit)
         unit.text = products[position].units.toString()
 
         return view

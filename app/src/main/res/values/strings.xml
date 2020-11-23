@@ -16,11 +16,22 @@
     <string name="tProducts">Products:</string>
     <string name="titleRemoveIcon">removeProd</string>
     <string name="tileEditIcon">editProd</string>
-    <string name="titleAddProd">addProd</string>
+    <string name="titleAddProd">Add product to</string>
     <string name="product_category">Category</string>
     <string name="product_price">Unit Price</string>
     <string name="new_product">New Product</string>
     <string name="create_list">Create List</string>
     <string name="cancel_list">Cancel</string>
     <string name="description_dlg">Write the name of your list</string>
+
+    <string name="fruit_vegetables">Fruit/Vegetables</string>
+    <string name="starchy_food">Starchy Food</string>
+    <string name="dairy">Dairy</string>
+    <string name="protein">Protein</string>
+    <string name="fat">Fat</string>
+    <string name="units">Units</string>
+    <string name="kg">Kg</string>
+    <string name="grams">Grams</string>
+    <string name="liter">Liter</string>
+    <string name="boxes">Boxes</string>
 </resources>
