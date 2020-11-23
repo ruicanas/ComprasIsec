@@ -4,7 +4,7 @@ import android.util.Log
 import java.util.ArrayList
 
 data class ShoppingList (var name:String) {
-    val productList : MutableList<Product> = ArrayList()
+    private val productList : MutableList<Product> = ArrayList()
 
     fun productExists(prod: Product): Boolean{
         return productList.contains(prod)
@@ -23,5 +23,13 @@ data class ShoppingList (var name:String) {
             }
         }
         Log.i("RemoveProduct","Failed trying to remove product")
+    }
+
+    fun getList() : MutableList<Product>{
+        return productList
+    }
+
+    override fun toString(): String {
+        return productList.toString()
     }
 }

@@ -2,6 +2,7 @@ package pt.isec.tp_amov.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -21,16 +22,16 @@ import java.io.Serializable
 class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     lateinit var spCategory: Spinner
     lateinit var spUnit: Spinner
+    lateinit var listName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_product)
-
-        supportActionBar?.title = getString(R.string.titleAddProd) + " " + intent.getStringExtra("ListName")
+        listName = intent.getStringExtra("listName")!!
+        supportActionBar?.title = getString(R.string.titleAddProd) + " " + listName
 
         spCategory = findViewById(R.id.spinnerCat)
         spUnit = findViewById(R.id.spinnerUnit)
-
         //create array adapter for the spinner
         ArrayAdapter.createFromResource(this, R.array.category_array, android.R.layout.simple_spinner_item).also { adapter -> adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             // Apply the adapter to the spinner
@@ -68,11 +69,11 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     }
 
     private fun returnProduct(product: Product) {
-        /*val returnIntent = Intent().apply {
-            putExtra("Product", product as Serializable)
-        }
-        setResult(RESULT_OK, returnIntent)
-        finish()*/
+        //Add product to list the respective list and to the all products list.
+        Model.addProduct(product, listName)
+        Log.i("ManageProductActivity", "AllProds: " + Model.debugAllProductsAsString() +
+                                            "\nAllLists: " + Model.debugAllListsAsString())
+        finish()
     }
 
     private fun getCategory(): Categories { //Not ideal strings

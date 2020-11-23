@@ -1,4 +1,4 @@
-package pt.isec.tp_amov.objects
+package pt.isec.tp_amov.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import pt.isec.tp_amov.R
-import java.util.*
+import pt.isec.tp_amov.objects.Product
 import kotlin.collections.ArrayList
 
 class ProductListAdapter(var products: ArrayList<Product>): BaseAdapter() {
     override fun getCount(): Int {
-        return products.size;
+        return products.size
     }
 
     override fun getItem(position: Int): Any {

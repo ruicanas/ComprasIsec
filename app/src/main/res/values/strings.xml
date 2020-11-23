@@ -34,4 +34,6 @@
     <string name="grams">Grams</string>
     <string name="liter">Liter</string>
     <string name="boxes">Boxes</string>
+    <string name="layout_main_name">Name</string>
+    <string name="layout_main_number">Number</string>
 </resources>

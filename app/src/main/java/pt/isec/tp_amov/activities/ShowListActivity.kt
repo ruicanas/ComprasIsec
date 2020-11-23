@@ -3,21 +3,19 @@ package pt.isec.tp_amov.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.ListView
-import android.widget.Toast
 import pt.isec.tp_amov.R
+import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.objects.Product
-import pt.isec.tp_amov.objects.ProductListAdapter
+import pt.isec.tp_amov.adapters.ProductListAdapter
 
 class ShowListActivity : AppCompatActivity() {
-    var productList = ArrayList<Product>()
+    private var productList = ArrayList<Product>()
     lateinit var listName: String
-    lateinit var list: ListView
+    lateinit var lvList: ListView
     lateinit var adapter: ProductListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,14 +23,25 @@ class ShowListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_show_list)
         listName = intent.getStringExtra("listName")!!
         supportActionBar?.title = listName
-        
-        list = findViewById(R.id.productList)
+        //Create a list on the Model
+        if(Model.addList(listName)){
+            Log.i("ShowListActivity: ", Model.debugAllListsAsString())
+        }
+        lvList = findViewById(R.id.lvProductList)
         adapter = ProductListAdapter(productList)
-        list.adapter = adapter
+        lvList.adapter = adapter
     }
 
     override fun onResume() {
         super.onResume()
+        productList.clear()
+        //Add the elements to the vector
+        val slChosen = Model.getList(listName)?.getList()
+        if(slChosen != null) {
+            for(prod in slChosen){
+                productList.add(prod)
+            }
+        }
         adapter.notifyDataSetChanged()
     }
 
@@ -44,20 +53,10 @@ class ShowListActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.addProd){
             val intent = Intent(this, ManageProductActivity::class.java)
-            intent.putExtra("ListName", listName)
-            startActivityForResult(intent, 10) //todo - create file to store all resultCodes
+            intent.putExtra("listName", listName)
+            startActivity(intent)
             return true
         }
         return super.onOptionsItemSelected(item)
     }
-
-    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == 10) {
-            if (resultCode == RESULT_OK) {
-                val product = data!!.getSerializableExtra("Product") as Product
-                productList.add(product)
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }*/
 }
