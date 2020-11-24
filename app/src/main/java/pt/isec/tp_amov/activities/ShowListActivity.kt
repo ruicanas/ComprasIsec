@@ -24,8 +24,8 @@ class ShowListActivity : AppCompatActivity() {
         listName = intent.getStringExtra("listName")!!
         supportActionBar?.title = listName
         //Create a list on the Model
-        if(Model.addList(listName)){
-            Log.i("ShowListActivity: ", Model.debugAllListsAsString())
+        if(Model.getList(listName) == null){
+            Model.addList(listName)
         }
         lvList = findViewById(R.id.lvProductList)
         adapter = ProductListAdapter(productList)
@@ -41,8 +41,8 @@ class ShowListActivity : AppCompatActivity() {
             for(prod in slChosen){
                 productList.add(prod)
             }
+            adapter.notifyDataSetChanged()
         }
-        adapter.notifyDataSetChanged()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

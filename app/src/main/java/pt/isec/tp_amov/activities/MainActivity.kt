@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         pressAddListBtn()
 
         lvList = findViewById(R.id.lvMainList)
+        onOpenList(lvList)
         adapter = ShoppingListAdapter(allLists)
         lvList.adapter = adapter
     }
@@ -89,5 +90,14 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
         builder.setNegativeButton("Cancel") { dialog, id -> dialog.dismiss() }
         builder.show()
+    }
+
+    fun onOpenList(listView: ListView) {
+        listView.setOnItemClickListener { parent, view, position, id ->
+            val shoppingListName = adapter.getItem(position).toString()
+            val intent = Intent(this, ShowListActivity::class.java)
+            intent.putExtra("listName", shoppingListName)
+            startActivity(intent)
+        }
     }
 }

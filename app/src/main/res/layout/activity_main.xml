@@ -13,7 +13,8 @@
         android:layout_marginHorizontal="20dp"
         android:layout_marginVertical="25dp"
         android:fadingEdge="vertical"
-        android:fadingEdgeLength="15dp" />
+        android:fadingEdgeLength="15dp"
+        />
 
     <LinearLayout
         android:layout_width="wrap_content"

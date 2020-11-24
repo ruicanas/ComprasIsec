@@ -5,6 +5,12 @@ import java.util.ArrayList
 
 data class ShoppingList (var name:String) {
     private val productList : MutableList<Product> = ArrayList()
+    private var auxCounter = 0
+    private val mainCounter : Int
+        get(){
+            auxCounter++
+            return auxCounter
+        }
 
     fun productExists(prod: Product): Boolean{
         return productList.contains(prod)
@@ -30,6 +36,6 @@ data class ShoppingList (var name:String) {
     }
 
     override fun toString(): String {
-        return productList.toString()
+        return name
     }
 }
