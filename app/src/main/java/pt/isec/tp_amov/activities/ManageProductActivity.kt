@@ -1,27 +1,43 @@
 package pt.isec.tp_amov.activities
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import pt.isec.tp_amov.R
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.objects.Categories
 import pt.isec.tp_amov.objects.UnitsMeasure
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 /**
  * This activity is going to be responsible for the creation and edition of a product
  */
 class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
-    lateinit var spCategory: Spinner
-    lateinit var spUnit: Spinner
-    lateinit var type: String
-    var listId = -1
-    var prodId = -1
+    private lateinit var spCategory: Spinner
+    private lateinit var spUnit: Spinner
+    private lateinit var type: String
+    private var listId = -1
+    private var prodId = -1
+
+    private val CAMERA_PERMISSION_CODE = 101
+    private val GALLERY_PERMISSION_CODE = 102
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,12 +71,12 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     private fun fillOptions() {
         val sL = Model.getListById(listId)
         findViewById<EditText>(R.id.edProductName).setText(sL!!.returnProduct(prodId)!!.name)
-        findViewById<EditText>(R.id.edBrand).setText(sL!!.returnProduct(prodId)!!.brand)
-        findViewById<EditText>(R.id.edPrice).setText(sL!!.returnProduct(prodId)!!.price.toString())
-        findViewById<EditText>(R.id.edNotes).setText(sL!!.returnProduct(prodId)!!.notes)
-        findViewById<EditText>(R.id.edQuantity).setText(sL!!.returnProduct(prodId)!!.amount.toString())
-        setCategory(sL!!.returnProduct(prodId)!!.category)
-        setUnit(sL!!.returnProduct(prodId)!!.units)
+        findViewById<EditText>(R.id.edBrand).setText(sL.returnProduct(prodId)!!.brand)
+        findViewById<EditText>(R.id.edPrice).setText(sL.returnProduct(prodId)!!.price.toString())
+        findViewById<EditText>(R.id.edNotes).setText(sL.returnProduct(prodId)!!.notes)
+        findViewById<EditText>(R.id.edQuantity).setText(sL.returnProduct(prodId)!!.amount.toString())
+        setCategory(sL.returnProduct(prodId)!!.category)
+        setUnit(sL.returnProduct(prodId)!!.units)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -68,12 +84,12 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         if(type == "create"){
             supportActionBar?.title = getString(R.string.titleAddProdList) + " " + Model.getListById(listId)?.name
             menu!!.getItem(0).isVisible = true
-            menu!!.getItem(1).isVisible = false
+            menu.getItem(1).isVisible = false
         }
         else{
             supportActionBar?.title = getString(R.string.titleEditProdList) + " " + Model.getListById(listId)?.name
             menu!!.getItem(0).isVisible = false
-            menu!!.getItem(1).isVisible = true
+            menu.getItem(1).isVisible = true
         }
         return true
     }
@@ -82,7 +98,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         if(item.itemId == R.id.newProdCheck) {
             val name: String = findViewById<EditText>(R.id.edProductName).text.toString()
             val brand: String = findViewById<EditText>(R.id.edBrand).text.toString()
-            var price: String = findViewById<EditText>(R.id.edPrice).text.toString()
+            val price: String = findViewById<EditText>(R.id.edPrice).text.toString()
             val notes: String = findViewById<EditText>(R.id.edNotes).text.toString()
             val quantity: String = findViewById<EditText>(R.id.edQuantity).text.toString()
 
@@ -188,8 +204,8 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     override fun onNothingSelected(parent: AdapterView<*>?) {}
 
     fun onIncQuantity(view: View) {
-        var editText: EditText = findViewById(R.id.edQuantity)
-        var text: String = editText.text.toString()
+        val editText: EditText = findViewById(R.id.edQuantity)
+        val text: String = editText.text.toString()
         try {
             var num: Int = text.toInt()
             num += 1
@@ -207,8 +223,8 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     }
 
     fun onDecQuantity(view: View) {
-        var editText: EditText = findViewById(R.id.edQuantity)
-        var text: String = editText.text.toString()
+        val editText: EditText = findViewById(R.id.edQuantity)
+        val text: String = editText.text.toString()
         try {
             var num: Int = text.toInt()
             if (num - 1 <= 0)
@@ -228,6 +244,99 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             editText.setText(num.toString())
 
             Log.i("onQuantityDec double: ", num.toString())
+        }
+    }
+
+    fun onOpenCamera(view: View) {
+        //Ask for camera permissions
+        if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
+        else
+            Toast.makeText(applicationContext, "Camera permission already granted", Toast.LENGTH_LONG).show()
+
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        //code 1 is gallery access
+        startActivityForResult(takePictureIntent, 1)
+    }
+
+    fun onOpenGalley(view: View) {
+        //Ask for storage permissions
+        if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), GALLERY_PERMISSION_CODE)
+        }
+        else
+            Toast.makeText(applicationContext, "Permission already granted", Toast.LENGTH_LONG).show()
+
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        //code 2 is gallery access
+        startActivityForResult(intent, 2)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (requestCode == CAMERA_PERMISSION_CODE) { //CAMERA PERMISSION ACCESS
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission Granted!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if (requestCode == GALLERY_PERMISSION_CODE) { //GALLERY PERMISSION ACCESS
+
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    private lateinit var filePath : String
+
+    //TODO - put this is activity
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        val image: ImageView = findViewById(R.id.productImageView)
+
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) { //Camera Access
+            if (data.extras == null)
+                Toast.makeText(applicationContext, "No photo", Toast.LENGTH_LONG).show()
+
+            val bitmap = data.extras?.get("data") as Bitmap
+            image.setImageBitmap(bitmap) //set in image bitmap
+
+            //saveImage(bitmap);
+        }
+        else if (requestCode == 2 && resultCode == Activity.RESULT_OK && data != null) { //Gallery Access
+            var uri = data.data?.apply {
+                val cursor = contentResolver.query(
+                        this,
+                        arrayOf(MediaStore.Images.ImageColumns.DATA),
+                        null,
+                        null,
+                        null
+                )
+
+                if (cursor != null && cursor.moveToFirst())
+                    filePath = cursor.getString(0)
+
+                //Get the bitmap
+                val bitmap = BitmapFactory.decodeFile(filePath)
+                image.setImageBitmap(bitmap) //set in image bitmap
+            }
+            return
+        }
+
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    //needs to be changed
+    lateinit var currentPhotoPath: String
+    private fun saveImage(bitmap: Bitmap): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmm").format(Date())
+        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+
+        return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir /* directory */).apply {
+            // Save a file: path for use with ACTION_VIEW intents
+            currentPhotoPath = absolutePath
         }
     }
 }
