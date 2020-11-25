@@ -57,7 +57,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         findViewById<EditText>(R.id.edBrand).setText(sL!!.returnProduct(prodId)!!.brand)
         findViewById<EditText>(R.id.edPrice).setText(sL!!.returnProduct(prodId)!!.price.toString())
         findViewById<EditText>(R.id.edNotes).setText(sL!!.returnProduct(prodId)!!.notes)
-        findViewById<EditText>(R.id.edAmount).setText(sL!!.returnProduct(prodId)!!.amount.toString())
+        findViewById<EditText>(R.id.edQuantity).setText(sL!!.returnProduct(prodId)!!.amount.toString())
         setCategory(sL!!.returnProduct(prodId)!!.category)
         setUnit(sL!!.returnProduct(prodId)!!.units)
     }
@@ -83,7 +83,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             val brand: String = findViewById<EditText>(R.id.edBrand).text.toString()
             var price: String = findViewById<EditText>(R.id.edPrice).text.toString()
             val notes: String = findViewById<EditText>(R.id.edNotes).text.toString()
-            val amount: String = findViewById<EditText>(R.id.edAmount).text.toString()
+            val amount: String = findViewById<EditText>(R.id.edQuantity).text.toString()
 
             if (price.isEmpty())
                 price = "0.0"
