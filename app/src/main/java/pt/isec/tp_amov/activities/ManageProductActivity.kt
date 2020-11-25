@@ -172,7 +172,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
 
     override fun onNothingSelected(parent: AdapterView<*>?) {}
 
-    fun onIncQuantity() {
+    fun onIncQuantity(view: View) {
         val editText: EditText = findViewById(R.id.edQuantity)
         val text: String = editText.text.toString()
         try {
@@ -191,7 +191,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         }
     }
 
-    fun onDecQuantity() {
+    fun onDecQuantity(view: View) {
         val editText: EditText = findViewById(R.id.edQuantity)
         val text: String = editText.text.toString()
         try {
