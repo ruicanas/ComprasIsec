@@ -1,6 +1,7 @@
 package pt.isec.tp_amov.activities
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -83,13 +84,27 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             val brand: String = findViewById<EditText>(R.id.edBrand).text.toString()
             var price: String = findViewById<EditText>(R.id.edPrice).text.toString()
             val notes: String = findViewById<EditText>(R.id.edNotes).text.toString()
-            val amount: String = findViewById<EditText>(R.id.edQuantity).text.toString()
+            val quantity: String = findViewById<EditText>(R.id.edQuantity).text.toString()
 
-            if (price.isEmpty())
-                price = "0.0"
+            if (name.isEmpty()) {
+                Toast.makeText(applicationContext, getString(R.string.no_product_name), Toast.LENGTH_LONG).show()
+                return false
+            }
+            if (brand.isEmpty()) {
+                Toast.makeText(applicationContext, getString(R.string.no_product_brand), Toast.LENGTH_LONG).show()
+                return false
+            }
+            if (price.isEmpty()) {
+                Toast.makeText(applicationContext, getString(R.string.no_product_price), Toast.LENGTH_LONG).show()
+                return false
+            }
+            if (quantity == "0") {
+                Toast.makeText(applicationContext, getString(R.string.no_product_quantity), Toast.LENGTH_LONG).show()
+                return false
+            }
 
             //TODO - the id is temporary - find a better way
-            Model.addProduct(name, brand, price.toDouble(), amount.toDouble(), getUnit(), getCategory(), notes, null, listId)
+            Model.addProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), notes, null, listId)
             finish()
         }
 
@@ -161,4 +176,31 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+    fun onIncQuantity(view: View) {
+        try {
+            var editText: EditText = findViewById(R.id.edQuantity)
+            var text: String = editText.text.toString()
+            var num: Int = text.toInt()
+            num += 1
+            editText.setText(num.toString())
+            Log.i("onQuantity: ", num.toString())
+        } catch (nfe: NumberFormatException) {
+            Log.i("onQuantity catch ", "inc")
+            nfe.toString()
+        }
+    }
+    fun onDecQuantity(view: View) {
+        try {
+            var editText: EditText = findViewById(R.id.edQuantity)
+            var text: String = editText.text.toString()
+            var num: Int = text.toInt()
+            num -= 1
+            editText.setText(num.toString())
+            Log.i("onQuantity: ", num.toString())
+        } catch (nfe: NumberFormatException) {
+            Log.i("onQuantity catch ", "dec")
+            nfe.toString()
+        }
+    }
 }
