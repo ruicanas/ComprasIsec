@@ -4,11 +4,11 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">#83C5BE</item>
         <item name="colorPrimaryVariant">#83C5BE</item>
-        <item name="colorOnPrimary">#EDF6F9</item>
+        <item name="colorOnPrimary">#111111</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">#FFDDD2</item>
         <item name="colorSecondaryVariant">#E29578</item>
-        <item name="colorOnSecondary">#EDF6F9</item>
+        <item name="colorOnSecondary">#111111</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Navigation bar color -->

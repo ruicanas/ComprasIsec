@@ -1,5 +1,6 @@
 package pt.isec.tp_amov.activities
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -29,11 +30,14 @@ import java.util.*
  * This activity is going to be responsible for the creation and edition of a product
  */
 class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
-    lateinit var spCategory: Spinner
-    lateinit var spUnit: Spinner
-    lateinit var type: String
-    var listId = -1
-    var prodId = -1
+    private lateinit var spCategory: Spinner
+    private lateinit var spUnit: Spinner
+    private lateinit var type: String
+    private var listId = -1
+    private var prodId = -1
+
+    private val CAMERA_PERMISSION_CODE = 101
+    private val GALLERY_PERMISSION_CODE = 102
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -230,9 +234,10 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
 
     fun onOpenCamera(view: View) {
         //Ask for camera permissions
-        if (ContextCompat.checkSelfPermission(applicationContext, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.CAMERA), 11)
-        }
+        if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
+        else
+            Toast.makeText(applicationContext, "Camera permission already granted", Toast.LENGTH_LONG).show()
 
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         //code 1 is gallery access
@@ -241,15 +246,32 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
 
     fun onOpenGalley(view: View) {
         //Ask for storage permissions
-        if (ContextCompat.checkSelfPermission(applicationContext, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(applicationContext, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 22)
+        if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), GALLERY_PERMISSION_CODE)
         }
+        else
+            Toast.makeText(applicationContext, "Permission already granted", Toast.LENGTH_LONG).show()
 
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
         //code 2 is gallery access
         startActivityForResult(intent, 2)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (requestCode == CAMERA_PERMISSION_CODE) { //CAMERA PERMISSION ACCESS
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission Granted!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if (requestCode == GALLERY_PERMISSION_CODE) { //GALLERY PERMISSION ACCESS
+
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     private lateinit var filePath : String
