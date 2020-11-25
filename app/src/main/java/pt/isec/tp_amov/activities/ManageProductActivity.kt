@@ -109,7 +109,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         }
 
         if(item.itemId == R.id.editProdCheck){
-
+            //todo
         }
         return super.onOptionsItemSelected(item)
     }
@@ -140,29 +140,26 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         return UnitsMeasure.UNITS
     }
 
-    /**
-     * NOT SETTING!
-     */
+
     private fun setCategory(category: Categories){ //Not ideal strings
         var counter = 0
         for(i in Categories.values()){
             if(i == category){
-                spCategory.setSelection(counter, true)
+                spCategory.setSelection(counter)
+                spCategory.invalidate()
                 break
             }
             counter++
         }
-        spCategory.adapter
     }
 
-    /**
-     * NOT SETTING!
-     */
+
     private fun setUnit(unit: UnitsMeasure){
         var counter = 0
         for(i in UnitsMeasure.values()){
             if(i == unit){
-                spCategory.setSelection(counter, true)
+                spUnit.setSelection(counter)
+                spUnit.invalidate()
                 break
             }
             counter++
