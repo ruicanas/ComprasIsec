@@ -45,4 +45,7 @@
     <string name="create_list_btn">Create List</string>
     <string name="cancel_btn">Cancel</string>
     <string name="optional_field">Optional</string>
+    <string name="product_photo">Photo</string>
+    <string name="from_gallery_btn">From Gallery</string>
+    <string name="from_camera_btn">From Camera</string>
 </resources>

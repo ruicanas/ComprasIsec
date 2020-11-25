@@ -1,16 +1,28 @@
 package pt.isec.tp_amov.activities
 
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import pt.isec.tp_amov.R
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.objects.Categories
 import pt.isec.tp_amov.objects.UnitsMeasure
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 /**
@@ -213,6 +225,81 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             editText.setText(num.toString())
 
             Log.i("onQuantityDec double: ", num.toString())
+        }
+    }
+
+    fun onOpenCamera(view: View) {
+        //Ask for camera permissions
+        if (ContextCompat.checkSelfPermission(applicationContext, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.CAMERA), 11)
+        }
+
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        //code 1 is gallery access
+        startActivityForResult(takePictureIntent, 1)
+    }
+
+    fun onOpenGalley(view: View) {
+        //Ask for storage permissions
+        if (ContextCompat.checkSelfPermission(applicationContext, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(applicationContext, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 22)
+        }
+
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        //code 2 is gallery access
+        startActivityForResult(intent, 2)
+    }
+
+    private lateinit var filePath : String
+
+    //TODO - put this is activity
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        val image: ImageView = findViewById(R.id.productImageView)
+
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) { //Camera Access
+            if (data.extras == null)
+                Toast.makeText(applicationContext, "No photo", Toast.LENGTH_LONG).show()
+
+            val bitmap = data.extras?.get("data") as Bitmap
+            image.setImageBitmap(bitmap) //set in image bitmap
+
+            //saveImage(bitmap);
+        }
+        else if (requestCode == 2 && resultCode == Activity.RESULT_OK && data != null) { //Gallery Access
+            var uri = data.data?.apply {
+                val cursor = contentResolver.query(
+                        this,
+                        arrayOf(MediaStore.Images.ImageColumns.DATA),
+                        null,
+                        null,
+                        null
+                )
+
+                if (cursor != null && cursor.moveToFirst())
+                    filePath = cursor.getString(0)
+
+                //Get the bitmap
+                val bitmap = BitmapFactory.decodeFile(filePath)
+                image.setImageBitmap(bitmap) //set in image bitmap
+            }
+            return
+        }
+
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    //needs to be changed
+    lateinit var currentPhotoPath: String
+    private fun saveImage(bitmap: Bitmap): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmm").format(Date())
+        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+
+        return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir /* directory */).apply {
+            // Save a file: path for use with ACTION_VIEW intents
+            currentPhotoPath = absolutePath
         }
     }
 }

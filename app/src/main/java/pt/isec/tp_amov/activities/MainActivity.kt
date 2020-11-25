@@ -2,7 +2,9 @@ package pt.isec.tp_amov.activities
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
@@ -13,6 +15,7 @@ import pt.isec.tp_amov.R
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.adapters.ShoppingListAdapter
 import pt.isec.tp_amov.objects.ShoppingList
+import java.lang.reflect.Method
 
 class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     private var allLists = ArrayList<ShoppingList>()
@@ -23,6 +26,15 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         pressAddListBtn()
+
+        if (Build.VERSION.SDK_INT >= 24) {
+            try {
+                val m: Method = StrictMode::class.java.getMethod("disableDeathOnFileUriExposure")
+                m.invoke(null)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
 
         lvList = findViewById(R.id.lvMainList)
         onOpenList(lvList)
