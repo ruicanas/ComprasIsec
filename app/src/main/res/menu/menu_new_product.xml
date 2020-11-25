@@ -6,4 +6,9 @@
         android:title="@string/titleAddProd"
         app:showAsAction="ifRoom"
         />
+    <item android:id="@+id/editProdCheck"
+        android:icon="@drawable/ic_baseline_edit_24"
+        android:title="@string/titleEditProd"
+        app:showAsAction="ifRoom"
+        />
 </menu>

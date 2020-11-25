@@ -17,12 +17,12 @@ class ShoppingListAdapter(var shoppingLists: ArrayList<ShoppingList>): BaseAdapt
         name.text = shoppingLists[position].name
 
         val number = view.findViewById<TextView>(R.id.tvProdNum)
-        number.text = shoppingLists[position].getList().size.toString()
+        number.text = shoppingLists[position].productList.size.toString()
 
         return view
     }
 
-    override fun getItem(position: Int): Any {
+    override fun getItem(position: Int): ShoppingList {
         return shoppingLists[position]
     }
 
@@ -33,5 +33,4 @@ class ShoppingListAdapter(var shoppingLists: ArrayList<ShoppingList>): BaseAdapt
     override fun getCount(): Int {
         return shoppingLists.size
     }
-
 }

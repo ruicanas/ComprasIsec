@@ -36,4 +36,5 @@
     <string name="boxes">Boxes</string>
     <string name="layout_main_name">Name</string>
     <string name="layout_main_number">Number</string>
+    <string name="titleEditProd">Edit product</string>
 </resources>

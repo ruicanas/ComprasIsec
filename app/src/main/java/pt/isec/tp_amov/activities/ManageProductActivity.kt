@@ -22,13 +22,17 @@ import java.io.Serializable
 class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     lateinit var spCategory: Spinner
     lateinit var spUnit: Spinner
-    lateinit var listName: String
+    var id = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_product)
-        listName = intent.getStringExtra("listName")!!
-        supportActionBar?.title = getString(R.string.titleAddProd) + " " + listName
+        id = intent.getIntExtra("id", -1)
+        //Verify if the ID is valid
+        if(id == -1){
+            finish()
+        }
+        supportActionBar?.title = getString(R.string.titleAddProd) + " " + Model.getListById(id)?.name
 
         spCategory = findViewById(R.id.spinnerCat)
         spUnit = findViewById(R.id.spinnerUnit)
@@ -62,18 +66,10 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
                 price = "0.0"
 
             //TODO - the id is temporary - find a better way
-            val product = Product(0, name, brand, price.toDouble(), amount.toDouble(), getUnit(), getCategory(), notes, null)
-            returnProduct(product)
+            Model.addProduct(name, brand, price.toDouble(), amount.toDouble(), getUnit(), getCategory(), notes, null, id)
+            finish()
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun returnProduct(product: Product) {
-        //Add product to list the respective list and to the all products list.
-        Model.addProduct(product, listName)
-        Log.i("ManageProductActivity", "AllProds: " + Model.debugAllProductsAsString() +
-                                            "\nAllLists: " + Model.debugAllListsAsString())
-        finish()
     }
 
     private fun getCategory(): Categories { //Not ideal strings

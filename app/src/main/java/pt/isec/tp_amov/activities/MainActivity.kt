@@ -11,7 +11,6 @@ import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
 import pt.isec.tp_amov.R
 import pt.isec.tp_amov.model.Model
-import pt.isec.tp_amov.adapters.ProductListAdapter
 import pt.isec.tp_amov.adapters.ShoppingListAdapter
 import pt.isec.tp_amov.objects.ShoppingList
 
@@ -85,7 +84,8 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         builder.setPositiveButton("Create List") { dialog, id ->
             val intent = Intent(this, ShowListActivity::class.java)
             val listName = editText.text.toString()     //After the user write a name, this name will be save on listName
-            intent.putExtra("listName", listName) //And then, the listName, will be sent to the next activity.
+            //Create the list at this moment
+            intent.putExtra("id", Model.addList(listName)) //And then, the listName, will be sent to the next activity.
             startActivity(intent)
         }
         builder.setNegativeButton("Cancel") { dialog, id -> dialog.dismiss() }
@@ -94,9 +94,9 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     fun onOpenList(listView: ListView) {
         listView.setOnItemClickListener { parent, view, position, id ->
-            val shoppingListName = adapter.getItem(position).toString()
+            val sL = adapter.getItem(position)
             val intent = Intent(this, ShowListActivity::class.java)
-            intent.putExtra("listName", shoppingListName)
+            intent.putExtra("id", sL.id)
             startActivity(intent)
         }
     }
