@@ -3,7 +3,7 @@ package pt.isec.tp_amov.objects
 import android.util.Log
 import java.util.ArrayList
 
-data class ShoppingList (var name:String) {
+data class ShoppingList (var name: String, val id: Int) {
     val productList : MutableList<Product> = ArrayList()
 
     fun productExists(prod: Product): Boolean{
@@ -23,5 +23,9 @@ data class ShoppingList (var name:String) {
             }
         }
         Log.i("RemoveProduct","Failed trying to remove product")
+    }
+
+    override fun toString(): String {
+        return name
     }
 }

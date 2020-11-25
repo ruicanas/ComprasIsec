@@ -16,7 +16,8 @@
     <string name="tProducts">Products:</string>
     <string name="titleRemoveIcon">removeProd</string>
     <string name="tileEditIcon">editProd</string>
-    <string name="titleAddProd">Add product to</string>
+    <string name="titleAddProdList">Add product to</string>
+    <string name="titleEditProdList">Edit product of list </string>
     <string name="product_category">Category</string>
     <string name="product_price">Unit Price</string>
     <string name="new_product">New Product</string>
@@ -34,6 +35,9 @@
     <string name="grams">Grams</string>
     <string name="liter">Liter</string>
     <string name="boxes">Boxes</string>
+    <string name="layout_main_name">Name</string>
+    <string name="layout_main_number">Number</string>
+    <string name="titleEditProd">Edit product</string>
     <string name="no_product_name">No product name specified</string>
     <string name="no_product_brand">No product brand specified</string>
     <string name="no_product_price">No product price specified</string>

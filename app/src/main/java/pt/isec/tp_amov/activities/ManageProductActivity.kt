@@ -1,5 +1,6 @@
 package pt.isec.tp_amov.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -7,10 +8,13 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import pt.isec.tp_amov.R
+import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.objects.Categories
 import pt.isec.tp_amov.objects.Product
 import pt.isec.tp_amov.objects.UnitsMeasure
+import java.io.Serializable
 
 
 /**
@@ -19,16 +23,21 @@ import pt.isec.tp_amov.objects.UnitsMeasure
 class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     lateinit var spCategory: Spinner
     lateinit var spUnit: Spinner
+    lateinit var type: String
+    var id = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_product)
-
-        supportActionBar?.title = getString(R.string.titleAddProd) + " " + intent.getStringExtra("ListName")
+        id = intent.getIntExtra("id", -1)
+        type = intent.getStringExtra("type")!!
+        //Verify if the ID is valid
+        if(id == -1){
+            finish()
+        }
 
         spCategory = findViewById(R.id.spinnerCat)
         spUnit = findViewById(R.id.spinnerUnit)
-
         //create array adapter for the spinner
         ArrayAdapter.createFromResource(this, R.array.category_array, android.R.layout.simple_spinner_item).also { adapter -> adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             // Apply the adapter to the spinner
@@ -44,6 +53,16 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_new_product, menu)
+        if(type == "create"){
+            supportActionBar?.title = getString(R.string.titleAddProdList) + " " + Model.getListById(id)?.name
+            menu!!.getItem(0).isVisible = true
+            menu!!.getItem(1).isVisible = false
+        }
+        else{
+            supportActionBar?.title = getString(R.string.titleEditProdList) + " " + Model.getListById(id)?.name
+            menu!!.getItem(0).isVisible = false
+            menu!!.getItem(1).isVisible = true
+        }
         return true
     }
 
@@ -73,18 +92,10 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             }
 
             //TODO - the id is temporary - find a better way
-            val product = Product(0, name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), notes, null)
-            returnProduct(product)
+            Model.addProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), notes, null, id)
+            finish()
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun returnProduct(product: Product) {
-        /*val returnIntent = Intent().apply {
-            putExtra("Product", product as Serializable)
-        }
-        setResult(RESULT_OK, returnIntent)
-        finish()*/
     }
 
     private fun getCategory(): Categories { //Not ideal strings

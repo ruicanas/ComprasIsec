@@ -1,33 +1,43 @@
 package pt.isec.tp_amov.activities
 
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
+import android.widget.ListView
 import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
 import pt.isec.tp_amov.R
+import pt.isec.tp_amov.model.Model
+import pt.isec.tp_amov.adapters.ShoppingListAdapter
+import pt.isec.tp_amov.objects.ShoppingList
 
 class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
+    private var allLists = ArrayList<ShoppingList>()
+    lateinit var lvList: ListView
+    lateinit var adapter: ShoppingListAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         pressAddListBtn()
 
-//        findViewById<TextView>(R.id.lvMainList).apply {
-//
-//        }
+        lvList = findViewById(R.id.lvMainList)
+        onOpenList(lvList)
+        adapter = ShoppingListAdapter(allLists)
+        lvList.adapter = adapter
     }
 
     override fun onResume() {
         super.onResume()
-//        findViewById<TextView>(R.id.lvMainList).apply {
-//
-//        }
+        allLists.clear()
+        val slChosen = Model.getAllLists()
+        for(list in slChosen){
+            allLists.add(list)
+        }
+        adapter.notifyDataSetChanged()
     }
 
     /**
@@ -66,18 +76,28 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     }
 
     private fun createDialog(){
-        val builder = AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(this)     //Construct the builder
         val inflater = this.layoutInflater
-        val viewLayout : View = inflater.inflate(R.layout.dialog_ask_list_name, null)
-        val editText = viewLayout.findViewById<EditText>(R.id.listNameDlg)
+        val viewLayout : View = inflater.inflate(R.layout.dialog_ask_list_name, null)  //The layout we want to inflate
+        val editText = viewLayout.findViewById<EditText>(R.id.listNameDlg)                  //Before entering the .sets of the builder we will save our textView
         builder.setView(viewLayout)
         builder.setPositiveButton(getString(R.string.create_list_btn)) { dialog, id ->
             val intent = Intent(this, ShowListActivity::class.java)
-            val listName = editText.text.toString()
-            intent.putExtra("listName", listName)
+            val listName = editText.text.toString()     //After the user write a name, this name will be save on listName
+            //Create the list at this moment
+            intent.putExtra("id", Model.addList(listName)) //And then, the listName, will be sent to the next activity.
             startActivity(intent)
         }
         builder.setNegativeButton(getString(R.string.cancel_btn)) { dialog, id -> dialog.dismiss() }
         builder.show()
+    }
+
+    fun onOpenList(listView: ListView) {
+        listView.setOnItemClickListener { parent, view, position, id ->
+            val sL: ShoppingList = adapter.getItem(position) as ShoppingList    //It was changed
+            val intent = Intent(this, ShowListActivity::class.java)
+            intent.putExtra("id", sL.id)
+            startActivity(intent)
+        }
     }
 }

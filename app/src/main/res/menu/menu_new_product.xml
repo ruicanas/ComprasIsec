@@ -3,7 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/newProdCheck"
         android:icon="@drawable/ic_new_item_check"
-        android:title="@string/titleAddProd"
+        android:title="@string/titleAddProdList"
+        app:showAsAction="ifRoom"
+        />
+    <item android:id="@+id/editProdCheck"
+        android:icon="@drawable/ic_baseline_edit_24"
+        android:title="@string/titleEditProdList"
         app:showAsAction="ifRoom"
         />
 </menu>
