@@ -55,12 +55,12 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     private fun fillOptions() {
         val sL = Model.getListById(listId)
         findViewById<EditText>(R.id.edProductName).setText(sL!!.returnProduct(prodId)!!.name)
-        findViewById<EditText>(R.id.edBrand).setText(sL!!.returnProduct(prodId)!!.brand)
-        findViewById<EditText>(R.id.edPrice).setText(sL!!.returnProduct(prodId)!!.price.toString())
-        findViewById<EditText>(R.id.edNotes).setText(sL!!.returnProduct(prodId)!!.notes)
-        findViewById<EditText>(R.id.edQuantity).setText(sL!!.returnProduct(prodId)!!.amount.toString())
-        setCategory(sL!!.returnProduct(prodId)!!.category)
-        setUnit(sL!!.returnProduct(prodId)!!.units)
+        findViewById<EditText>(R.id.edBrand).setText(sL.returnProduct(prodId)!!.brand)
+        findViewById<EditText>(R.id.edPrice).setText(sL.returnProduct(prodId)!!.price.toString())
+        findViewById<EditText>(R.id.edNotes).setText(sL.returnProduct(prodId)!!.notes)
+        findViewById<EditText>(R.id.edQuantity).setText(sL.returnProduct(prodId)!!.amount.toString())
+        setCategory(sL.returnProduct(prodId)!!.category)
+        setUnit(sL.returnProduct(prodId)!!.units)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -68,12 +68,12 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         if(type == "create"){
             supportActionBar?.title = getString(R.string.titleAddProdList) + " " + Model.getListById(listId)?.name
             menu!!.getItem(0).isVisible = true
-            menu!!.getItem(1).isVisible = false
+            menu.getItem(1).isVisible = false
         }
         else{
             supportActionBar?.title = getString(R.string.titleEditProdList) + " " + Model.getListById(listId)?.name
             menu!!.getItem(0).isVisible = false
-            menu!!.getItem(1).isVisible = true
+            menu.getItem(1).isVisible = true
         }
         return true
     }
@@ -82,7 +82,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         if(item.itemId == R.id.newProdCheck) {
             val name: String = findViewById<EditText>(R.id.edProductName).text.toString()
             val brand: String = findViewById<EditText>(R.id.edBrand).text.toString()
-            var price: String = findViewById<EditText>(R.id.edPrice).text.toString()
+            val price: String = findViewById<EditText>(R.id.edPrice).text.toString()
             val notes: String = findViewById<EditText>(R.id.edNotes).text.toString()
             val quantity: String = findViewById<EditText>(R.id.edQuantity).text.toString()
 
@@ -172,9 +172,9 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
 
     override fun onNothingSelected(parent: AdapterView<*>?) {}
 
-    fun onIncQuantity(view: View) {
-        var editText: EditText = findViewById(R.id.edQuantity)
-        var text: String = editText.text.toString()
+    fun onIncQuantity() {
+        val editText: EditText = findViewById(R.id.edQuantity)
+        val text: String = editText.text.toString()
         try {
             var num: Int = text.toInt()
             num += 1
@@ -191,9 +191,9 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         }
     }
 
-    fun onDecQuantity(view: View) {
-        var editText: EditText = findViewById(R.id.edQuantity)
-        var text: String = editText.text.toString()
+    fun onDecQuantity() {
+        val editText: EditText = findViewById(R.id.edQuantity)
+        val text: String = editText.text.toString()
         try {
             var num: Int = text.toInt()
             if (num - 1 <= 0)
