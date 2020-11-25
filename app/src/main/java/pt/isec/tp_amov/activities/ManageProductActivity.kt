@@ -105,7 +105,9 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         }
 
         if(item.itemId == R.id.editProdCheck){
-            //todo
+
+
+            finish()
         }
         return super.onOptionsItemSelected(item)
     }
