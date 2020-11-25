@@ -25,7 +25,16 @@ data class ShoppingList (var name: String, val id: Int) {
         Log.i("RemoveProduct","Failed trying to remove product")
     }
 
+    fun returnProduct(id: Int) : Product?{
+        for (i in productList){
+            if(i.id == id) {
+                return i
+            }
+        }
+        return null
+    }
+
     override fun toString(): String {
-        return name
+        return productList.toString()
     }
 }

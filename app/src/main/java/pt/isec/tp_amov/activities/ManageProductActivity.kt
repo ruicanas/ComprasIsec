@@ -1,20 +1,15 @@
 package pt.isec.tp_amov.activities
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
 import pt.isec.tp_amov.R
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.objects.Categories
-import pt.isec.tp_amov.objects.Product
 import pt.isec.tp_amov.objects.UnitsMeasure
-import java.io.Serializable
 
 
 /**
@@ -24,15 +19,17 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     lateinit var spCategory: Spinner
     lateinit var spUnit: Spinner
     lateinit var type: String
-    var id = -1
+    var listId = -1
+    var prodId = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_product)
-        id = intent.getIntExtra("id", -1)
+        listId = intent.getIntExtra("listId", -1)
+        prodId = intent.getIntExtra("productId", -1)
         type = intent.getStringExtra("type")!!
         //Verify if the ID is valid
-        if(id == -1){
+        if(listId == -1){
             finish()
         }
 
@@ -49,17 +46,31 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             // Apply the adapter to the spinner
             spUnit.adapter = adapter
         }
+        if(prodId != -1){
+            fillOptions()
+        }
+    }
+
+    private fun fillOptions() {
+        val sL = Model.getListById(listId)
+        findViewById<EditText>(R.id.edProductName).setText(sL!!.returnProduct(prodId)!!.name)
+        findViewById<EditText>(R.id.edBrand).setText(sL!!.returnProduct(prodId)!!.brand)
+        findViewById<EditText>(R.id.edPrice).setText(sL!!.returnProduct(prodId)!!.price.toString())
+        findViewById<EditText>(R.id.edNotes).setText(sL!!.returnProduct(prodId)!!.notes)
+        findViewById<EditText>(R.id.edAmount).setText(sL!!.returnProduct(prodId)!!.amount.toString())
+        setCategory(sL!!.returnProduct(prodId)!!.category)
+        setUnit(sL!!.returnProduct(prodId)!!.units)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_new_product, menu)
         if(type == "create"){
-            supportActionBar?.title = getString(R.string.titleAddProdList) + " " + Model.getListById(id)?.name
+            supportActionBar?.title = getString(R.string.titleAddProdList) + " " + Model.getListById(listId)?.name
             menu!!.getItem(0).isVisible = true
             menu!!.getItem(1).isVisible = false
         }
         else{
-            supportActionBar?.title = getString(R.string.titleEditProdList) + " " + Model.getListById(id)?.name
+            supportActionBar?.title = getString(R.string.titleEditProdList) + " " + Model.getListById(listId)?.name
             menu!!.getItem(0).isVisible = false
             menu!!.getItem(1).isVisible = true
         }
@@ -78,8 +89,12 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
                 price = "0.0"
 
             //TODO - the id is temporary - find a better way
-            Model.addProduct(name, brand, price.toDouble(), amount.toDouble(), getUnit(), getCategory(), notes, null, id)
+            Model.addProduct(name, brand, price.toDouble(), amount.toDouble(), getUnit(), getCategory(), notes, null, listId)
             finish()
+        }
+
+        if(item.itemId == R.id.editProdCheck){
+
         }
         return super.onOptionsItemSelected(item)
     }
@@ -108,6 +123,35 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         if (prompt == getString(R.string.liter))
             return UnitsMeasure.LITERS
         return UnitsMeasure.UNITS
+    }
+
+    /**
+     * NOT SETTING!
+     */
+    private fun setCategory(category: Categories){ //Not ideal strings
+        var counter = 0
+        for(i in Categories.values()){
+            if(i == category){
+                spCategory.setSelection(counter, true)
+                break
+            }
+            counter++
+        }
+        spCategory.adapter
+    }
+
+    /**
+     * NOT SETTING!
+     */
+    private fun setUnit(unit: UnitsMeasure){
+        var counter = 0
+        for(i in UnitsMeasure.values()){
+            if(i == unit){
+                spCategory.setSelection(counter, true)
+                break
+            }
+            counter++
+        }
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

@@ -11,6 +11,7 @@ import pt.isec.tp_amov.R
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.objects.Product
 import pt.isec.tp_amov.adapters.ProductListAdapter
+import pt.isec.tp_amov.objects.ShoppingList
 
 class ShowListActivity : AppCompatActivity() {
     private var productList = ArrayList<Product>()
@@ -24,7 +25,7 @@ class ShowListActivity : AppCompatActivity() {
         lvList = findViewById(R.id.lvProductList)
         onOpenProduct(lvList)
 
-        id = intent.getIntExtra("id", -1)
+        id = intent.getIntExtra("listId", -1)
         //Verify if the ID is valid
         if(id == -1){
             finish()
@@ -58,7 +59,7 @@ class ShowListActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.addProd){
             val intent = Intent(this, ManageProductActivity::class.java)
-            intent.putExtra("id", id)
+            intent.putExtra("listId", id)
             intent.putExtra("type", "create")
             startActivity(intent)
             return true
@@ -68,8 +69,10 @@ class ShowListActivity : AppCompatActivity() {
 
     fun onOpenProduct(listView: ListView) {
         listView.setOnItemClickListener { parent, view, position, id ->
+            val prod: Product = adapter.getItem(position) as Product    //It was changed
             val intent = Intent(this, ManageProductActivity::class.java)
-            intent.putExtra("id", this.id)
+            intent.putExtra("listId", this.id)
+            intent.putExtra("productId", prod.id)
             intent.putExtra("type", "edit")
             startActivity(intent)
         }

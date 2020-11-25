@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             val intent = Intent(this, ShowListActivity::class.java)
             val listName = editText.text.toString()     //After the user write a name, this name will be save on listName
             //Create the list at this moment
-            intent.putExtra("id", Model.addList(listName)) //And then, the listName, will be sent to the next activity.
+            intent.putExtra("listId", Model.addList(listName)) //And then, the listName, will be sent to the next activity.
             startActivity(intent)
         }
         builder.setNegativeButton("Cancel") { dialog, id -> dialog.dismiss() }
@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         listView.setOnItemClickListener { parent, view, position, id ->
             val sL: ShoppingList = adapter.getItem(position) as ShoppingList    //It was changed
             val intent = Intent(this, ShowListActivity::class.java)
-            intent.putExtra("id", sL.id)
+            intent.putExtra("listId", sL.id)
             startActivity(intent)
         }
     }
