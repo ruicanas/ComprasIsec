@@ -59,6 +59,7 @@ class ShowListActivity : AppCompatActivity() {
         if(item.itemId == R.id.addProd){
             val intent = Intent(this, ManageProductActivity::class.java)
             intent.putExtra("id", id)
+            intent.putExtra("type", "create")
             startActivity(intent)
             return true
         }
@@ -67,9 +68,8 @@ class ShowListActivity : AppCompatActivity() {
 
     fun onOpenProduct(listView: ListView) {
         listView.setOnItemClickListener { parent, view, position, id ->
-            val sL = adapter.getItem(position)
-            val intent = Intent(this, ShowListActivity::class.java)
-            intent.putExtra("id", 1)
+            val intent = Intent(this, ManageProductActivity::class.java)
+            intent.putExtra("id", this.id)
             intent.putExtra("type", "edit")
             startActivity(intent)
         }

@@ -16,7 +16,8 @@
     <string name="tProducts">Products:</string>
     <string name="titleRemoveIcon">removeProd</string>
     <string name="tileEditIcon">editProd</string>
-    <string name="titleAddProd">Add product to</string>
+    <string name="titleAddProdList">Add product to</string>
+    <string name="titleEditProdList">Edit product of list </string>
     <string name="product_category">Category</string>
     <string name="product_price">Unit Price</string>
     <string name="new_product">New Product</string>

@@ -22,7 +22,7 @@ class ShoppingListAdapter(var shoppingLists: ArrayList<ShoppingList>): BaseAdapt
         return view
     }
 
-    override fun getItem(position: Int): ShoppingList {
+    override fun getItem(position: Int): Any {
         return shoppingLists[position]
     }
 

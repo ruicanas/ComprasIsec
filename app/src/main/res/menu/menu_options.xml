@@ -11,7 +11,7 @@
             app:showAsAction="ifRoom"/>
         <item android:id="@+id/addProd"
             android:icon="@drawable/ic_baseline_add_24"
-            android:title="@string/titleAddProd"
+            android:title="@string/titleAddProdList"
             app:showAsAction="ifRoom"/>
 </menu>
 

@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     fun onOpenList(listView: ListView) {
         listView.setOnItemClickListener { parent, view, position, id ->
-            val sL = adapter.getItem(position)
+            val sL: ShoppingList = adapter.getItem(position) as ShoppingList    //It was changed
             val intent = Intent(this, ShowListActivity::class.java)
             intent.putExtra("id", sL.id)
             startActivity(intent)

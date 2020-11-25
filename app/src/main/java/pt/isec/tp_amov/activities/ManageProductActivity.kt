@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import pt.isec.tp_amov.R
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.objects.Categories
@@ -22,17 +23,18 @@ import java.io.Serializable
 class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     lateinit var spCategory: Spinner
     lateinit var spUnit: Spinner
+    lateinit var type: String
     var id = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_product)
         id = intent.getIntExtra("id", -1)
+        type = intent.getStringExtra("type")!!
         //Verify if the ID is valid
         if(id == -1){
             finish()
         }
-        supportActionBar?.title = getString(R.string.titleAddProd) + " " + Model.getListById(id)?.name
 
         spCategory = findViewById(R.id.spinnerCat)
         spUnit = findViewById(R.id.spinnerUnit)
@@ -51,6 +53,16 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_new_product, menu)
+        if(type == "create"){
+            supportActionBar?.title = getString(R.string.titleAddProdList) + " " + Model.getListById(id)?.name
+            menu!!.getItem(0).isVisible = true
+            menu!!.getItem(1).isVisible = false
+        }
+        else{
+            supportActionBar?.title = getString(R.string.titleEditProdList) + " " + Model.getListById(id)?.name
+            menu!!.getItem(0).isVisible = false
+            menu!!.getItem(1).isVisible = true
+        }
         return true
     }
 
