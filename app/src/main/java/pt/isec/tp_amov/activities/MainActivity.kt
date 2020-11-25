@@ -65,19 +65,19 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         return false
     }
 
-    fun createDialog(){
+    private fun createDialog(){
         val builder = AlertDialog.Builder(this)
         val inflater = this.layoutInflater
         val viewLayout : View = inflater.inflate(R.layout.dialog_ask_list_name, null)
         val editText = viewLayout.findViewById<EditText>(R.id.listNameDlg)
         builder.setView(viewLayout)
-        builder.setPositiveButton("Create List") { dialog, id ->
+        builder.setPositiveButton(getString(R.string.create_list_btn)) { dialog, id ->
             val intent = Intent(this, ShowListActivity::class.java)
             val listName = editText.text.toString()
             intent.putExtra("listName", listName)
             startActivity(intent)
         }
-        builder.setNegativeButton("Cancel") { dialog, id -> dialog.dismiss() }
+        builder.setNegativeButton(getString(R.string.cancel_btn)) { dialog, id -> dialog.dismiss() }
         builder.show()
     }
 }

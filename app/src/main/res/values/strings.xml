@@ -34,4 +34,10 @@
     <string name="grams">Grams</string>
     <string name="liter">Liter</string>
     <string name="boxes">Boxes</string>
+    <string name="no_product_name">No product name specified</string>
+    <string name="no_product_brand">No product brand specified</string>
+    <string name="no_product_price">No product price specified</string>
+    <string name="no_product_quantity">No product quantity specified</string>
+    <string name="create_list_btn">Create List</string>
+    <string name="cancel_btn">Cancel</string>
 </resources>

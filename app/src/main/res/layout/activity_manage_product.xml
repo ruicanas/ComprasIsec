@@ -70,23 +70,25 @@
                 >
 
                 <ImageButton
+                    android:id="@+id/incQuantityBtn"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
-
+                    android:onClick="onIncQuantity"
                     android:background="@drawable/ic_add_quantity_product"
                     />
                 <ImageButton
+                    android:id="@+id/decQuantityBtn"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
-
+                    android:onClick="onDecQuantity"
                     android:background="@drawable/ic_rem_quantity_product"
                 />
             </LinearLayout>
 
             <EditText
-                android:id="@+id/edAmount"
+                android:id="@+id/edQuantity"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="10dp"
