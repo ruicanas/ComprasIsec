@@ -90,15 +90,11 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
                 Toast.makeText(applicationContext, getString(R.string.no_product_name), Toast.LENGTH_LONG).show()
                 return false
             }
-            if (brand.isEmpty()) {
-                Toast.makeText(applicationContext, getString(R.string.no_product_brand), Toast.LENGTH_LONG).show()
-                return false
-            }
             if (price.isEmpty()) {
                 Toast.makeText(applicationContext, getString(R.string.no_product_price), Toast.LENGTH_LONG).show()
                 return false
             }
-            if (quantity == "0") {
+            if (quantity == "0") { //TODO - prevent zero (better way)
                 Toast.makeText(applicationContext, getString(R.string.no_product_quantity), Toast.LENGTH_LONG).show()
                 return false
             }
@@ -175,31 +171,46 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     override fun onNothingSelected(parent: AdapterView<*>?) {}
 
     fun onIncQuantity(view: View) {
+        var editText: EditText = findViewById(R.id.edQuantity)
+        var text: String = editText.text.toString()
         try {
-            var editText: EditText = findViewById(R.id.edQuantity)
-            var text: String = editText.text.toString()
             var num: Int = text.toInt()
             num += 1
             editText.setText(num.toString())
-            Log.i("onQuantity: ", num.toString())
-        } catch (nfe: NumberFormatException) {
-            Log.i("onQuantity catch ", "inc")
-            nfe.toString()
+
+            Log.i("onQuantityInc int: ", num.toString())
+        }
+        catch (nfe: NumberFormatException) {
+            var num: Double = text.toDouble()
+            num += 1.0
+            editText.setText(num.toString())
+
+            Log.i("onQuantityInc double: ", num.toString())
         }
     }
+
     fun onDecQuantity(view: View) {
+        var editText: EditText = findViewById(R.id.edQuantity)
+        var text: String = editText.text.toString()
         try {
-            var editText: EditText = findViewById(R.id.edQuantity)
-            var text: String = editText.text.toString()
             var num: Int = text.toInt()
             if (num - 1 <= 0)
-                return
-            num -= 1
+                num = 0
+            else
+                num -= 1
             editText.setText(num.toString())
-            Log.i("onQuantity: ", num.toString())
-        } catch (nfe: NumberFormatException) {
-            Log.i("onQuantity catch ", "dec")
-            nfe.toString()
+
+            Log.i("onQuantityDec int: ", num.toString())
+        }
+        catch (nfe: NumberFormatException) {
+            var num: Double = text.toDouble()
+            if (num - 1.0 <= 0.0)
+                num = 0.0
+            else
+                num -= 1.0
+            editText.setText(num.toString())
+
+            Log.i("onQuantityDec double: ", num.toString())
         }
     }
 }

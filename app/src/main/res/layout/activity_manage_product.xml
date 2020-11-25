@@ -43,6 +43,7 @@
             android:textSize="18sp"
             android:maxLines="1"
             android:layout_marginBottom="8sp"
+            android:hint="@string/optional_field"
             />
         <TextView
             android:layout_width="match_parent"
@@ -157,12 +158,20 @@
 
         </LinearLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/product_notes"
+            android:textSize="16sp"
+            android:paddingVertical="5sp"
+            />
+
         <EditText
             android:inputType="textCapSentences"
             android:id="@+id/edNotes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/product_notes"
+            android:hint="@string/optional_field"
             android:textSize="18sp"
             android:maxLines="1"
             android:paddingVertical="10sp"
