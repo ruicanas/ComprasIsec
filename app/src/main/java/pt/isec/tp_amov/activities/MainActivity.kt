@@ -81,14 +81,14 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         val viewLayout : View = inflater.inflate(R.layout.dialog_ask_list_name, null)  //The layout we want to inflate
         val editText = viewLayout.findViewById<EditText>(R.id.listNameDlg)                  //Before entering the .sets of the builder we will save our textView
         builder.setView(viewLayout)
-        builder.setPositiveButton("Create List") { dialog, id ->
+        builder.setPositiveButton(getString(R.string.create_list_btn)) { dialog, id ->
             val intent = Intent(this, ShowListActivity::class.java)
             val listName = editText.text.toString()     //After the user write a name, this name will be save on listName
             //Create the list at this moment
             intent.putExtra("listId", Model.addList(listName)) //And then, the listName, will be sent to the next activity.
             startActivity(intent)
         }
-        builder.setNegativeButton("Cancel") { dialog, id -> dialog.dismiss() }
+        builder.setNegativeButton(getString(R.string.cancel_btn)) { dialog, id -> dialog.dismiss() }
         builder.show()
     }
 
