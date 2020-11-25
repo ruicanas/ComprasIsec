@@ -195,6 +195,8 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             var editText: EditText = findViewById(R.id.edQuantity)
             var text: String = editText.text.toString()
             var num: Int = text.toInt()
+            if (num - 1 <= 0)
+                return
             num -= 1
             editText.setText(num.toString())
             Log.i("onQuantity: ", num.toString())
