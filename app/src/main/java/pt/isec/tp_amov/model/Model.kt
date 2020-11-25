@@ -1,12 +1,9 @@
 package pt.isec.tp_amov.model
 
-import pt.isec.tp_amov.objects.Categories
-import pt.isec.tp_amov.objects.Product
-import pt.isec.tp_amov.objects.ShoppingList
-import pt.isec.tp_amov.objects.UnitsMeasure
+import pt.isec.tp_amov.objects.*
 
 object Model{
-    private val allProducts: ShoppingList = ShoppingList("allProducts", 0)
+    private val allProducts: MutableList<DataProduct> = ArrayList()
     private val allLists: MutableList<ShoppingList> = ArrayList()
     private var idList = 0
     private val idListCounter: Int
@@ -51,12 +48,52 @@ object Model{
     fun addProduct(name: String, brand: String, price: Double, amount: Double,
                    unit: UnitsMeasure, category: Categories, notes: String, img: String?, listId: Int): Boolean{
         val prod = Product( idProductsCounter, name, brand, price, amount, unit, category, notes, img)
-        if(!allProducts.productExists(prod)){
-            allProducts.addProduct(prod)
+        val dataProd = DataProduct(name, category)
+        if(!allProducts.contains(dataProd)){
+            allProducts.add(dataProd)
+        }
+        else{
+            incrementProdUsed(name, category)
         }
         val shopList = searchForList(listId) ?: return false
         shopList.addProduct(prod)
         return true
+    }
+
+    fun updateDataBase(oldName: String, oldCategory: Categories,
+                       newName: String, newCategory: Categories){
+        handleOldData(oldName, oldCategory)
+        handleNewData(newName, newCategory)
+    }
+
+    private fun incrementProdUsed(name: String, category: Categories) {
+        for(dP in allProducts){
+            if(dP.name == name && dP.category == category){
+                dP.nTimesUsed++
+                break
+            }
+        }
+    }
+
+    private fun handleNewData(newName: String, newCategory: Categories) {
+        val dataProd = DataProduct(newName, newCategory)
+        if(!allProducts.contains(dataProd)){
+            allProducts.add(dataProd)
+        }else{
+            incrementProdUsed(dataProd.name, dataProd.category)
+        }
+
+    }
+
+    private fun handleOldData(oldName: String, oldCategory: Categories) {
+        for(dP in allProducts){
+            if(dP.name == oldName && dP.category == oldCategory){
+                dP.nTimesUsed--
+                if(dP.nTimesUsed == 0){
+                    allProducts.remove(dP)
+                }
+            }
+        }
     }
 
     fun addList(name: String) : Int{

@@ -105,8 +105,23 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         }
 
         if(item.itemId == R.id.editProdCheck){
+            val name: String = findViewById<EditText>(R.id.edProductName).text.toString()
+            val brand: String = findViewById<EditText>(R.id.edBrand).text.toString()
+            var price: String = findViewById<EditText>(R.id.edPrice).text.toString()
+            val notes: String = findViewById<EditText>(R.id.edNotes).text.toString()
+            val quantity: String = findViewById<EditText>(R.id.edQuantity).text.toString()
 
+            val prod = Model.getListById(listId)?.returnProduct(prodId)
 
+            if(prod!!.name != name){
+                //If the name of the product changed and the product doesn't exist in the database, adds the product to the "database" and to the list
+                //We cant forget to update the database, because we got one item that is not being used anymore
+                Model.updateDataBase(prod.name, prod.category, name, getCategory())
+                prod.editProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), notes)
+            }else {
+                //If the product is in the database and it was modified, we're just going to modify our product
+                prod.editProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), notes)
+            }
             finish()
         }
         return super.onOptionsItemSelected(item)
