@@ -44,4 +44,5 @@
     <string name="no_product_quantity">No product quantity specified</string>
     <string name="create_list_btn">Create List</string>
     <string name="cancel_btn">Cancel</string>
+    <string name="optional_field">Optional</string>
 </resources>
