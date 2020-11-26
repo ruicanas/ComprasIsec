@@ -1,7 +1,11 @@
 package pt.isec.tp_amov.objects
 
+import android.graphics.Bitmap
+
 data class Product (var id: Int, var name: String, var brand: String, var price: Double, var amount:Double,
                     var units: UnitsMeasure, var category: Categories, var notes: String, var image: String?){
+
+    lateinit var photo: Bitmap
 
     fun productExists(name: String, brand:String, price: Double, amount: Double,
                         units: UnitsMeasure, category: Categories, notes: String): Boolean {
@@ -20,5 +24,9 @@ data class Product (var id: Int, var name: String, var brand: String, var price:
         this.units = units
         this.category = category
         this.notes = notes
+    }
+
+    fun addPhoto(bitmap: Bitmap) {
+        photo = bitmap
     }
 }

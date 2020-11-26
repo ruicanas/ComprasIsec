@@ -1,5 +1,6 @@
 package pt.isec.tp_amov.model
 
+import android.graphics.Bitmap
 import pt.isec.tp_amov.objects.*
 
 object Model{
@@ -100,6 +101,9 @@ object Model{
         val shopList = ShoppingList(name, idListCounter)
         allLists.add(shopList)
         return idList
+    }
+
+    fun addPhoto(bitmap: Bitmap, name: String) {
     }
 
     fun debugAllListsAsString() : String{

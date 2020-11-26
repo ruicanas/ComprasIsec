@@ -6,8 +6,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.StrictMode
 import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
@@ -22,6 +24,7 @@ import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.objects.Categories
 import pt.isec.tp_amov.objects.UnitsMeasure
 import java.io.File
+import java.lang.reflect.Method
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -211,14 +214,14 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             num += 1
             editText.setText(num.toString())
 
-            Log.i("onQuantityInc int: ", num.toString())
+            Log.i("onQuantityInc int", num.toString())
         }
         catch (nfe: NumberFormatException) {
             var num: Double = text.toDouble()
             num += 1.0
             editText.setText(num.toString())
 
-            Log.i("onQuantityInc double: ", num.toString())
+            Log.i("onQuantityInc double", num.toString())
         }
     }
 
@@ -252,11 +255,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
         else
-            Toast.makeText(applicationContext, "Camera permission already granted", Toast.LENGTH_LONG).show()
-
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        //code 1 is gallery access
-        startActivityForResult(takePictureIntent, 1)
+            Log.i("Permissions", "Camera permission already granted")
     }
 
     fun onOpenGalley(view: View) {
@@ -266,24 +265,32 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), GALLERY_PERMISSION_CODE)
         }
         else
-            Toast.makeText(applicationContext, "Permission already granted", Toast.LENGTH_LONG).show()
-
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        //code 2 is gallery access
-        startActivityForResult(intent, 2)
+            Log.i("Permissions", "Galley permission already granted")
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == CAMERA_PERMISSION_CODE) { //CAMERA PERMISSION ACCESS
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permission Granted!", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Permission Denied!", Toast.LENGTH_SHORT).show();
+                Log.i("Permissions", "Camera permission granted")
+
+                val intent = Intent(Intent.ACTION_PICK)
+                intent.type = "image/*"
+                //code 2 is gallery access
+                startActivityForResult(intent, 2)
             }
+            else
+                Log.i("Permissions", "Camera permission denied")
         }
         else if (requestCode == GALLERY_PERMISSION_CODE) { //GALLERY PERMISSION ACCESS
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.i("Permissions", "Gallery permission granted")
 
+                val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                //code 1 is gallery access
+                startActivityForResult(takePictureIntent, 1)
+            }
+            else
+                Log.i("Permissions", "Gallery permission denied")
         }
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -291,7 +298,6 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
 
     private lateinit var filePath : String
 
-    //TODO - put this is activity
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val image: ImageView = findViewById(R.id.productImageView)
 
