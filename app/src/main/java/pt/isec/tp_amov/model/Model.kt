@@ -47,7 +47,7 @@ object Model{
     }
 
     fun addProduct(name: String, brand: String, price: Double, amount: Double,
-                   unit: UnitsMeasure, category: Categories, notes: String, img: String?, listId: Int): Boolean{
+                   unit: UnitsMeasure, category: Categories, notes: String, img: Bitmap?, listId: Int): Boolean{
         val prod = Product( idProductsCounter, name, brand, price, amount, unit, category, notes, img)
         val dataProd = DataProduct(name, category)
         if(!allProducts.contains(dataProd)){

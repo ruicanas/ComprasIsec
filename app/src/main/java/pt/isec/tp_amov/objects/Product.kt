@@ -3,7 +3,7 @@ package pt.isec.tp_amov.objects
 import android.graphics.Bitmap
 
 data class Product (var id: Int, var name: String, var brand: String, var price: Double, var amount:Double,
-                    var units: UnitsMeasure, var category: Categories, var notes: String, var image: String?){
+                    var units: UnitsMeasure, var category: Categories, var notes: String, var image: Bitmap?){
 
     lateinit var photo: Bitmap
 

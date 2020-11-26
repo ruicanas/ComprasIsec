@@ -6,10 +6,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Build
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Environment
-import android.os.StrictMode
 import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
@@ -24,7 +23,6 @@ import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.objects.Categories
 import pt.isec.tp_amov.objects.UnitsMeasure
 import java.io.File
-import java.lang.reflect.Method
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -104,6 +102,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             val price: String = findViewById<EditText>(R.id.edPrice).text.toString()
             val notes: String = findViewById<EditText>(R.id.edNotes).text.toString()
             val quantity: String = findViewById<EditText>(R.id.edQuantity).text.toString()
+            val image: ImageView = findViewById(R.id.productImageView)
 
             if (name.isEmpty()) {
                 Toast.makeText(applicationContext, getString(R.string.no_product_name), Toast.LENGTH_LONG).show()
@@ -118,8 +117,12 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
                 return false
             }
 
+            image.invalidate()
+            val bitmapDrawable: BitmapDrawable = image.drawable as BitmapDrawable
+            val bitmap = bitmapDrawable.bitmap
+
             //TODO - the id is temporary - find a better way
-            Model.addProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), notes, null, listId)
+            Model.addProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), notes, bitmap, listId)
             finish()
         }
 
@@ -254,8 +257,13 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         //Ask for camera permissions
         if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
-        else
+        else {
             Log.i("Permissions", "Camera permission already granted")
+
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            //code 1 is gallery access
+            startActivityForResult(takePictureIntent, 1)
+        }
     }
 
     fun onOpenGalley(view: View) {
@@ -264,8 +272,14 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), GALLERY_PERMISSION_CODE)
         }
-        else
+        else {
             Log.i("Permissions", "Galley permission already granted")
+
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            //code 2 is gallery access
+            startActivityForResult(intent, 2)
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
