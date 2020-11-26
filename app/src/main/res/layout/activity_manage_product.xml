@@ -14,80 +14,74 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingBottom="8sp"
-        >
+        android:paddingBottom="8sp">
 
         <EditText
-            android:inputType="textCapSentences"
             android:id="@+id/edProductName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/product_name"
-            android:textSize="20sp"
-            android:maxLines="1"
-            android:backgroundTint="@color/primaryColor"
             android:layout_marginBottom="7sp"
-            />
+            android:backgroundTint="@color/primaryColor"
+            android:hint="@string/product_name"
+            android:inputType="textCapSentences"
+            android:maxLines="1"
+            android:textSize="20sp" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/product_brand"
-            android:textSize="16sp"
             android:paddingTop="5sp"
-            />
+            android:text="@string/product_brand"
+            android:textSize="16sp" />
+
         <EditText
-            android:inputType="textCapSentences"
             android:id="@+id/edBrand"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:maxLines="1"
             android:layout_marginBottom="8sp"
             android:hint="@string/optional_field"
-            />
+            android:inputType="textCapSentences"
+            android:maxLines="1"
+            android:textSize="18sp" />
 
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/product_quantity"
-            android:textSize="16sp"
             android:paddingTop="5sp"
-            />
+            android:text="@string/product_quantity"
+            android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginBottom="8sp"
             android:gravity="center_vertical"
-            >
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="20sp"
-                android:orientation="horizontal"
                 android:backgroundTint="@color/secondaryColor"
                 android:gravity="center_vertical"
-                >
+                android:orientation="horizontal">
 
                 <ImageButton
                     android:id="@+id/incQuantityBtn"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
-                    android:onClick="onIncQuantity"
                     android:background="@drawable/ic_add_quantity_product"
-                    />
+                    android:onClick="onIncQuantity" />
+
                 <ImageButton
                     android:id="@+id/decQuantityBtn"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
-                    android:onClick="onDecQuantity"
                     android:background="@drawable/ic_rem_quantity_product"
-                />
+                    android:onClick="onDecQuantity" />
             </LinearLayout>
 
             <EditText
@@ -95,85 +89,78 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="10dp"
-                android:textSize="17sp"
-                android:maxLines="1"
                 android:inputType="numberDecimal"
-                android:text="1"
+                android:maxLines="1"
                 android:paddingHorizontal="10dp"
-                />
+                android:text="1"
+                android:textSize="17sp" />
 
             <Spinner
                 android:id="@+id/spinnerUnit"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:spinnerMode="dropdown"
-                />
+                android:spinnerMode="dropdown" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.4"
-                android:orientation="vertical"
-                >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/product_category"
-                android:textSize="16sp"
-                android:paddingTop="5sp"
-                />
+                android:orientation="vertical">
 
-            <Spinner
-                android:id="@+id/spinnerCat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:spinnerMode="dropdown"
-                android:paddingVertical="15sp"
-                android:layout_marginBottom="8sp"
-                />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5sp"
+                    android:text="@string/product_category"
+                    android:textSize="16sp" />
+
+                <Spinner
+                    android:id="@+id/spinnerCat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8sp"
+                    android:paddingVertical="15sp"
+                    android:spinnerMode="dropdown" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_weight="0.8"
-                >
+                android:orientation="vertical">
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/product_price"
-                    android:textSize="16sp"
                     android:paddingTop="5sp"
-                />
+                    android:text="@string/product_price"
+                    android:textSize="16sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
+                    android:layout_height="wrap_content">
 
                     <EditText
                         android:id="@+id/edPrice"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:inputType="numberDecimal"
-                        android:textSize="17sp"
                         android:hint="0.00"
-                        />
+                        android:inputType="numberDecimal"
+                        android:textSize="17sp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:text="€"
                         android:paddingHorizontal="5sp"
-                        />
+                        android:text="€" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -182,65 +169,60 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/product_notes"
-            android:textSize="16sp"
             android:paddingTop="5sp"
-            />
+            android:text="@string/product_notes"
+            android:textSize="16sp" />
 
         <EditText
-            android:inputType="textCapSentences"
             android:id="@+id/edNotes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/optional_field"
-            android:textSize="18sp"
+            android:inputType="textCapSentences"
             android:maxLines="1"
             android:paddingVertical="10sp"
             android:paddingBottom="8sp"
-            />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/product_photo"
-            android:textSize="16sp"
             android:paddingTop="5sp"
-            />
+            android:text="@string/product_photo"
+            android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingHorizontal="10dp"
-            android:paddingVertical="2dp"
-            >
+            android:paddingVertical="2dp">
+
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginEnd="22dp"
-                android:textAllCaps="false"
-                android:text="@string/from_camera_btn"
+                android:layout_weight="1"
                 android:onClick="onOpenCamera"
-                />
+                android:text="@string/from_camera_btn"
+                android:textAllCaps="false" />
+
             <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textAllCaps="false"
-                android:text="@string/from_gallery_btn"
                 android:onClick="onOpenGalley"
-                />
+                android:text="@string/from_gallery_btn"
+                android:textAllCaps="false" />
 
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/productImageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="10dp"
             android:layout_gravity="center_horizontal"
-            android:id="@+id/productImageView"
-            />
+            android:layout_marginVertical="10dp" />
 
     </LinearLayout>
 </LinearLayout>
