@@ -3,9 +3,10 @@ package pt.isec.tp_amov.objects
 import android.graphics.Bitmap
 
 data class Product (var id: Int, var name: String, var brand: String, var price: Double, var amount:Double,
-                    var units: UnitsMeasure, var category: Categories, var notes: String, var image: Bitmap?){
-
+                    var units: UnitsMeasure, var category: Categories, var notes: String, var image: Bitmap?)
+    :Comparable<Product>{
     lateinit var photo: Bitmap
+    var prodChecked = false
 
     fun productExists(name: String, brand:String, price: Double, amount: Double,
                         units: UnitsMeasure, category: Categories, notes: String): Boolean {
@@ -28,5 +29,15 @@ data class Product (var id: Int, var name: String, var brand: String, var price:
 
     fun addPhoto(bitmap: Bitmap) {
         photo = bitmap
+    }
+
+    override fun compareTo(other: Product): Int {
+        if(name > other.name){
+            return 1
+        }
+        else if(name < other.name){
+            return -1
+        }
+        return 0
     }
 }

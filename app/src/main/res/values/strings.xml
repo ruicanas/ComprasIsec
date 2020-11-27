@@ -50,4 +50,7 @@
     <string name="from_camera_btn">From Camera</string>
     <string name="delete_dlg">Delete</string>
     <string name="remove_item_description_dlg">Remove </string>
+    <string name="tByName">Order by name</string>
+    <string name="tProdsBought">Order by products bought</string>
+    <string name="tOrderByCat">Order by category</string>
 </resources>

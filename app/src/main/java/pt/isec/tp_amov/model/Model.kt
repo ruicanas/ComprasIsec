@@ -19,7 +19,6 @@ object Model{
             return idProducts
         }
 
-
     private fun searchForList(id: Int) : ShoppingList?{
         for(list in allLists){
             if(list.id == id){
@@ -97,7 +96,7 @@ object Model{
 
     }
 
-    private fun handleOldData(oldName: String, oldCategory: Categories) {
+    private fun handleOldData(oldName: String, oldCategory: Categories){
         for(dP in allProducts){
             if(dP.name == oldName && dP.category == oldCategory){
                 dP.nTimesUsed--

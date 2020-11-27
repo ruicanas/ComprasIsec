@@ -26,6 +26,9 @@ class ProductListAdapter(var products: ArrayList<Product>): BaseAdapter() {
         val layoutInflater = LayoutInflater.from(parent!!.context)
         val view = layoutInflater.inflate(R.layout.layout_product_list, parent, false)
 
+//        val checkBox = view.findViewById<TextView>(R.id.cbItems)
+//        checkBox.
+
         val p = position+1
         val pos = view.findViewById<TextView>(R.id.productPos)
         pos.text = "$p"

@@ -20,6 +20,8 @@ import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.objects.Product
 import pt.isec.tp_amov.adapters.ProductListAdapter
 import pt.isec.tp_amov.objects.ShoppingList
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ShowListActivity : AppCompatActivity() {
     private var productList = ArrayList<Product>()
@@ -69,14 +71,38 @@ class ShowListActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.addProd){
-            val intent = Intent(this, ManageProductActivity::class.java)
-            intent.putExtra("listId", id)
-            intent.putExtra("type", "create")
-            startActivity(intent)
-            return true
+        when (item.itemId) {
+            R.id.addProd -> {
+                val intent = Intent(this, ManageProductActivity::class.java)
+                intent.putExtra("listId", id)
+                intent.putExtra("type", "create")
+                startActivity(intent)
+                return true
+            }
+            R.id.orderName -> {
+                orderByName()
+            }
+            R.id.orderProdsBought -> {
+                orderByProdsBought()
+            }
+            else -> {
+                orderByCategory()
+            }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun orderByCategory() {
+
+    }
+
+    private fun orderByProdsBought() {
+
+    }
+
+    private fun orderByName() {
+        productList.sort()
+        adapter.notifyDataSetChanged()
     }
 
     @SuppressLint("SetTextI18n")
@@ -96,7 +122,7 @@ class ShowListActivity : AppCompatActivity() {
         builder.show()
     }
 
-    fun onOpenProduct(listView: ListView) {
+    private fun onOpenProduct(listView: ListView) {
         listView.setOnItemClickListener { parent, view, position, id ->
             val prod: Product = adapter.getItem(position) as Product    //It was changed
             val intent = Intent(this, ManageProductActivity::class.java)
@@ -105,11 +131,14 @@ class ShowListActivity : AppCompatActivity() {
             intent.putExtra("type", "edit")
             startActivity(intent)
         }
-
         listView.setOnItemLongClickListener { parent, view, position, id ->
             val prod: Product = adapter.getItem(position) as Product    //It was changed
             removeItemDlg(prod)
             true
         }
+    }
+
+    fun onCheckBox(view: View) {
+        Toast.makeText(applicationContext, "Testing checkbox", Toast.LENGTH_LONG).show()
     }
 }
