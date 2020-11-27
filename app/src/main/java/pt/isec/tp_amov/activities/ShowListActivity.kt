@@ -1,12 +1,20 @@
 package pt.isec.tp_amov.activities
 
+import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.app.Dialog
 import android.content.ClipData
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.EditText
 import android.widget.ListView
+import android.widget.TextView
+import android.widget.Toast
 import pt.isec.tp_amov.R
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.objects.Product
@@ -40,6 +48,10 @@ class ShowListActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        updateListView()
+    }
+
+    private fun updateListView() {
         productList.clear()
         //Add the elements to the vector
         val slChosen = Model.getListById(id)?.productList
@@ -67,6 +79,23 @@ class ShowListActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    @SuppressLint("SetTextI18n")
+    private fun removeItemDlg(prod: Product){
+        val builder = AlertDialog.Builder(this)     //Construct the builder
+        val inflater = this.layoutInflater
+        val viewLayout : View = inflater.inflate(R.layout.dialog_remove_item, null)  //The layout we want to inflate
+        viewLayout.findViewById<TextView>(R.id.tvRemoveItemDlg).text = "Remove ${prod.name}?"
+        builder.setView(viewLayout)
+        builder.setPositiveButton(getString(R.string.delete_dlg)) {dialog, id ->
+            Model.removeDataBase(prod.name, prod.category)
+            val slChosen = Model.getListById(this.id)
+            slChosen?.removeProduct(prod.id)
+            updateListView()
+        }
+        builder.setNegativeButton(getString(R.string.cancel_btn)) { dialog, id -> dialog.dismiss() }
+        builder.show()
+    }
+
     fun onOpenProduct(listView: ListView) {
         listView.setOnItemClickListener { parent, view, position, id ->
             val prod: Product = adapter.getItem(position) as Product    //It was changed
@@ -75,6 +104,12 @@ class ShowListActivity : AppCompatActivity() {
             intent.putExtra("productId", prod.id)
             intent.putExtra("type", "edit")
             startActivity(intent)
+        }
+
+        listView.setOnItemLongClickListener { parent, view, position, id ->
+            val prod: Product = adapter.getItem(position) as Product    //It was changed
+            removeItemDlg(prod)
+            true
         }
     }
 }

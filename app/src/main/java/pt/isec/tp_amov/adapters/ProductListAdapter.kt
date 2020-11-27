@@ -24,7 +24,7 @@ class ProductListAdapter(var products: ArrayList<Product>): BaseAdapter() {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val layoutInflater = LayoutInflater.from(parent!!.context)
-        val view = layoutInflater.inflate(R.layout.product_list_layout, parent, false)
+        val view = layoutInflater.inflate(R.layout.layout_product_list, parent, false)
 
         val p = position+1
         val pos = view.findViewById<TextView>(R.id.productPos)

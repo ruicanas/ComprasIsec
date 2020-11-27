@@ -10,10 +10,12 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ListView
 import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import pt.isec.tp_amov.R
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.adapters.ShoppingListAdapter
+import pt.isec.tp_amov.objects.Product
 import pt.isec.tp_amov.objects.ShoppingList
 import java.lang.reflect.Method
 
@@ -42,8 +44,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         lvList.adapter = adapter
     }
 
-    override fun onResume() {
-        super.onResume()
+    private fun updateListView() {
         allLists.clear()
         val slChosen = Model.getAllLists()
         for(list in slChosen){
@@ -51,6 +52,12 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
         adapter.notifyDataSetChanged()
     }
+
+    override fun onResume() {
+        super.onResume()
+        updateListView()
+    }
+
 
     /**
      * This method will show the popup menu, and will set a listener
@@ -104,12 +111,33 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         builder.show()
     }
 
+    private fun removeListDlg(sL: ShoppingList){
+        val builder = AlertDialog.Builder(this)     //Construct the builder
+        val inflater = this.layoutInflater
+        val viewLayout : View = inflater.inflate(R.layout.dialog_remove_item, null)  //The layout we want to inflate
+        viewLayout.findViewById<TextView>(R.id.tvRemoveItemDlg).text = "Remove ${sL.name}?"
+        builder.setView(viewLayout)
+        builder.setPositiveButton(getString(R.string.delete_dlg)) {dialog, id ->
+            Model.removeListDataBase(sL)
+            sL.removeAll()
+            updateListView()
+        }
+        builder.setNegativeButton(getString(R.string.cancel_btn)) { dialog, id -> dialog.dismiss() }
+        builder.show()
+    }
+
     fun onOpenList(listView: ListView) {
         listView.setOnItemClickListener { parent, view, position, id ->
             val sL: ShoppingList = adapter.getItem(position) as ShoppingList    //It was changed
             val intent = Intent(this, ShowListActivity::class.java)
             intent.putExtra("listId", sL.id)
             startActivity(intent)
+        }
+
+        listView.setOnItemLongClickListener { parent, view, position, id ->
+            val sL: ShoppingList = adapter.getItem(position) as ShoppingList    //It was changed
+            removeListDlg(sL)
+            true
         }
     }
 }

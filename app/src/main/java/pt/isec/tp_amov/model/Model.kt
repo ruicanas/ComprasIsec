@@ -46,8 +46,8 @@ object Model{
         return allLists
     }
 
-    fun addProduct(name: String, brand: String, price: Double, amount: Double,
-                   unit: UnitsMeasure, category: Categories, notes: String, img: Bitmap?, listId: Int): Boolean{
+    fun receiveProduct(name: String, brand: String, price: Double, amount: Double,
+                       unit: UnitsMeasure, category: Categories, notes: String, img: Bitmap?, listId: Int): Boolean{
         val prod = Product( idProductsCounter, name, brand, price, amount, unit, category, notes, img)
         val dataProd = DataProduct(name, category)
         if(!allProducts.contains(dataProd)){
@@ -65,6 +65,17 @@ object Model{
                        newName: String, newCategory: Categories){
         handleOldData(oldName, oldCategory)
         handleNewData(newName, newCategory)
+    }
+
+    fun removeDataBase(oldName: String, oldCategory: Categories){
+        handleOldData(oldName, oldCategory)
+    }
+
+    fun removeListDataBase(shoppingList: ShoppingList) {
+        for(p in shoppingList.productList){
+            removeDataBase(p.name, p.category)
+        }
+        allLists.remove(shoppingList)
     }
 
     private fun incrementProdUsed(name: String, category: Categories) {
@@ -93,6 +104,7 @@ object Model{
                 if(dP.nTimesUsed == 0){
                     allProducts.remove(dP)
                 }
+                break
             }
         }
     }
@@ -113,4 +125,6 @@ object Model{
     fun debugAllProductsAsString() : String{
         return allProducts.toString()
     }
+
+
 }

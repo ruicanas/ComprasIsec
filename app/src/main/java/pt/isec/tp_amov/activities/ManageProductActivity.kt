@@ -37,6 +37,9 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     private var listId = -1
     private var prodId = -1
 
+    /**
+     * Camera vals
+     */
     private val CAMERA_PERMISSION_CODE = 101
     private val GALLERY_PERMISSION_CODE = 102
 
@@ -80,6 +83,58 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         setUnit(sL.returnProduct(prodId)!!.units)
     }
 
+    //Handle the spinners information
+    private fun getCategory(): Categories { //Not ideal strings
+        val prompt = spCategory.selectedItem.toString()
+        if (prompt == getString(R.string.fruit_vegetables))
+            return Categories.FRUIT_VEGETABLES
+        if (prompt == getString(R.string.dairy))
+            return Categories.DAIRY
+        if (prompt == getString(R.string.fat))
+            return Categories.FAT
+        if (prompt == getString(R.string.protein))
+            return Categories.PROTEIN
+        return Categories.STARCHY_FOOD
+    }
+
+    private fun getUnit(): UnitsMeasure {
+        val prompt = spUnit.selectedItem.toString()
+        if (prompt == getString(R.string.boxes))
+            return UnitsMeasure.BOXES
+        if (prompt == getString(R.string.kg))
+            return UnitsMeasure.KG
+        if (prompt == getString(R.string.grams))
+            return UnitsMeasure.GRAMS
+        if (prompt == getString(R.string.liter))
+            return UnitsMeasure.LITERS
+        return UnitsMeasure.UNITS
+    }
+
+    private fun setCategory(category: Categories){ //Not ideal strings
+        var counter = 0
+        for(i in Categories.values()){
+            if(i == category){
+                spCategory.setSelection(counter)
+                spCategory.invalidate()
+                break
+            }
+            counter++
+        }
+    }
+
+    private fun setUnit(unit: UnitsMeasure){
+        var counter = 0
+        for(i in UnitsMeasure.values()){
+            if(i == unit){
+                spUnit.setSelection(counter)
+                spUnit.invalidate()
+                break
+            }
+            counter++
+        }
+    }
+
+    //Create the option on the menu
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_new_product, menu)
         if(type == "create"){
@@ -95,6 +150,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         return true
     }
 
+    //Will handle the items clicked by the user on the menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.newProdCheck) {
             val name: String = findViewById<EditText>(R.id.edProductName).text.toString()
@@ -122,7 +178,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             val bitmap = bitmapDrawable.bitmap
 
             //TODO - the id is temporary - find a better way
-            Model.addProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), notes, bitmap, listId)
+            Model.receiveProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), notes, bitmap, listId)
             finish()
         }
 
@@ -132,8 +188,20 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             var price: String = findViewById<EditText>(R.id.edPrice).text.toString()
             val notes: String = findViewById<EditText>(R.id.edNotes).text.toString()
             val quantity: String = findViewById<EditText>(R.id.edQuantity).text.toString()
-
             val prod = Model.getListById(listId)?.returnProduct(prodId)
+
+            if (name.isEmpty()) {
+                Toast.makeText(applicationContext, getString(R.string.no_product_name), Toast.LENGTH_LONG).show()
+                return false
+            }
+            if (price.isEmpty()) {
+                Toast.makeText(applicationContext, getString(R.string.no_product_price), Toast.LENGTH_LONG).show()
+                return false
+            }
+            if (quantity == "0") { //TODO - prevent zero (better way)
+                Toast.makeText(applicationContext, getString(R.string.no_product_quantity), Toast.LENGTH_LONG).show()
+                return false
+            }
 
             if(prod!!.name != name){
                 //If the name of the product changed and the product doesn't exist in the database, adds the product to the "database" and to the list
@@ -149,58 +217,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         return super.onOptionsItemSelected(item)
     }
 
-    private fun getCategory(): Categories { //Not ideal strings
-        val prompt = spCategory.selectedItem.toString()
-        if (prompt == getString(R.string.fruit_vegetables))
-            return Categories.FRUIT_VEGETABLES
-        if (prompt == getString(R.string.dairy))
-            return Categories.DAIRY
-        if (prompt == getString(R.string.fat))
-            return Categories.FAT
-        if (prompt == getString(R.string.protein))
-            return Categories.PROTEIN
-        return Categories.STARCHY_FOOD
-    }
-
-    private fun getUnit(): UnitsMeasure {
-        val prompt = spUnit.selectedItem.toString()
-        if (prompt == getString(R.string.boxes))
-            return UnitsMeasure.BOXES
-        if (prompt == getString(R.string.kg))
-            return UnitsMeasure.KG
-        if (prompt == getString(R.string.grams))
-            return UnitsMeasure.GRAMS
-        if (prompt == getString(R.string.liter))
-            return UnitsMeasure.LITERS
-        return UnitsMeasure.UNITS
-    }
-
-
-    private fun setCategory(category: Categories){ //Not ideal strings
-        var counter = 0
-        for(i in Categories.values()){
-            if(i == category){
-                spCategory.setSelection(counter)
-                spCategory.invalidate()
-                break
-            }
-            counter++
-        }
-    }
-
-
-    private fun setUnit(unit: UnitsMeasure){
-        var counter = 0
-        for(i in UnitsMeasure.values()){
-            if(i == unit){
-                spUnit.setSelection(counter)
-                spUnit.invalidate()
-                break
-            }
-            counter++
-        }
-    }
-
+    //Will handle spinners
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         //setup listener for on spinner item selected
         val spinner: Spinner = findViewById(R.id.spinnerCat)
@@ -209,6 +226,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
 
     override fun onNothingSelected(parent: AdapterView<*>?) {}
 
+    //Will increment the amount of a product
     fun onIncQuantity(view: View) {
         val editText: EditText = findViewById(R.id.edQuantity)
         val text: String = editText.text.toString()
@@ -228,6 +246,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         }
     }
 
+    //Will decrement the amount of a product
     fun onDecQuantity(view: View) {
         val editText: EditText = findViewById(R.id.edQuantity)
         val text: String = editText.text.toString()

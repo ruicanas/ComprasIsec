@@ -11,7 +11,7 @@ import pt.isec.tp_amov.objects.ShoppingList
 class ShoppingListAdapter(var shoppingLists: ArrayList<ShoppingList>): BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val layoutInflater = LayoutInflater.from(parent!!.context)  //Gabriel?
-        val view = layoutInflater.inflate(R.layout.main_list_layout, parent, false)
+        val view = layoutInflater.inflate(R.layout.layout_main_list, parent, false)
 
         val name = view.findViewById<TextView>(R.id.tvListName)
         name.text = shoppingLists[position].name
