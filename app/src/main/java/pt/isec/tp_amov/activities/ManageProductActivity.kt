@@ -332,7 +332,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     private lateinit var filePath : String
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val image: ImageView = findViewById(R.id.productImageView)
+        var image: ImageView = findViewById(R.id.productImageView)
 
         if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) { //Camera Access
             if (data.extras == null)
@@ -378,4 +378,6 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             currentPhotoPath = absolutePath
         }
     }
+
+
 }
