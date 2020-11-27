@@ -174,10 +174,14 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             }
 
             image.invalidate()
-            val bitmapDrawable: BitmapDrawable = image.drawable as BitmapDrawable
-            val bitmap = bitmapDrawable.bitmap
 
-            //TODO - the id is temporary - find a better way
+            var bitmap: Bitmap? = try {
+                val bitmapDrawable: BitmapDrawable = image.drawable as BitmapDrawable
+                bitmapDrawable.bitmap
+            } catch (e: TypeCastException) {
+                null
+            }
+
             Model.receiveProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), notes, bitmap, listId)
             finish()
         }
