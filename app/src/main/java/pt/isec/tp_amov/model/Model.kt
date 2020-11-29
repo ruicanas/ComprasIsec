@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import pt.isec.tp_amov.objects.*
 
 object Model{
-    private val allProducts: MutableList<DataProduct> = ArrayList()
+    val allProducts: MutableList<DataProduct> = ArrayList()
     private val allLists: MutableList<ShoppingList> = ArrayList()
     private var idList = 0
     private val idListCounter: Int
@@ -124,6 +124,4 @@ object Model{
     fun debugAllProductsAsString() : String{
         return allProducts.toString()
     }
-
-
 }

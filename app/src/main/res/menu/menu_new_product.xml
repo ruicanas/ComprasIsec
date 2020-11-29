@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/newProdCheck"
-        android:icon="@drawable/ic_new_item_check"
+        android:icon="@drawable/ic_baseline_check_24"
         android:title="@string/titleAddProdList"
         app:showAsAction="ifRoom"
         />

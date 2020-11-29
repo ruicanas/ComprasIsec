@@ -17,13 +17,14 @@
         android:roundIcon="@mipmap/app_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.TP_AMOV">
+        <activity android:name=".activities.SearchProductActivity"
+            android:label="Search a product">
+        </activity>
         <activity android:name=".activities.ManageProductActivity">
-
         </activity>
         <activity
             android:name=".activities.ShowListActivity"
             android:label="@string/labelNewList">
-
         </activity>
         <activity android:name=".activities.MainActivity">
             <intent-filter>

@@ -2,26 +2,22 @@ package pt.isec.tp_amov.activities
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.app.Dialog
-import android.content.ClipData
-import android.content.DialogInterface
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.*
+import android.widget.CheckBox
+import android.widget.ListView
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import pt.isec.tp_amov.R
-import pt.isec.tp_amov.model.Model
-import pt.isec.tp_amov.objects.Product
 import pt.isec.tp_amov.adapters.ProductListAdapter
 import pt.isec.tp_amov.comparators.ComparatorBought
 import pt.isec.tp_amov.comparators.ComparatorCategory
 import pt.isec.tp_amov.comparators.ComparatorName
-import pt.isec.tp_amov.objects.ShoppingList
-import java.util.*
-import kotlin.collections.ArrayList
+import pt.isec.tp_amov.model.Model
+import pt.isec.tp_amov.objects.Product
 
 class ShowListActivity : AppCompatActivity() {
     private var productList = ArrayList<Product>()
@@ -72,6 +68,11 @@ class ShowListActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.searchProd ->{
+                val intent = Intent(this, SearchProductActivity::class.java)
+                startActivity(intent)
+                return true
+            }
             R.id.addProd -> {
                 val intent = Intent(this, ManageProductActivity::class.java)
                 intent.putExtra("listId", id)
@@ -81,15 +82,17 @@ class ShowListActivity : AppCompatActivity() {
             }
             R.id.orderName -> {
                 orderByName()
+                return true
             }
             R.id.orderProdsBought -> {
                 orderByProdsBought()
+                return true
             }
             else -> {
                 orderByCategory()
+                return true
             }
         }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun orderByCategory() {

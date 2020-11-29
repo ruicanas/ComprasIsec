@@ -16,6 +16,7 @@ data class ShoppingList (var name: String, val id: Int) {
             if(i.id == ID) {
                 productList.remove(i)
                 Log.i("RemoveProduct","One product as been removed")
+                return
             }
         }
         Log.i("RemoveProduct","Failed trying to remove product")
