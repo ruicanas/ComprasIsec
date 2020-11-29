@@ -93,6 +93,7 @@ class ShowListActivity : AppCompatActivity() {
                 return true
             }
         }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun orderByCategory() {
