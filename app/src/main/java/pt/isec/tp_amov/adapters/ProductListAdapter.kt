@@ -30,10 +30,6 @@ class ProductListAdapter(var products: ArrayList<Product>): BaseAdapter() {
 //        val checkBox = view.findViewById<TextView>(R.id.cbItems)
 //        checkBox.
 
-        val p = position+1
-        val pos = view.findViewById<TextView>(R.id.productPos)
-        pos.text = "$p"
-
         val name = view.findViewById<TextView>(R.id.productName)
         name.text = products[position].name
 

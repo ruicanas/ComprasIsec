@@ -47,6 +47,13 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     private fun updateListView() {
         allLists.clear()
         val slChosen = Model.getAllLists()
+
+        var empty = findViewById<TextView>(R.id.emptyPlaceholderList)
+        if (slChosen.size == 0)
+            empty.text = getString(R.string.no_lists)
+        else
+            empty.text = ""
+
         for(list in slChosen){
             allLists.add(list)
         }

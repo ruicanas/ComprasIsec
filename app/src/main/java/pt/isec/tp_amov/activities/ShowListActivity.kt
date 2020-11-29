@@ -12,6 +12,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import org.w3c.dom.Text
 import pt.isec.tp_amov.R
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.objects.Product
@@ -58,6 +59,12 @@ class ShowListActivity : AppCompatActivity() {
         //Add the elements to the vector
         val slChosen = Model.getListById(id)?.productList
         if(slChosen != null) {
+            var empty = findViewById<TextView>(R.id.emptyPlaceholderProd)
+            if (slChosen.size == 0)
+                empty.text = getString(R.string.no_products)
+            else
+                empty.text = ""
+
             for(prod in slChosen){
                 productList.add(prod)
             }

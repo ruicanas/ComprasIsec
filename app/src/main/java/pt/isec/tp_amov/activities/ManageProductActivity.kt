@@ -40,8 +40,10 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     /**
      * Camera vals
      */
-    private val CAMERA_PERMISSION_CODE = 101
-    private val GALLERY_PERMISSION_CODE = 102
+    private val cameraPermissionCode = 101
+    private val galleryPermissionCode = 102
+    private val cameraIntentCode = 11
+    private val galleryIntentCode = 12
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -168,12 +170,10 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
                 Toast.makeText(applicationContext, getString(R.string.no_product_price), Toast.LENGTH_LONG).show()
                 return false
             }
-            if (quantity == "0") { //TODO - prevent zero (better way)
+            if (quantity == "0") { //TODO - prevent zero (find better way)
                 Toast.makeText(applicationContext, getString(R.string.no_product_quantity), Toast.LENGTH_LONG).show()
                 return false
             }
-
-            image.invalidate()
 
             var bitmap: Bitmap? = try {
                 val bitmapDrawable: BitmapDrawable = image.drawable as BitmapDrawable
@@ -181,6 +181,8 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             } catch (e: TypeCastException) {
                 null
             }
+
+            image.invalidate()
 
             Model.receiveProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), notes, bitmap, listId)
             finish()
@@ -279,13 +281,13 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     fun onOpenCamera(view: View) {
         //Ask for camera permissions
         if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), cameraPermissionCode)
         else {
             Log.i("Permissions", "Camera permission already granted")
 
-            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             //code 1 is gallery access
-            startActivityForResult(takePictureIntent, 1)
+            startActivityForResult(takePicture, cameraIntentCode)
         }
     }
 
@@ -293,37 +295,38 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         //Ask for storage permissions
         if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
             ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), GALLERY_PERMISSION_CODE)
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), galleryPermissionCode)
         }
         else {
             Log.i("Permissions", "Galley permission already granted")
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = "image/*"
+
+            val selectPicture = Intent(Intent.ACTION_PICK)
+            selectPicture.type = "image/*"
             //code 2 is gallery access
-            startActivityForResult(intent, 2)
+            startActivityForResult(selectPicture, galleryIntentCode)
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode == CAMERA_PERMISSION_CODE) { //CAMERA PERMISSION ACCESS
+        if (requestCode == cameraPermissionCode) { //CAMERA PERMISSION ACCESS
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.i("Permissions", "Camera permission granted")
 
-                val intent = Intent(Intent.ACTION_PICK)
-                intent.type = "image/*"
-                //code 2 is gallery access
-                startActivityForResult(intent, 2)
+                val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                //code 1 is gallery access
+                startActivityForResult(takePicture, cameraIntentCode)
             }
             else
                 Log.i("Permissions", "Camera permission denied")
         }
-        else if (requestCode == GALLERY_PERMISSION_CODE) { //GALLERY PERMISSION ACCESS
+        else if (requestCode == galleryPermissionCode) { //GALLERY PERMISSION ACCESS
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.i("Permissions", "Gallery permission granted")
 
-                val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                //code 1 is gallery access
-                startActivityForResult(takePictureIntent, 1)
+                val selectPicture = Intent(Intent.ACTION_PICK)
+                selectPicture.type = "image/*"
+                //code 2 is gallery access
+                startActivityForResult(selectPicture, galleryIntentCode)
             }
             else
                 Log.i("Permissions", "Gallery permission denied")
@@ -337,16 +340,15 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         var image: ImageView = findViewById(R.id.productImageView)
 
-        if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) { //Camera Access
+        if (requestCode == cameraIntentCode && resultCode == Activity.RESULT_OK && data != null) { //Camera Access
             if (data.extras == null)
-                Toast.makeText(applicationContext, "No photo", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "Error loading image", Toast.LENGTH_LONG).show()
 
             val bitmap = data.extras?.get("data") as Bitmap
             image.setImageBitmap(bitmap) //set in image bitmap
-
             //saveImage(bitmap);
         }
-        else if (requestCode == 2 && resultCode == Activity.RESULT_OK && data != null) { //Gallery Access
+        else if (requestCode == galleryIntentCode && resultCode == Activity.RESULT_OK && data != null) { //Gallery Access
             var uri = data.data?.apply {
                 val cursor = contentResolver.query(
                         this,
@@ -362,6 +364,8 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
                 //Get the bitmap
                 val bitmap = BitmapFactory.decodeFile(filePath)
                 image.setImageBitmap(bitmap) //set in image bitmap
+
+                //saveImage(bitmap);
             }
             return
         }
