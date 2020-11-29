@@ -11,14 +11,14 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import pt.isec.tp_amov.R
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.objects.Product
 import pt.isec.tp_amov.adapters.ProductListAdapter
+import pt.isec.tp_amov.comparators.ComparatorBought
+import pt.isec.tp_amov.comparators.ComparatorCategory
+import pt.isec.tp_amov.comparators.ComparatorName
 import pt.isec.tp_amov.objects.ShoppingList
 import java.util.*
 import kotlin.collections.ArrayList
@@ -93,15 +93,17 @@ class ShowListActivity : AppCompatActivity() {
     }
 
     private fun orderByCategory() {
-
+        productList.sortWith(ComparatorCategory())
+        adapter.notifyDataSetChanged()
     }
 
     private fun orderByProdsBought() {
-
+        productList.sortWith(ComparatorBought())
+        adapter.notifyDataSetChanged()
     }
 
     private fun orderByName() {
-        productList.sort()
+        productList.sortWith(ComparatorName())
         adapter.notifyDataSetChanged()
     }
 
@@ -139,6 +141,9 @@ class ShowListActivity : AppCompatActivity() {
     }
 
     fun onCheckBox(view: View) {
-        Toast.makeText(applicationContext, "Testing checkbox", Toast.LENGTH_LONG).show()
+        val cbView: CheckBox = view.findViewById(R.id.cbItems)
+        val pos: Int = cbView.tag as Int
+        val prod: Product = adapter.getItem(pos) as Product
+        prod.prodChecked = cbView.isChecked
     }
 }

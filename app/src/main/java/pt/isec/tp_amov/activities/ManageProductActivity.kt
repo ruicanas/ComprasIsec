@@ -297,7 +297,6 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         }
         else {
             Log.i("Permissions", "Galley permission already granted")
-
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             //code 2 is gallery access

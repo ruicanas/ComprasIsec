@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.CheckBox
 import android.widget.TextView
 import pt.isec.tp_amov.R
 import pt.isec.tp_amov.objects.Product
@@ -50,6 +51,11 @@ class ProductListAdapter(var products: ArrayList<Product>): BaseAdapter() {
 
         val unit = view.findViewById<TextView>(R.id.productUnit)
         unit.text = products[position].units.toString()
+
+        val cBox = view.findViewById<CheckBox>(R.id.cbItems)
+        cBox.tag = Integer.valueOf(position);               // set the tag so we can identify the correct row in the listener
+        cBox.isChecked = products[position].prodChecked     // set the status as we stored it~
+
 
         return view
     }
