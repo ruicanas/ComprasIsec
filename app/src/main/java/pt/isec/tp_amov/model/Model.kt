@@ -59,30 +59,36 @@ object Model{
         val dataProd = DataProduct(name, category)
         if(!allProducts.contains(dataProd)){
             allProducts.add(dataProd)
+            if(price > 0){
+                addPriceData(name, category, price)
+            }
         }
         else{
             incrementProdUsed(name, category)
+            if(price > 0){
+                addPriceData(name, category, price)
+            }
         }
         val shopList = searchForList(listId) ?: return false
         shopList.addProduct(prod)
         return true
     }
 
-    fun updateDataBase(oldName: String, oldCategory: Categories,
-                       newName: String, newCategory: Categories){
-        handleOldData(oldName, oldCategory)
-        handleNewData(newName, newCategory)
+    fun updateDataBase(oldName: String, oldCategory: Categories, oldPrice: Double,
+                       newName: String, newCategory: Categories, newPrice: Double){
+        handleOldData(oldName, oldCategory, oldPrice)
+        handleNewData(newName, newCategory, newPrice)
     }
 
-    fun removeDataBase(oldName: String, oldCategory: Categories){
-        handleOldData(oldName, oldCategory)
+    fun removeDataBase(oldName: String, oldCategory: Categories, oldPrice: Double){
+        handleOldData(oldName, oldCategory, oldPrice)
     }
 
     fun removeListDataBase(shoppingList: ShoppingList) {
         val duplicate = copyList(shoppingList)
         archiveList(duplicate)
         for(p in shoppingList.productList){
-            removeDataBase(p.name, p.category)
+            removeDataBase(p.name, p.category, p.price)
         }
         allLists.remove(shoppingList)
     }
@@ -103,22 +109,57 @@ object Model{
         }
     }
 
-    private fun handleNewData(newName: String, newCategory: Categories) {
+    private fun addPriceData(name: String, category: Categories, price: Double){
+        for(dP in allProducts){
+            if(dP.name == name && dP.category == category){
+                if(dP.lastPrices.size < 3){
+                    dP.lastPrices.add(price)
+                }
+                else{
+                    dP.lastPrices.removeAt(0)
+                    dP.lastPrices.add(price)
+                }
+            }
+        }
+    }
+
+    private fun removePriceData(name: String, category: Categories, price: Double){
+        for(dP in allProducts){
+            if(dP.name == name && dP.category == category){
+                dP.lastPrices.remove(price)
+            }
+        }
+    }
+
+    fun getPrices(product: Product): String?{
+        for(dP in allProducts){
+            if(dP.name == product.name && dP.category == product.category){
+                return dP.lastPrices.toString()
+            }
+        }
+        return null
+    }
+
+    private fun handleNewData(newName: String, newCategory: Categories, newPrice: Double) {
         val dataProd = DataProduct(newName, newCategory)
         if(!allProducts.contains(dataProd)){
             allProducts.add(dataProd)
         }else{
             incrementProdUsed(dataProd.name, dataProd.category)
         }
+        if(newPrice > 0){
+            addPriceData(newName, newCategory, newPrice)
+        }
     }
 
-    private fun handleOldData(oldName: String, oldCategory: Categories){
+    private fun handleOldData(oldName: String, oldCategory: Categories, oldPrice: Double){
         for(dP in allProducts){
             if(dP.name == oldName && dP.category == oldCategory){
                 dP.nTimesUsed--
                 if(dP.nTimesUsed == 0){
                     allProducts.remove(dP)
                 }
+                dP.lastPrices.remove(oldPrice)
                 break
             }
         }
@@ -174,5 +215,13 @@ object Model{
 
     fun debugAllProductsAsString() : String{
         return allProducts.toString()
+    }
+
+    fun updateDataPrices(oldName: String, oldCategory: Categories, oldPrice: Double,
+                         newName: String, newCategory: Categories, newPrice: Double){
+        removePriceData(oldName, oldCategory, oldPrice)
+        if(newPrice > 0){
+            addPriceData(newName, newCategory, newPrice)
+        }
     }
 }

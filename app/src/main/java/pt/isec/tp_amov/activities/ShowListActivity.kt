@@ -143,7 +143,7 @@ class ShowListActivity : AppCompatActivity() {
 
         builder.setView(viewLayout)
         builder.setPositiveButton(getString(R.string.delete_dlg)) {dialog, id ->
-            Model.removeDataBase(prod.name, prod.category)
+            Model.removeDataBase(prod.name, prod.category, prod.price)
             val slChosen = Model.getListById(this.id)
             slChosen?.removeProduct(prod.id)
             updateListView()

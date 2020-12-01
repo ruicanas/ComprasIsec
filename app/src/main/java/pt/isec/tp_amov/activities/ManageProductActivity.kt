@@ -215,7 +215,6 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         }
 
         if(item.itemId == R.id.newProdCheck) {
-//            image.invalidate()
             Model.receiveProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), notes, bitmap, listId)
             finish()
         }
@@ -226,11 +225,17 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             if(prod!!.name != name) {
                 //If the name of the product changed and the product doesn't exist in the database, adds the product to the "database" and to the list
                 //We cant forget to update the database, because we got one item that is not being used anymore
-                Model.updateDataBase(prod.name, prod.category, name, getCategory())
+                Model.updateDataBase(prod.name, prod.category, prod.price, name, getCategory(), price.toDouble())
                 prod.editProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), bitmap, notes)
             } else {
                 //If the product is in the database and it was modified, we're just going to modify our product
-                prod.editProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), bitmap, notes)
+                if(prod.price == price.toDouble()) {
+                    prod.editProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), bitmap, notes)
+                }
+                else{
+                    Model.updateDataPrices(prod.name, prod.category, prod.price, name, getCategory(), price.toDouble())
+                    prod.editProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), bitmap, notes)
+                }
             }
             finish()
         }
