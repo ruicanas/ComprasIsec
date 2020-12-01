@@ -2,6 +2,7 @@ package pt.isec.tp_amov.activities
 
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -408,11 +409,50 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         }
     }
 
+    lateinit var newCatName: String
+
     fun onNewCategory(view: View) {
+        val inflater = this.layoutInflater
+        val view: View = inflater.inflate(R.layout.dialog_new_category, null) //The layout to inflate
+        val edCatName = view.findViewById<EditText>(R.id.newUnitName)
+
+        val builder = AlertDialog.Builder(this)
+        builder.setView(view)
+        builder.setCancelable(true)
+        builder.setPositiveButton(getString(R.string.add)) { dialog, id ->
+            dialog.dismiss()
+            newCatName = edCatName.text.toString()
+            addToCategories()
+        }
+        builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, id -> dialog.dismiss() }
+        builder.show()
 
     }
 
+    private fun addToCategories() {
+
+    }
+
+    lateinit var newUnitName: String
+
     fun onNewUnitType(view: View) {
+        val inflater = this.layoutInflater
+        val view: View = inflater.inflate(R.layout.dialog_new_unit, null) //The layout to inflate
+        val edUnitName = view.findViewById<EditText>(R.id.newUnitName)
+
+        val builder = AlertDialog.Builder(this)
+        builder.setView(view)
+        builder.setCancelable(true)
+        builder.setPositiveButton(getString(R.string.add)) { dialog, id ->
+            dialog.dismiss()
+            newUnitName = edUnitName.text.toString()
+            addToUnits()
+        }
+        builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, id -> dialog.dismiss() }
+        builder.show()
+    }
+
+    private fun addToUnits() {
 
     }
 }

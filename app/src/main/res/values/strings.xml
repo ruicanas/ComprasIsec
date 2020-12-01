@@ -72,5 +72,10 @@
     <string name="three_dots">3 Dots</string>
     <string name="default_list_name">List</string>
     <string name="currency">$</string>
+    <string name="new_category">New Category</string>
+    <string name="new_unit">New Unit</string>
+    <string name="insert_unit_name">Insert unit name</string>
+    <string name="insert_category_name">Insert category name</string>
+    <string name="add">Add</string>
 
 </resources>

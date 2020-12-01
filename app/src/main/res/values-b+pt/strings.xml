@@ -72,5 +72,10 @@
     <string name="three_dots">3 Pontos</string>
     <string name="default_list_name">Lista</string>
     <string name="currency">€</string>
+    <string name="new_category">Nova Categoria</string>
+    <string name="new_unit">Nova Unidade</string>
+    <string name="insert_unit_name">Inserir nome da unidade</string>
+    <string name="insert_category_name">Inserir nome da categoria</string>
+    <string name="add">Adicionar</string>
 
 </resources>
