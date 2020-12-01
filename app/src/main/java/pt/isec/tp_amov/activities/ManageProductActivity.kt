@@ -368,5 +368,8 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         }
     }
 
+    fun onNewCategory(view: View) {}
+    fun onNewUnitType(view: View) {}
+
 
 }

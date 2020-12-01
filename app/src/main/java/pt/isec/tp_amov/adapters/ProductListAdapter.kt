@@ -7,6 +7,7 @@ import android.widget.BaseAdapter
 import android.widget.CheckBox
 import android.widget.TextView
 import pt.isec.tp_amov.R
+import pt.isec.tp_amov.objects.Categories
 import pt.isec.tp_amov.objects.Product
 import kotlin.collections.ArrayList
 
@@ -40,15 +41,14 @@ class ProductListAdapter(var products: ArrayList<Product>): BaseAdapter() {
         price.text = products[position].price.toString()
 
         val category = view.findViewById<TextView>(R.id.productCategory)
-        category.text = products[position].category.toString()
+        category.text = products[position].getCategory()
 
         val unit = view.findViewById<TextView>(R.id.productUnit)
-        unit.text = products[position].units.toString()
+        unit.text = products[position].getUnit()
 
         val cBox = view.findViewById<CheckBox>(R.id.cbItems)
         cBox.tag = Integer.valueOf(position);               // set the tag so we can identify the correct row in the listener
         cBox.isChecked = products[position].prodChecked     // set the status as we stored it~
-
 
         return view
     }
