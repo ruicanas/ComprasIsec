@@ -51,6 +51,7 @@
     <string name="tByName">Ordenar por Nome</string>
     <string name="tProdsBought">Ordenar por produtos comprados</string>
     <string name="tOrderByCat">Ordenar por categoria</string>
+    <string name="tSearchProd">Search product</string>
     <string name="no_products">Sem Produtos</string>
     <string name="no_lists">Sem Listas</string>
     <string name="help">Ajuda</string>

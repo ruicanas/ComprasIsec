@@ -52,8 +52,6 @@
     <string name="tProdsBought">Order by products bought</string>
     <string name="tOrderByCat">Order by category</string>
     <string name="tSearchProd">Search product</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="no_products">No Products</string>
     <string name="no_lists">No Lists</string>
     <string name="help">Help</string>
