@@ -42,7 +42,13 @@ class ShowListActivity : AppCompatActivity() {
         if(id == -1){
             finish()
         }
-        supportActionBar?.title = Model.getListById(id)?.name
+
+        if (Model.getListById(id)?.name.isNullOrEmpty()) {
+            supportActionBar?.title = getString(R.string.default_list_name)
+            Model.setDefaultListName(id, getString(R.string.default_list_name))
+        }
+        else
+            supportActionBar?.title = Model.getListById(id)?.name
 
         //Create a list on the Model
         lvList = findViewById(R.id.lvProductList)
@@ -131,7 +137,6 @@ class ShowListActivity : AppCompatActivity() {
         adapter.notifyDataSetChanged()
     }
 
-    @SuppressLint("SetTextI18n")
     private fun removeItemDlg(prod: Product){
         val builder = AlertDialog.Builder(this)     //Construct the builder
         val inflater = this.layoutInflater

@@ -85,6 +85,9 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         else if(type == "reuseData" && dataName != null && dataCat != null){
             fillPartialOpts()
         }
+
+        val currency = findViewById<TextView>(R.id.currency)
+        currency.text = getString(R.string.currency)
     }
 
     private fun fillOptions() {
@@ -405,5 +408,11 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         }
     }
 
+    fun onNewCategory(view: View) {
 
+    }
+
+    fun onNewUnitType(view: View) {
+
+    }
 }

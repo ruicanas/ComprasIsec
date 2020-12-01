@@ -41,10 +41,13 @@ class ProductListAdapter(var products: ArrayList<Product>): BaseAdapter() {
         price.text = products[position].price.toString()
 
         val category = view.findViewById<TextView>(R.id.productCategory)
-        category.text = products[position].category.toString()
+        category.text = products[position].getCategory(parent.context)
 
         val unit = view.findViewById<TextView>(R.id.productUnit)
-        unit.text = products[position].units.toString()
+        unit.text = products[position].getUnit(parent.context)
+
+        val currency = view.findViewById<TextView>(R.id.currency)
+        currency.text = parent.context.getString(R.string.currency)
 
         val lastPrices = view.findViewById<TextView>(R.id.productLastPrices)
         lastPrices.text = Model.getPrices(products[position])
