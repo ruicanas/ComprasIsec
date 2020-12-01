@@ -11,34 +11,33 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingHorizontal="10dp"
-        android:padding="15dp"
+        android:paddingVertical="8dp"
         android:gravity="center_vertical"
         >
         <TextView
-            android:id="@+id/tvListName"
+            android:id="@+id/helpName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/layout_main_name"
-            android:textSize="20sp"
+            android:text="@string/help"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_marginEnd="20dp"
+            android:layout_marginEnd="5dp"
             />
-
-        <TextView
-            android:id="@+id/tvProdNum"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="17sp"
-            android:text="@string/layout_main_number"
-            android:textStyle="italic"
-            android:layout_marginEnd="8dp"
-        />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="17sp"
-            android:text="@string/items"
-            android:textStyle="italic"
+            android:text=" - "
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="5dp"
+            />
+        <TextView
+            android:id="@+id/helpDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="@string/help"
             />
     </LinearLayout>
+
 </LinearLayout>

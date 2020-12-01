@@ -94,6 +94,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         findViewById<EditText>(R.id.edPrice).setText(sL.returnProduct(prodId)!!.price.toString())
         findViewById<EditText>(R.id.edNotes).setText(sL.returnProduct(prodId)!!.notes)
         findViewById<EditText>(R.id.edQuantity).setText(sL.returnProduct(prodId)!!.amount.toString())
+        findViewById<ImageView>(R.id.productImageView).setImageBitmap(sL.returnProduct(prodId)!!.image)
         setCategory(sL.returnProduct(prodId)!!.category)
         setUnit(sL.returnProduct(prodId)!!.units)
     }
@@ -186,69 +187,50 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
 
     //Will handle the items clicked by the user on the menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val name: String = findViewById<EditText>(R.id.edProductName).text.toString()
+        val brand: String = findViewById<EditText>(R.id.edBrand).text.toString()
+        val price: String = findViewById<EditText>(R.id.edPrice).text.toString()
+        val notes: String = findViewById<EditText>(R.id.edNotes).text.toString()
+        val quantity: String = findViewById<EditText>(R.id.edQuantity).text.toString()
+        val image: ImageView = findViewById(R.id.productImageView)
+
+        if (name.isEmpty()) {
+            Toast.makeText(applicationContext, getString(R.string.no_product_name), Toast.LENGTH_LONG).show()
+            return false
+        }
+        if (price.isEmpty()) {
+            Toast.makeText(applicationContext, getString(R.string.no_product_price), Toast.LENGTH_LONG).show()
+            return false
+        }
+        if (quantity == "0") { //TODO - prevent zero (find better way)
+            Toast.makeText(applicationContext, getString(R.string.no_product_quantity), Toast.LENGTH_LONG).show()
+            return false
+        }
+
+        var bitmap: Bitmap? = try {
+            val bitmapDrawable: BitmapDrawable = image.drawable as BitmapDrawable
+            bitmapDrawable.bitmap
+        } catch (e: TypeCastException) {
+            null
+        }
+
         if(item.itemId == R.id.newProdCheck) {
-            val name: String = findViewById<EditText>(R.id.edProductName).text.toString()
-            val brand: String = findViewById<EditText>(R.id.edBrand).text.toString()
-            val price: String = findViewById<EditText>(R.id.edPrice).text.toString()
-            val notes: String = findViewById<EditText>(R.id.edNotes).text.toString()
-            val quantity: String = findViewById<EditText>(R.id.edQuantity).text.toString()
-            val image: ImageView = findViewById(R.id.productImageView)
-
-            if (name.isEmpty()) {
-                Toast.makeText(applicationContext, getString(R.string.no_product_name), Toast.LENGTH_LONG).show()
-                return false
-            }
-            if (price.isEmpty()) {
-                Toast.makeText(applicationContext, getString(R.string.no_product_price), Toast.LENGTH_LONG).show()
-                return false
-            }
-            if (quantity == "0") { //TODO - prevent zero (find better way)
-                Toast.makeText(applicationContext, getString(R.string.no_product_quantity), Toast.LENGTH_LONG).show()
-                return false
-            }
-
-            var bitmap: Bitmap? = try {
-                val bitmapDrawable: BitmapDrawable = image.drawable as BitmapDrawable
-                bitmapDrawable.bitmap
-            } catch (e: TypeCastException) {
-                null
-            }
-
-            image.invalidate()
-
+//            image.invalidate()
             Model.receiveProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), notes, bitmap, listId)
             finish()
         }
 
         if(item.itemId == R.id.editProdCheck){
-            val name: String = findViewById<EditText>(R.id.edProductName).text.toString()
-            val brand: String = findViewById<EditText>(R.id.edBrand).text.toString()
-            var price: String = findViewById<EditText>(R.id.edPrice).text.toString()
-            val notes: String = findViewById<EditText>(R.id.edNotes).text.toString()
-            val quantity: String = findViewById<EditText>(R.id.edQuantity).text.toString()
             val prod = Model.getListById(listId)?.returnProduct(prodId)
 
-            if (name.isEmpty()) {
-                Toast.makeText(applicationContext, getString(R.string.no_product_name), Toast.LENGTH_LONG).show()
-                return false
-            }
-            if (price.isEmpty()) {
-                Toast.makeText(applicationContext, getString(R.string.no_product_price), Toast.LENGTH_LONG).show()
-                return false
-            }
-            if (quantity == "0") { //TODO - prevent zero (better way)
-                Toast.makeText(applicationContext, getString(R.string.no_product_quantity), Toast.LENGTH_LONG).show()
-                return false
-            }
-
-            if(prod!!.name != name){
+            if(prod!!.name != name) {
                 //If the name of the product changed and the product doesn't exist in the database, adds the product to the "database" and to the list
                 //We cant forget to update the database, because we got one item that is not being used anymore
                 Model.updateDataBase(prod.name, prod.category, name, getCategory())
-                prod.editProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), notes)
-            }else {
+                prod.editProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), bitmap, notes)
+            } else {
                 //If the product is in the database and it was modified, we're just going to modify our product
-                prod.editProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), notes)
+                prod.editProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), bitmap, notes)
             }
             finish()
         }
@@ -405,7 +387,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    //needs to be changed
+    //TODO - needs to be changed
     lateinit var currentPhotoPath: String
     private fun saveImage(bitmap: Bitmap): File {
         // Create an image file name

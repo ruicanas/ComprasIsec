@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">ListIsec</string>
-    <string name="tMainTitle">ListIsec</string>
+    <string name="app_name">Shopping List</string>
+    <string name="tMainTitle">Shopping List</string>
     <string name="itemCreate">Create</string>
     <string name="reuse_opt">Reuse List</string>
     <string name="new_opt">Create List</string>
@@ -13,9 +13,11 @@
     <string name="product_quantity">Quantity</string>
     <string name="list_name">List Name</string>
     <string name="hint_list_name">Insert a name</string>
-    <string name="tProducts">Products:</string>
+    <string name="tProducts">Products</string>
+
     <string name="titleRemoveIcon">removeProd</string>
     <string name="tileEditIcon">editProd</string>
+
     <string name="titleAddProdList">Add product to</string>
     <string name="titleEditProdList">Edit product of list </string>
     <string name="product_category">Category</string>
@@ -24,7 +26,6 @@
     <string name="create_list">Create List</string>
     <string name="cancel_list">Cancel</string>
     <string name="description_dlg">Write the name of your list</string>
-
     <string name="fruit_vegetables">Fruit/Vegetables</string>
     <string name="starchy_food">Starchy Food</string>
     <string name="dairy">Dairy</string>
@@ -39,11 +40,8 @@
     <string name="layout_main_number">Number</string>
     <string name="titleEditProd">Edit product</string>
     <string name="no_product_name">No product name specified</string>
-    <string name="no_product_brand">No product brand specified</string>
     <string name="no_product_price">No product price specified</string>
     <string name="no_product_quantity">No product quantity specified</string>
-    <string name="create_list_btn">Create List</string>
-    <string name="cancel_btn">Cancel</string>
     <string name="optional_field">Optional</string>
     <string name="product_photo">Photo</string>
     <string name="from_gallery_btn">From Gallery</string>
@@ -54,6 +52,23 @@
     <string name="tProdsBought">Order by products bought</string>
     <string name="tOrderByCat">Order by category</string>
     <string name="tSearchProd">Search product</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="no_products">No Products</string>
+    <string name="no_lists">No Lists</string>
+    <string name="help">Help</string>
+    <string name="dialog_back">Back</string>
+    <string name="items">Items</string>
+    <string name="plus">Plus</string>
+    <string name="hold">Hold</string>
+    <string name="press">Press</string>
+    <string name="add_new_list">Add a new list</string>
+    <string name="opt_remove_list">Option to remove list</string>
+    <string name="edit_existing_list">To edit existing list</string>
+    <string name="add_new_prod">Add a new product</string>
+    <string name="remove_prod">Option to remove product</string>
+    <string name="edit_prod">To edit existing product</string>
+    <string name="order_prod_list">Order list options</string>
+    <string name="check_bought">Mark as bought</string>
+    <string name="checkbox">Checkbox</string>
+    <string name="three_dots">3 Dots</string>
+
 </resources>

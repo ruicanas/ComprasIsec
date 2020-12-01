@@ -5,6 +5,10 @@
             android:icon="@drawable/ic_baseline_search_24"
             android:title="@string/tSearchProd"
             app:showAsAction="ifRoom"/>
+        <item android:id="@+id/helpProd"
+            android:icon="@drawable/ic_help"
+            android:title="@string/help"
+            app:showAsAction="ifRoom"/>
         <item android:id="@+id/addProd"
             android:icon="@drawable/ic_baseline_add_24"
             android:title="@string/titleAddProdList"
