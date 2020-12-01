@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -21,12 +20,8 @@ import pt.isec.tp_amov.comparators.ComparatorBought
 import pt.isec.tp_amov.comparators.ComparatorCategory
 import pt.isec.tp_amov.comparators.ComparatorName
 import pt.isec.tp_amov.objects.Help
-import pt.isec.tp_amov.objects.ShoppingList
 import java.lang.StringBuilder
-import java.util.*
 import kotlin.collections.ArrayList
-import pt.isec.tp_amov.model.Model
-import pt.isec.tp_amov.objects.Product
 
 class ShowListActivity : AppCompatActivity() {
     private var productList = ArrayList<Product>()
