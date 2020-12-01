@@ -16,7 +16,7 @@ data class Product (var id: Int, var name: String, var brand: String, var price:
     }
 
     fun editProduct(name: String, brand:String, price: Double, amount: Double,
-                    units: UnitsMeasure, category: Categories, notes: String){
+                    units: UnitsMeasure, category: Categories, photo: Bitmap?, notes: String){
         this.name = name
         this.brand = brand
         this.price = price
@@ -24,6 +24,8 @@ data class Product (var id: Int, var name: String, var brand: String, var price:
         this.units = units
         this.category = category
         this.notes = notes
+        if (photo != null)
+            this.photo = photo
     }
 
     fun addPhoto(bitmap: Bitmap) {
