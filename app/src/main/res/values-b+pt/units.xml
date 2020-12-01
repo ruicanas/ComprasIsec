@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="unit_array">
+        <item>Unidades</item>
+        <item>Kg</item>
+        <item>Gramas</item>
+        <item>Litros</item>
+        <item>Embalagens</item>
+    </string-array>
+</resources>

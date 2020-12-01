@@ -1,9 +1,12 @@
 package pt.isec.tp_amov.model
 
 import android.graphics.Bitmap
+import android.util.Log
+import android.widget.Toast
 import pt.isec.tp_amov.objects.*
 
 object Model{
+    private val archivedLists: MutableList<ShoppingList> = ArrayList()
     private val allProducts: MutableList<DataProduct> = ArrayList()
     private val allLists: MutableList<ShoppingList> = ArrayList()
     private var idList = 0
@@ -18,6 +21,7 @@ object Model{
             ++idProducts
             return idProducts
         }
+    private val maxArchivedLists = 10
 
     private fun searchForList(id: Int) : ShoppingList?{
         for(list in allLists){
@@ -43,6 +47,10 @@ object Model{
 
     fun getAllLists() : MutableList<ShoppingList>{
         return allLists
+    }
+
+    fun getOldLists(): MutableList<ShoppingList> {
+        return archivedLists
     }
 
     fun receiveProduct(name: String, brand: String, price: Double, amount: Double,
@@ -71,10 +79,19 @@ object Model{
     }
 
     fun removeListDataBase(shoppingList: ShoppingList) {
+        val duplicate = copyList(shoppingList)
+        archiveList(duplicate)
         for(p in shoppingList.productList){
             removeDataBase(p.name, p.category)
         }
         allLists.remove(shoppingList)
+    }
+
+    private fun copyList(list: ShoppingList): ShoppingList {
+        val duplicate = ShoppingList(list.name, list.id)
+        for (prod in list.productList)
+            duplicate.addProduct(prod)
+        return duplicate
     }
 
     private fun incrementProdUsed(name: String, category: Categories) {
@@ -114,8 +131,43 @@ object Model{
         return idList
     }
 
-    fun addPhoto(bitmap: Bitmap, name: String) {
+    fun addList(list: ShoppingList): Int {
+        allLists.add(list)
+        return list.id
     }
+
+    private fun archiveList(shoppingList: ShoppingList) {
+        archivedLists.add(shoppingList)
+    }
+
+    fun recreateList(id: Int) {
+        for(list in archivedLists) {
+            if (list.id == id) {
+                addList(recreateProducts(list))
+                removeListFromArchive(list)
+            }
+        }
+    }
+
+    private fun removeListFromArchive(list: ShoppingList) {
+        archivedLists.remove(list)
+    }
+
+    private fun recreateProducts(oldList: ShoppingList): ShoppingList {
+        var list = ShoppingList(oldList.name, oldList.id)
+
+        if (oldList.getNumberOfProducts() == 0) {
+            Log.i("Recreate Prods", "There are no products")
+        }
+
+        for (prod in oldList.productList) {
+            list.addProduct(Product(prod.id, prod.name, prod.brand, prod.price, prod.amount, prod.units, prod.category, prod.notes, prod.image))
+        }
+
+        return list
+    }
+
+    fun addPhoto(bitmap: Bitmap, name: String) {}
 
     fun debugAllListsAsString() : String{
         return allLists.toString()

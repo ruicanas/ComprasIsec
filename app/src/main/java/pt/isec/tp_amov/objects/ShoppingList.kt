@@ -34,6 +34,10 @@ data class ShoppingList (var name: String, val id: Int) {
         return null
     }
 
+    fun getNumberOfProducts(): Int {
+        return productList.size
+    }
+
     override fun toString(): String {
         return productList.toString()
     }

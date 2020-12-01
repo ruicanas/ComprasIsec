@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="34dp"
+            android:scaleType="center"
+            android:background="@color/primaryColor"
+            android:contentDescription="@string/app_name"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Previously Created"
+            android:textSize="22sp"
+            android:textAlignment="center"
+            android:textColor="@color/secondaryColorVariant"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:paddingTop="7dp"
+            android:paddingBottom="5dp"
+            />
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="8dp"
+            android:id="@+id/archivedLists"
+            android:divider="@null"
+            />
+
+        <TextView
+            android:id="@+id/emptyPlaceholderOldList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textAlignment="center"
+            android:textStyle="italic"
+            android:layout_gravity="center"
+            android:paddingTop="12dp"
+            />
+    </LinearLayout>
+
+
+
+</FrameLayout>

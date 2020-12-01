@@ -8,26 +8,32 @@ import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import org.w3c.dom.Text
 import pt.isec.tp_amov.R
+import pt.isec.tp_amov.adapters.HelpListAdapter
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.objects.Product
 import pt.isec.tp_amov.adapters.ProductListAdapter
 import pt.isec.tp_amov.comparators.ComparatorBought
 import pt.isec.tp_amov.comparators.ComparatorCategory
 import pt.isec.tp_amov.comparators.ComparatorName
+import pt.isec.tp_amov.objects.Help
 import pt.isec.tp_amov.objects.ShoppingList
+import java.lang.StringBuilder
 import java.util.*
 import kotlin.collections.ArrayList
 
 class ShowListActivity : AppCompatActivity() {
     private var productList = ArrayList<Product>()
+    private var hintList = ArrayList<Help>()
     lateinit var lvList: ListView
     lateinit var adapter: ProductListAdapter
+    lateinit var helpAdapter: HelpListAdapter
     var id = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,12 +47,16 @@ class ShowListActivity : AppCompatActivity() {
         if(id == -1){
             finish()
         }
+
         supportActionBar?.title = Model.getListById(id)?.name
 
         //Create a list on the Model
         lvList = findViewById(R.id.lvProductList)
         adapter = ProductListAdapter(productList)
         lvList.adapter = adapter
+
+        createHints()
+        helpAdapter = HelpListAdapter(hintList)
     }
 
     override fun onResume() {
@@ -60,10 +70,11 @@ class ShowListActivity : AppCompatActivity() {
         val slChosen = Model.getListById(id)?.productList
         if(slChosen != null) {
             var empty = findViewById<TextView>(R.id.emptyPlaceholderProd)
+            //Check if there are any products. If not, show no products message
             if (slChosen.size == 0)
                 empty.text = getString(R.string.no_products)
             else
-                empty.text = ""
+                empty.text = "" //Clear textView
 
             for(prod in slChosen){
                 productList.add(prod)
@@ -79,6 +90,9 @@ class ShowListActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.helpProd -> {
+                helpDialog()
+            }
             R.id.addProd -> {
                 val intent = Intent(this, ManageProductActivity::class.java)
                 intent.putExtra("listId", id)
@@ -119,7 +133,11 @@ class ShowListActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)     //Construct the builder
         val inflater = this.layoutInflater
         val viewLayout : View = inflater.inflate(R.layout.dialog_remove_item, null)  //The layout we want to inflate
-        viewLayout.findViewById<TextView>(R.id.tvRemoveItemDlg).text = "Remove ${prod.name}?"
+
+        val msg = StringBuilder()
+        msg.append(getString(R.string.remove_item_description_dlg)).append(" ").append(prod.name).append("?")
+        viewLayout.findViewById<TextView>(R.id.tvRemoveItemDlg).text = msg.toString()
+
         builder.setView(viewLayout)
         builder.setPositiveButton(getString(R.string.delete_dlg)) {dialog, id ->
             Model.removeDataBase(prod.name, prod.category)
@@ -127,7 +145,7 @@ class ShowListActivity : AppCompatActivity() {
             slChosen?.removeProduct(prod.id)
             updateListView()
         }
-        builder.setNegativeButton(getString(R.string.cancel_btn)) { dialog, id -> dialog.dismiss() }
+        builder.setNegativeButton(getString(R.string.cancel_list)) { dialog, id -> dialog.dismiss() }
         builder.show()
     }
 
@@ -152,5 +170,26 @@ class ShowListActivity : AppCompatActivity() {
         val pos: Int = cbView.tag as Int
         val prod: Product = adapter.getItem(pos) as Product
         prod.prodChecked = cbView.isChecked
+    }
+
+    private fun createHints() {
+        hintList.add(Help(getString(R.string.plus), getString(R.string.add_new_prod)))
+        hintList.add(Help(getString(R.string.hold), getString(R.string.remove_prod)))
+        hintList.add(Help(getString(R.string.press), getString(R.string.edit_prod)))
+        hintList.add(Help(getString(R.string.three_dots), getString(R.string.order_prod_list)))
+        hintList.add(Help(getString(R.string.checkbox), getString(R.string.check_bought)))
+    }
+
+    private fun helpDialog() {
+        val inflater = this.layoutInflater
+        val view: View = inflater.inflate(R.layout.dialog_help, null)  //The layout we want to inflate
+        var helpList = view.findViewById<ListView>(R.id.helpList)
+        helpList.adapter = helpAdapter
+
+        val builder = AlertDialog.Builder(this)
+        builder.setView(view)
+        builder.setCancelable(true)
+        builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, id -> dialog.dismiss() }
+        builder.show()
     }
 }
