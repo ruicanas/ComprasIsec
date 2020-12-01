@@ -30,12 +30,18 @@ import java.util.*
 /**
  * This activity is going to be responsible for the creation and edition of a product
  */
+
 class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+    private val tagMpa = "ManageProductActivity"
+
     private lateinit var spCategory: Spinner
     private lateinit var spUnit: Spinner
     private lateinit var type: String
+    private var dataName: String? = null
+    private var dataCat: String? = null
     private var listId = -1
     private var prodId = -1
+
 
     /**
      * Camera vals
@@ -51,8 +57,12 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         listId = intent.getIntExtra("listId", -1)
         prodId = intent.getIntExtra("productId", -1)
         type = intent.getStringExtra("type")!!
+        dataName = intent.getStringExtra("dataName")
+        dataCat = intent.getStringExtra("dataCat")
+
         //Verify if the ID is valid
         if(listId == -1){
+            Log.i(tagMpa, "onCreate: Received an invalid list id.")
             finish()
         }
 
@@ -69,8 +79,11 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             // Apply the adapter to the spinner
             spUnit.adapter = adapter
         }
-        if(prodId != -1){
+        if(prodId != -1 && type == "edit"){
             fillOptions()
+        }
+        else if(type == "reuseData" && dataName != null && dataCat != null){
+            fillPartialOpts()
         }
     }
 
@@ -85,6 +98,10 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         setCategory(sL.returnProduct(prodId)!!.category)
         setUnit(sL.returnProduct(prodId)!!.units)
     }
+    private fun fillPartialOpts() {
+        findViewById<EditText>(R.id.edProductName).setText(dataName)
+        searchCategory(dataCat)
+    }
 
     //Handle the spinners information
     private fun getCategory(): Categories { //Not ideal strings
@@ -98,6 +115,21 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         if (prompt == getString(R.string.protein))
             return Categories.PROTEIN
         return Categories.STARCHY_FOOD
+    }
+
+    private fun searchCategory(category: String?){
+        if(category == null){
+            return
+        }
+        var counter = 0
+        for(i in Categories.values()){
+            if(i.toString() == category){
+                spCategory.setSelection(counter)
+                spCategory.invalidate()
+                break
+            }
+            counter++
+        }
     }
 
     private fun getUnit(): UnitsMeasure {
@@ -140,7 +172,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     //Create the option on the menu
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_new_product, menu)
-        if(type == "create"){
+        if(type == "create" || type == "reuseData"){
             supportActionBar?.title = getString(R.string.titleAddProdList) + " " + Model.getListById(listId)?.name
             menu!!.getItem(0).isVisible = true
             menu.getItem(1).isVisible = false

@@ -86,6 +86,7 @@ class ShowListActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.searchProd ->{
                 val intent = Intent(this, SearchProductActivity::class.java)
+                intent.putExtra("listId", id)
                 startActivity(intent)
                 return true
             }
