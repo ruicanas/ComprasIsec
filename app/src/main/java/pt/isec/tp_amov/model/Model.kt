@@ -93,7 +93,6 @@ object Model{
         }else{
             incrementProdUsed(dataProd.name, dataProd.category)
         }
-
     }
 
     private fun handleOldData(oldName: String, oldCategory: Categories){
