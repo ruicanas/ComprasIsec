@@ -70,5 +70,7 @@
     <string name="check_bought">Marcar como comprado</string>
     <string name="checkbox">Checkbox</string>
     <string name="three_dots">3 Pontos</string>
+    <string name="default_list_name">Lista</string>
+    <string name="currency">€</string>
 
 </resources>

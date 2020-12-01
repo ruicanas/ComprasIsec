@@ -3,6 +3,7 @@ package pt.isec.tp_amov.model
 import android.graphics.Bitmap
 import android.util.Log
 import android.widget.Toast
+import pt.isec.tp_amov.R
 import pt.isec.tp_amov.objects.*
 
 object Model{
@@ -21,7 +22,6 @@ object Model{
             ++idProducts
             return idProducts
         }
-    private val maxArchivedLists = 10
 
     private fun searchForList(id: Int) : ShoppingList?{
         for(list in allLists){
@@ -51,6 +51,13 @@ object Model{
 
     fun getOldLists(): MutableList<ShoppingList> {
         return archivedLists
+    }
+
+    fun setDefaultListName(id: Int, name: String) {
+        for (i in allLists) {
+            if (i.id == id)
+                i.name = name
+        }
     }
 
     fun receiveProduct(name: String, brand: String, price: Double, amount: Double,

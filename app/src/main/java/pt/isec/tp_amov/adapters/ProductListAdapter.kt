@@ -7,7 +7,6 @@ import android.widget.BaseAdapter
 import android.widget.CheckBox
 import android.widget.TextView
 import pt.isec.tp_amov.R
-import pt.isec.tp_amov.objects.Categories
 import pt.isec.tp_amov.objects.Product
 import kotlin.collections.ArrayList
 
@@ -41,10 +40,13 @@ class ProductListAdapter(var products: ArrayList<Product>): BaseAdapter() {
         price.text = products[position].price.toString()
 
         val category = view.findViewById<TextView>(R.id.productCategory)
-        category.text = products[position].getCategory()
+        category.text = products[position].getCategory(parent.context)
 
         val unit = view.findViewById<TextView>(R.id.productUnit)
-        unit.text = products[position].getUnit()
+        unit.text = products[position].getUnit(parent.context)
+
+        val currency = view.findViewById<TextView>(R.id.currency)
+        currency.text = parent.context.getString(R.string.currency)
 
         val cBox = view.findViewById<CheckBox>(R.id.cbItems)
         cBox.tag = Integer.valueOf(position);               // set the tag so we can identify the correct row in the listener
