@@ -11,11 +11,11 @@ import pt.isec.tp_amov.R
 import pt.isec.tp_amov.adapters.SearchProductAdapter
 import pt.isec.tp_amov.comparators.ComparatorCategoryData
 import pt.isec.tp_amov.comparators.ComparatorNameData
-import pt.isec.tp_amov.interfaces.ItemClickListener
+import pt.isec.tp_amov.interfaces.ItemClickListenerInterface
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.objects.DataProduct
 
-class SearchProductActivity : AppCompatActivity(), ItemClickListener {
+class SearchProductActivity : AppCompatActivity(), ItemClickListenerInterface {
     private val dataList = ArrayList<DataProduct>(Model.allProducts)
     private var listId = -1
     lateinit var rvList: RecyclerView

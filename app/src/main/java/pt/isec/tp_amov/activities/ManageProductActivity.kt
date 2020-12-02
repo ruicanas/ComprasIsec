@@ -21,9 +21,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import pt.isec.tp_amov.R
 import pt.isec.tp_amov.model.Model
-import pt.isec.tp_amov.objects.Categories
-import pt.isec.tp_amov.objects.Product
-import pt.isec.tp_amov.objects.UnitsMeasure
 import java.io.File
 import java.lang.StringBuilder
 import java.text.SimpleDateFormat
@@ -34,7 +31,7 @@ import java.util.*
  * This activity is going to be responsible for the creation and edition of a product
  */
 
-class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+class ManageProductActivity : AppCompatActivity(){
     private val tagMpa = "ManageProductActivity"
 
     private lateinit var spCategory: Spinner
@@ -173,7 +170,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             return
         }
         var counter = 0
-        for(i in Categories.values()){
+        for(i in Model.config.categories){
             if(i.toString() == category){
                 spCategory.setSelection(counter)
                 spCategory.invalidate()
@@ -283,15 +280,6 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         }
         return super.onOptionsItemSelected(item)
     }
-
-    //Will handle spinners
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        //setup listener for on spinner item selected
-        val spinner: Spinner = findViewById(R.id.spinnerCat)
-        spinner.onItemSelectedListener = this
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>?) {}
 
     //Will increment the amount of a product
     fun onIncQuantity(view: View) {

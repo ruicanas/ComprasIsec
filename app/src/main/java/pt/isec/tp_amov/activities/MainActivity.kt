@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
@@ -15,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity
 import pt.isec.tp_amov.R
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.adapters.ShoppingListAdapter
-import pt.isec.tp_amov.objects.Product
 import pt.isec.tp_amov.objects.ShoppingList
 import java.lang.reflect.Method
 
@@ -89,6 +89,20 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_help, menu)
+        return true
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.settings){
+            val intent = Intent(this, ConfigsActivity::class.java)
+            startActivity(intent)
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
     /**
      * This method will receive the clicks that are going to be made on options
      * shown by the floating button on the main menu
