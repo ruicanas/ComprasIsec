@@ -1,6 +1,5 @@
 package pt.isec.tp_amov.activities
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
@@ -19,6 +18,7 @@ import pt.isec.tp_amov.adapters.ProductListAdapter
 import pt.isec.tp_amov.comparators.ComparatorBought
 import pt.isec.tp_amov.comparators.ComparatorCategory
 import pt.isec.tp_amov.comparators.ComparatorName
+import pt.isec.tp_amov.model.ModelView
 import pt.isec.tp_amov.objects.Help
 import java.lang.StringBuilder
 import kotlin.collections.ArrayList
@@ -30,6 +30,11 @@ class ShowListActivity : AppCompatActivity() {
     lateinit var adapter: ProductListAdapter
     lateinit var helpAdapter: HelpListAdapter
     var id = -1
+
+    private var prodID = -1
+
+    private lateinit var dialogHelp: AlertDialog
+    private lateinit var dialogRemove: AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,11 +62,38 @@ class ShowListActivity : AppCompatActivity() {
 
         createHints()
         helpAdapter = HelpListAdapter(hintList)
+
+        if (savedInstanceState != null) {
+            if (ModelView.dialogHelpShowingSL)
+                helpDialog()
+            if (ModelView.dialogRemoveShowingSL)
+                removeItemDlg(Model.getProdById(ModelView.removeProdID, id)!!)
+        }
     }
 
     override fun onResume() {
         super.onResume()
         updateListView()
+    }
+
+    override fun onDestroy() {
+        try {
+            if (dialogHelp.isShowing)
+                dialogHelp.dismiss()
+        } catch (e: UninitializedPropertyAccessException) {}
+        try {
+            if (dialogRemove.isShowing)
+                dialogRemove.dismiss()
+        } catch (e: UninitializedPropertyAccessException) {}
+        super.onDestroy()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (ModelView.dialogRemoveShowingSL) {
+            if (prodID != -1)
+                ModelView.removeProdID = prodID
+        }
+        super.onSaveInstanceState(outState)
     }
 
     private fun updateListView() {
@@ -138,6 +170,9 @@ class ShowListActivity : AppCompatActivity() {
     }
 
     private fun removeItemDlg(prod: Product){
+        ModelView.dialogRemoveShowingSL = true
+        prodID = prod.id
+
         val builder = AlertDialog.Builder(this)     //Construct the builder
         val inflater = this.layoutInflater
         val viewLayout : View = inflater.inflate(R.layout.dialog_remove_item, null)  //The layout we want to inflate
@@ -147,14 +182,20 @@ class ShowListActivity : AppCompatActivity() {
         viewLayout.findViewById<TextView>(R.id.tvRemoveItemDlg).text = msg.toString()
 
         builder.setView(viewLayout)
+        builder.setCancelable(true)
+        builder.setOnCancelListener { ModelView.dialogRemoveShowingSL = false }
         builder.setPositiveButton(getString(R.string.delete_dlg)) {dialog, id ->
+            ModelView.dialogRemoveShowingSL = false
             Model.removeDataBase(prod.name, prod.category, prod.price)
             val slChosen = Model.getListById(this.id)
             slChosen?.removeProduct(prod.id)
             updateListView()
         }
-        builder.setNegativeButton(getString(R.string.cancel_list)) { dialog, id -> dialog.dismiss() }
-        builder.show()
+        builder.setNegativeButton(getString(R.string.cancel_list)) { dialog, id ->
+            dialog.dismiss()
+            ModelView.dialogRemoveShowingSL = false
+        }
+        dialogRemove = builder.show()
     }
 
     private fun onOpenProduct(listView: ListView) {
@@ -189,6 +230,7 @@ class ShowListActivity : AppCompatActivity() {
     }
 
     private fun helpDialog() {
+        ModelView.dialogHelpShowingSL = true
         val inflater = this.layoutInflater
         val view: View = inflater.inflate(R.layout.dialog_help, null)  //The layout we want to inflate
         var helpList = view.findViewById<ListView>(R.id.helpList)
@@ -197,7 +239,11 @@ class ShowListActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         builder.setView(view)
         builder.setCancelable(true)
-        builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, id -> dialog.dismiss() }
-        builder.show()
+        builder.setOnCancelListener { ModelView.dialogHelpShowingSL = false }
+        builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, id ->
+            ModelView.dialogHelpShowingSL = false
+            dialog.dismiss()
+        }
+        dialogHelp = builder.show()
     }
 }

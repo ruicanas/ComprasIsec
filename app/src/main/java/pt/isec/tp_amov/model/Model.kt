@@ -22,6 +22,7 @@ object Model{
             ++idProducts
             return idProducts
         }
+    lateinit var bitmap: Bitmap
 
     private fun searchForList(id: Int) : ShoppingList?{
         for(list in allLists){
@@ -35,6 +36,18 @@ object Model{
     fun getListById(id: Int) : ShoppingList?{
         return searchForList(id)
     }
+
+    fun getProdById(prodID: Int, listID: Int): Product? {
+        for (prod in getListById(listID)!!.productList) {
+            if (prod.id == prodID)
+                return prod
+        }
+        return null
+    }
+
+    /*fun getProdBitmap(id: Int): Bitmap {
+
+    }*/
 
     fun getIdByName(listName: String) : Int{
         for(list in allLists){
@@ -215,6 +228,10 @@ object Model{
     }
 
     fun addPhoto(bitmap: Bitmap, name: String) {}
+
+    fun removeImageFromProduct(prodID: Int, listID: Int) {
+        val prod = getProdById(prodID, listID)
+    }
 
     fun debugAllListsAsString() : String{
         return allLists.toString()

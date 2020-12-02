@@ -7,7 +7,6 @@ import pt.isec.tp_amov.R
 
 data class Product (var id: Int, var name: String, var brand: String, var price: Double, var amount:Double,
                     var units: UnitsMeasure, var category: Categories, var notes: String, var image: Bitmap?) {
-    lateinit var photo: Bitmap
     var prodChecked = false
 
     fun productExists(name: String, brand:String, price: Double, amount: Double,
@@ -19,7 +18,7 @@ data class Product (var id: Int, var name: String, var brand: String, var price:
     }
 
     fun editProduct(name: String, brand:String, price: Double, amount: Double,
-                    units: UnitsMeasure, category: Categories, photo: Bitmap?, notes: String){
+                    units: UnitsMeasure, category: Categories, image: Bitmap?, notes: String){
         this.name = name
         this.brand = brand
         this.price = price
@@ -27,12 +26,10 @@ data class Product (var id: Int, var name: String, var brand: String, var price:
         this.units = units
         this.category = category
         this.notes = notes
-        if (photo != null)
-            this.photo = photo
-    }
-
-    fun addPhoto(bitmap: Bitmap) {
-        photo = bitmap
+        if (image != null)
+            this.image = image
+        else
+            this.image = null
     }
 
     fun getCategory(context: Context): String {

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
+import android.media.Image
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -21,12 +22,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import pt.isec.tp_amov.R
 import pt.isec.tp_amov.model.Model
+import pt.isec.tp_amov.model.ModelView
 import pt.isec.tp_amov.objects.Categories
 import pt.isec.tp_amov.objects.UnitsMeasure
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 /**
  * This activity is going to be responsible for the creation and edition of a product
@@ -43,6 +44,12 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     private var listId = -1
     private var prodId = -1
 
+    private var bitmap: Bitmap? = null
+    private lateinit var imageView: ImageView
+    private var edText: String = ""
+
+    private lateinit var dialogNewCategory: AlertDialog
+    private lateinit var dialogNewUnit: AlertDialog
 
     /**
      * Camera vals
@@ -55,6 +62,9 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_product)
+
+        imageView = findViewById(R.id.productImageView)
+
         listId = intent.getIntExtra("listId", -1)
         prodId = intent.getIntExtra("productId", -1)
         type = intent.getStringExtra("type")!!
@@ -89,6 +99,44 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
 
         val currency = findViewById<TextView>(R.id.currency)
         currency.text = getString(R.string.currency)
+
+        if (savedInstanceState != null) {
+            if (ModelView.dialogNewCategoryShowing)
+                onNewCategory(findViewById(R.id.addNewCategory))
+            if (ModelView.dialogNewUnitsShowing)
+                onNewUnitType(findViewById(R.id.addNewUnit))
+            if (ModelView.hasImage) {
+                val byteArray: ByteArray = savedInstanceState.getByteArray("image")!!
+                bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+                imageView.setImageBitmap(bitmap)
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        try {
+            if (dialogNewUnit.isShowing)
+                dialogNewUnit.dismiss()
+        } catch (e: UninitializedPropertyAccessException) { }
+        try {
+            if (dialogNewCategory.isShowing)
+                dialogNewCategory.dismiss()
+        } catch (e: UninitializedPropertyAccessException) { }
+
+        super.onDestroy()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (ModelView.dialogNewCategoryShowing) {
+            if (edText.isNotEmpty())
+                ModelView.dialogText = edText
+        }
+        if (ModelView.dialogNewUnitsShowing) {
+            if (edText.isNotEmpty())
+                ModelView.dialogText = edText
+        }
+
+        super.onSaveInstanceState(outState)
     }
 
     private fun fillOptions() {
@@ -98,7 +146,13 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         findViewById<EditText>(R.id.edPrice).setText(sL.returnProduct(prodId)!!.price.toString())
         findViewById<EditText>(R.id.edNotes).setText(sL.returnProduct(prodId)!!.notes)
         findViewById<EditText>(R.id.edQuantity).setText(sL.returnProduct(prodId)!!.amount.toString())
-        findViewById<ImageView>(R.id.productImageView).setImageBitmap(sL.returnProduct(prodId)!!.image)
+
+        val imageBtn = findViewById<ImageButton>(R.id.deleteImageBtn)
+        val img = sL.returnProduct(prodId)!!.image
+        findViewById<ImageView>(R.id.productImageView).setImageBitmap(img)
+        if (img != null)
+            imageBtn.visibility = View.VISIBLE
+
         setCategory(sL.returnProduct(prodId)!!.category)
         setUnit(sL.returnProduct(prodId)!!.units)
     }
@@ -196,7 +250,6 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         val price: String = findViewById<EditText>(R.id.edPrice).text.toString()
         val notes: String = findViewById<EditText>(R.id.edNotes).text.toString()
         val quantity: String = findViewById<EditText>(R.id.edQuantity).text.toString()
-        val image: ImageView = findViewById(R.id.productImageView)
 
         if (name.isEmpty()) {
             Toast.makeText(applicationContext, getString(R.string.no_product_name), Toast.LENGTH_LONG).show()
@@ -211,8 +264,8 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             return false
         }
 
-        var bitmap: Bitmap? = try {
-            val bitmapDrawable: BitmapDrawable = image.drawable as BitmapDrawable
+        bitmap = try {
+            val bitmapDrawable: BitmapDrawable = imageView.drawable as BitmapDrawable
             bitmapDrawable.bitmap
         } catch (e: TypeCastException) {
             null
@@ -224,7 +277,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         }
 
         if(item.itemId == R.id.editProdCheck){
-            val prod = Model.getListById(listId)?.returnProduct(prodId)
+            val prod = Model.getProdById(prodId, listId)
 
             if(prod!!.name != name) {
                 //If the name of the product changed and the product doesn't exist in the database, adds the product to the "database" and to the list
@@ -233,10 +286,9 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
                 prod.editProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), bitmap, notes)
             } else {
                 //If the product is in the database and it was modified, we're just going to modify our product
-                if(prod.price == price.toDouble()) {
+                if (prod.price == price.toDouble()) {
                     prod.editProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), bitmap, notes)
-                }
-                else{
+                } else {
                     Model.updateDataPrices(prod.name, prod.category, prod.price, name, getCategory(), price.toDouble())
                     prod.editProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), bitmap, notes)
                 }
@@ -361,15 +413,16 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     private lateinit var filePath : String
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        var image: ImageView = findViewById(R.id.productImageView)
-
         if (requestCode == cameraIntentCode && resultCode == Activity.RESULT_OK && data != null) { //Camera Access
             if (data.extras == null)
                 Toast.makeText(applicationContext, "Error loading image", Toast.LENGTH_LONG).show()
 
             val bitmap = data.extras?.get("data") as Bitmap
-            image.setImageBitmap(bitmap) //set in image bitmap
-            //saveImage(bitmap);
+            imageView.setImageBitmap(bitmap) //set in image bitmap
+            ModelView.hasImage = true
+            val btn = findViewById<ImageButton>(R.id.deleteImageBtn)
+            btn.visibility = View.VISIBLE
+            ModelView.deleteImageButton = true
         }
         else if (requestCode == galleryIntentCode && resultCode == Activity.RESULT_OK && data != null) { //Gallery Access
             var uri = data.data?.apply {
@@ -385,10 +438,12 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
                     filePath = cursor.getString(0)
 
                 //Get the bitmap
-                val bitmap = BitmapFactory.decodeFile(filePath)
-                image.setImageBitmap(bitmap) //set in image bitmap
-
-                //saveImage(bitmap);
+                bitmap = BitmapFactory.decodeFile(filePath)
+                imageView.setImageBitmap(bitmap) //set in image bitmap
+                ModelView.hasImage = true
+                val btn = findViewById<ImageButton>(R.id.deleteImageBtn)
+                btn.visibility = View.VISIBLE
+                ModelView.deleteImageButton = true
             }
             return
         }
@@ -396,37 +451,42 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    //TODO - needs to be changed
-    lateinit var currentPhotoPath: String
+    /*lateinit var currentPhotoPath: String
     private fun saveImage(bitmap: Bitmap): File {
         // Create an image file name
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmm").format(Date())
         val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
 
-        return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir /* directory */).apply {
+        return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir *//* directory *//*).apply {
             // Save a file: path for use with ACTION_VIEW intents
             currentPhotoPath = absolutePath
         }
-    }
+    }*/
 
     lateinit var newCatName: String
 
     fun onNewCategory(view: View) {
+        ModelView.dialogNewCategoryShowing = true
         val inflater = this.layoutInflater
         val view: View = inflater.inflate(R.layout.dialog_new_category, null) //The layout to inflate
-        val edCatName = view.findViewById<EditText>(R.id.newUnitName)
+        val editText = view.findViewById<EditText>(R.id.newUnitName)
 
         val builder = AlertDialog.Builder(this)
         builder.setView(view)
         builder.setCancelable(true)
+        builder.setOnCancelListener { ModelView.dialogNewCategoryShowing = false }
         builder.setPositiveButton(getString(R.string.add)) { dialog, id ->
+            ModelView.dialogNewCategoryShowing = false
             dialog.dismiss()
-            newCatName = edCatName.text.toString()
+            newCatName = editText.text.toString()
             addToCategories()
+            edText = ""
         }
-        builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, id -> dialog.dismiss() }
-        builder.show()
-
+        builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, id ->
+            ModelView.dialogNewCategoryShowing = false
+            dialog.dismiss()
+        }
+        dialogNewCategory = builder.show()
     }
 
     private fun addToCategories() {
@@ -436,23 +496,40 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     lateinit var newUnitName: String
 
     fun onNewUnitType(view: View) {
+        ModelView.dialogNewUnitsShowing = true
         val inflater = this.layoutInflater
         val view: View = inflater.inflate(R.layout.dialog_new_unit, null) //The layout to inflate
-        val edUnitName = view.findViewById<EditText>(R.id.newUnitName)
+        val editText = view.findViewById<EditText>(R.id.newUnitName)
 
         val builder = AlertDialog.Builder(this)
         builder.setView(view)
         builder.setCancelable(true)
+        builder.setOnCancelListener { ModelView.dialogNewUnitsShowing = false }
         builder.setPositiveButton(getString(R.string.add)) { dialog, id ->
+            ModelView.dialogNewUnitsShowing = false
             dialog.dismiss()
-            newUnitName = edUnitName.text.toString()
+            newUnitName = editText.text.toString()
             addToUnits()
+            edText = ""
         }
-        builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, id -> dialog.dismiss() }
-        builder.show()
+        builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, id ->
+            ModelView.dialogNewUnitsShowing = false
+            dialog.dismiss()
+        }
+        dialogNewUnit = builder.show()
     }
 
     private fun addToUnits() {
 
+    }
+
+    fun onDeletePicture(view: View) {
+        ModelView.hasImage = false
+        ModelView.deleteImageButton = false
+        val btn = findViewById<ImageButton>(R.id.deleteImageBtn)
+        btn.visibility = View.INVISIBLE
+
+        imageView.setImageBitmap(null)
+        imageView.invalidate()
     }
 }

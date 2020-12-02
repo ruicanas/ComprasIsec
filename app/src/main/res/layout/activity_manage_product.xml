@@ -81,7 +81,7 @@
                         android:layout_height="match_parent"
                         android:hint="0.00"
                         android:inputType="numberDecimal"
-                        android:textSize="17sp" />
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/currency"
@@ -262,14 +262,31 @@
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/productImageView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitStart"
-            android:adjustViewBounds="true"
-            android:layout_gravity="top|center"
-            android:layout_marginTop="10dp" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            >
+            <ImageButton
+                android:id="@+id/deleteImageBtn"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/ic_baseline_cancel_24"
+                android:onClick="onDeletePicture"
+                android:layout_gravity="bottom|end"
+                android:visibility="invisible"
+                />
+            <ImageView
+                android:id="@+id/productImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitStart"
+                android:adjustViewBounds="true"
+                android:layout_gravity="top|center"
+                android:layout_marginTop="5dp"
+                />
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

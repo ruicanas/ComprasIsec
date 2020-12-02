@@ -77,5 +77,6 @@
     <string name="insert_unit_name">Inserir nome da unidade</string>
     <string name="insert_category_name">Inserir nome da categoria</string>
     <string name="add">Adicionar</string>
+    <string name="previously_created">Previamente Criadas</string>
 
 </resources>
