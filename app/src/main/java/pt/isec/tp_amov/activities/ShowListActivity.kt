@@ -26,80 +26,92 @@ import kotlin.collections.ArrayList
 class ShowListActivity : AppCompatActivity() {
     private var productList = ArrayList<Product>()
     private var hintList = ArrayList<Help>()
+
+    private var listId = -1
+    private var prodId = -1
+
     lateinit var lvList: ListView
     lateinit var adapter: ProductListAdapter
     lateinit var helpAdapter: HelpListAdapter
-    var id = -1
-
-    private var prodID = -1
 
     private lateinit var dialogHelp: AlertDialog
     private lateinit var dialogRemove: AlertDialog
 
+    //onCreate
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_list)
-        lvList = findViewById(R.id.lvProductList)
-        onOpenProduct(lvList)
-
-        id = intent.getIntExtra("listId", -1)
-        //Verify if the ID is valid
-        if(id == -1){
+        verifyList()
+        handlesTitles()
+        prepareLists()
+        onOpenProduct()
+        handlesModelView(savedInstanceState)
+    }
+    private fun verifyList() {
+        listId = intent.getIntExtra("listId", -1)
+        if(listId == -1){
             finish()
         }
-
-        if (Model.getListById(id)?.name.isNullOrEmpty()) {
+    }
+    private fun handlesTitles() {
+        if (Model.getListById(listId)?.name.isNullOrEmpty()) {
             supportActionBar?.title = getString(R.string.default_list_name)
-            Model.setDefaultListName(id, getString(R.string.default_list_name))
+            Model.setDefaultListName(listId, getString(R.string.default_list_name))
+        } else {
+            supportActionBar?.title = Model.getListById(listId)?.name
         }
-        else
-            supportActionBar?.title = Model.getListById(id)?.name
-
+    }
+    private fun prepareLists() {
+        lvList = findViewById(R.id.lvProductList)
         //Create a list on the Model
         lvList = findViewById(R.id.lvProductList)
         adapter = ProductListAdapter(productList)
         lvList.adapter = adapter
 
+        //Helper list
         createHints()
         helpAdapter = HelpListAdapter(hintList)
-
+    }
+    private fun createHints() {
+        hintList.add(Help(getString(R.string.plus), getString(R.string.add_new_prod)))
+        hintList.add(Help(getString(R.string.hold), getString(R.string.remove_prod)))
+        hintList.add(Help(getString(R.string.press), getString(R.string.edit_prod)))
+        hintList.add(Help(getString(R.string.three_dots), getString(R.string.order_prod_list)))
+        hintList.add(Help(getString(R.string.checkbox), getString(R.string.check_bought)))
+    }
+    private fun onOpenProduct() {
+        lvList.setOnItemClickListener { parent, view, position, id ->
+            val prod: Product = adapter.getItem(position) as Product    //It was changed
+            val intent = Intent(this, ManageProductActivity::class.java)
+            intent.putExtra("listId", this.listId)
+            intent.putExtra("productId", prod.id)
+            intent.putExtra("type", "edit")
+            startActivity(intent)
+        }
+        lvList.setOnItemLongClickListener { parent, view, position, id ->
+            val prod: Product = adapter.getItem(position) as Product    //It was changed
+            removeItemDlg(prod)
+            true
+        }
+    }
+    private fun handlesModelView(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             if (ModelView.dialogHelpShowingSL)
                 helpDialog()
             if (ModelView.dialogRemoveShowingSL)
-                removeItemDlg(Model.getProdById(ModelView.removeProdID, id)!!)
+                removeItemDlg(Model.getProdById(ModelView.removeProdID, listId)!!)
         }
     }
 
+    //onResume
     override fun onResume() {
         super.onResume()
         updateListView()
     }
-
-    override fun onDestroy() {
-        try {
-            if (dialogHelp.isShowing)
-                dialogHelp.dismiss()
-        } catch (e: UninitializedPropertyAccessException) {}
-        try {
-            if (dialogRemove.isShowing)
-                dialogRemove.dismiss()
-        } catch (e: UninitializedPropertyAccessException) {}
-        super.onDestroy()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        if (ModelView.dialogRemoveShowingSL) {
-            if (prodID != -1)
-                ModelView.removeProdID = prodID
-        }
-        super.onSaveInstanceState(outState)
-    }
-
     private fun updateListView() {
         productList.clear()
         //Add the elements to the vector
-        val slChosen = Model.getListById(id)?.productList
+        val slChosen = Model.getListById(listId)?.productList
         if(slChosen != null) {
             var empty = findViewById<TextView>(R.id.emptyPlaceholderProd)
             //Check if there are any products. If not, show no products message
@@ -115,16 +127,38 @@ class ShowListActivity : AppCompatActivity() {
         }
     }
 
+    //Remaining
+    override fun onDestroy() {
+        try {
+            if (dialogHelp.isShowing)
+                dialogHelp.dismiss()
+        } catch (e: UninitializedPropertyAccessException) {}
+        try {
+            if (dialogRemove.isShowing)
+                dialogRemove.dismiss()
+        } catch (e: UninitializedPropertyAccessException) {}
+        super.onDestroy()
+    }
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (ModelView.dialogRemoveShowingSL) {
+            if (prodId != -1)
+                ModelView.removeProdID = prodId
+        }
+        super.onSaveInstanceState(outState)
+    }
+
+    //Create Menu
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_options,menu)
         return true
     }
 
+    //Selected items from menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.searchProd ->{
                 val intent = Intent(this, SearchProductActivity::class.java)
-                intent.putExtra("listId", id)
+                intent.putExtra("listId", listId)
                 startActivity(intent)
                 return true
             }
@@ -133,7 +167,7 @@ class ShowListActivity : AppCompatActivity() {
             }
             R.id.addProd -> {
                 val intent = Intent(this, ManageProductActivity::class.java)
-                intent.putExtra("listId", id)
+                intent.putExtra("listId", listId)
                 intent.putExtra("type", "create")
                 startActivity(intent)
                 return true
@@ -153,25 +187,23 @@ class ShowListActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
     private fun orderByCategory() {
         productList.sortWith(ComparatorCategory())
         adapter.notifyDataSetChanged()
     }
-
     private fun orderByProdsBought() {
         productList.sortWith(ComparatorBought())
         adapter.notifyDataSetChanged()
     }
-
     private fun orderByName() {
         productList.sortWith(ComparatorName())
         adapter.notifyDataSetChanged()
     }
 
+    //Dialogs
     private fun removeItemDlg(prod: Product){
         ModelView.dialogRemoveShowingSL = true
-        prodID = prod.id
+        prodId = prod.id
 
         val builder = AlertDialog.Builder(this)     //Construct the builder
         val inflater = this.layoutInflater
@@ -187,7 +219,7 @@ class ShowListActivity : AppCompatActivity() {
         builder.setPositiveButton(getString(R.string.delete_dlg)) {dialog, id ->
             ModelView.dialogRemoveShowingSL = false
             Model.removeDataBase(prod.name, prod.category, prod.price)
-            val slChosen = Model.getListById(this.id)
+            val slChosen = Model.getListById(this.listId)
             slChosen?.removeProduct(prod.id)
             updateListView()
         }
@@ -197,38 +229,6 @@ class ShowListActivity : AppCompatActivity() {
         }
         dialogRemove = builder.show()
     }
-
-    private fun onOpenProduct(listView: ListView) {
-        listView.setOnItemClickListener { parent, view, position, id ->
-            val prod: Product = adapter.getItem(position) as Product    //It was changed
-            val intent = Intent(this, ManageProductActivity::class.java)
-            intent.putExtra("listId", this.id)
-            intent.putExtra("productId", prod.id)
-            intent.putExtra("type", "edit")
-            startActivity(intent)
-        }
-        listView.setOnItemLongClickListener { parent, view, position, id ->
-            val prod: Product = adapter.getItem(position) as Product    //It was changed
-            removeItemDlg(prod)
-            true
-        }
-    }
-
-    fun onCheckBox(view: View) {
-        val cbView: CheckBox = view.findViewById(R.id.cbItems)
-        val pos: Int = cbView.tag as Int
-        val prod: Product = adapter.getItem(pos) as Product
-        prod.prodChecked = cbView.isChecked
-    }
-
-    private fun createHints() {
-        hintList.add(Help(getString(R.string.plus), getString(R.string.add_new_prod)))
-        hintList.add(Help(getString(R.string.hold), getString(R.string.remove_prod)))
-        hintList.add(Help(getString(R.string.press), getString(R.string.edit_prod)))
-        hintList.add(Help(getString(R.string.three_dots), getString(R.string.order_prod_list)))
-        hintList.add(Help(getString(R.string.checkbox), getString(R.string.check_bought)))
-    }
-
     private fun helpDialog() {
         ModelView.dialogHelpShowingSL = true
         val inflater = this.layoutInflater
@@ -245,5 +245,13 @@ class ShowListActivity : AppCompatActivity() {
             dialog.dismiss()
         }
         dialogHelp = builder.show()
+    }
+
+    //When the checkbox gets clicked
+    fun onCheckBox(view: View) {
+        val cbView: CheckBox = view.findViewById(R.id.cbItems)
+        val pos: Int = cbView.tag as Int
+        val prod: Product = adapter.getItem(pos) as Product
+        prod.prodChecked = cbView.isChecked
     }
 }
