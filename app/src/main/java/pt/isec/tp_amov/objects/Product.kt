@@ -9,14 +9,6 @@ data class Product (var id: Int, var name: String, var brand: String, var price:
                     var units: String, var category: String, var notes: String, var image: Bitmap?) {
     var prodChecked = false
 
-    fun productExists(name: String, brand:String, price: Double, amount: Double,
-                        units: UnitsMeasure, category: Categories, notes: String): Boolean {
-        if(this.name == name && this.brand == brand && this.price == price && this.amount == amount
-                && this.units.equals(units) && this.category.equals(category) && this.notes == notes)
-            return true
-        return false
-    }
-
     fun editProduct(name: String, brand:String, price: Double, amount: Double,
                     units: String, category: String, image: Bitmap?, notes: String){
         this.name = name

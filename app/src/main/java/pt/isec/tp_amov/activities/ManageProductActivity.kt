@@ -8,9 +8,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
-import android.media.Image
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
@@ -23,19 +21,14 @@ import androidx.core.content.ContextCompat
 import pt.isec.tp_amov.R
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.model.ModelView
-import pt.isec.tp_amov.objects.Categories
-import pt.isec.tp_amov.objects.UnitsMeasure
-import java.io.File
 import java.lang.StringBuilder
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 /**
  * This activity is going to be responsible for the creation and edition of a product
  */
 
-class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+class ManageProductActivity : AppCompatActivity(){
     private val tagMpa = "ManageProductActivity"
 
     private lateinit var spCategory: Spinner
@@ -492,8 +485,8 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         builder.setPositiveButton(getString(R.string.add)) { dialog, id ->
             ModelView.dialogNewCategoryShowing = false
             dialog.dismiss()
-            newCatName = editText.text.toString()
-            addToCategories()
+            val newCatName = editText.text.toString()
+            addToCategories(newCatName)
             edText = ""
         }
         builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, id ->
@@ -516,6 +509,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         val view: View = inflater.inflate(R.layout.dialog_new_unit, null) //The layout to inflate
         val editText = view.findViewById<EditText>(R.id.newUnitName)
 
+
         val builder = AlertDialog.Builder(this)
         builder.setView(view)
         builder.setCancelable(true)
@@ -523,8 +517,8 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         builder.setPositiveButton(getString(R.string.add)) { dialog, id ->
             ModelView.dialogNewUnitsShowing = false
             dialog.dismiss()
-            newUnitName = editText.text.toString()
-            addToUnits()
+            val newUnitName = editText.text.toString()
+            addToUnits(newUnitName)
             edText = ""
         }
         builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, id ->
