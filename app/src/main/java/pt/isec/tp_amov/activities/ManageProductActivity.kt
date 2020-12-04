@@ -22,7 +22,6 @@ import pt.isec.tp_amov.R
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.model.ModelView
 import pt.isec.tp_amov.objects.Product
-import java.lang.StringBuilder
 
 
 /**
@@ -229,7 +228,7 @@ class ManageProductActivity : AppCompatActivity(){
     private fun addNew(prod:Product, name: String, brand: String, price: String, quantity: String, notes: String) {
         //If the name of the product changed and the product doesn't exist in the database, adds the product to the "database" and to the list
         //We cant forget to update the database, because we got one item that is not being used anymore
-        Model.updateDataBase(
+        Model.updateData(
             prod.name,
             prod.category,
             prod.price,

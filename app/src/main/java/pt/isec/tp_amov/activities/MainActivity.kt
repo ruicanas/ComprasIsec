@@ -182,7 +182,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     //onResume function
     private fun updateListView() {
         allLists.clear()
-        val slChosen = Model.getAllLists()
+        val slChosen = Model.allLists
 
         var empty = findViewById<TextView>(R.id.emptyPlaceholderList)
         //Check if there are any list. If not, show no list message
@@ -247,7 +247,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             val intent = Intent(this, ShowListActivity::class.java)
             val listName = editText!!.text.toString()     //After the user write a name, this name will be save on listName
             //Create the list at this moment
-            intent.putExtra("listId", Model.addList(listName)) //And then, the listName, will be sent to the next activity.
+            intent.putExtra("listId", Model.addListByName(listName)) //And then, the listName, will be sent to the next activity.
             startActivity(intent)
         }
         builder.setNegativeButton(getString(R.string.cancel_list)) { dialog, id ->
@@ -274,7 +274,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         builder.setOnCancelListener { ModelView.dialogRemoveShowing = false }
         builder.setPositiveButton(getString(R.string.delete_dlg)) {dialog, id ->
             ModelView.dialogRemoveShowing = false
-            Model.removeListDataBase(sL)
+            Model.removeListData(sL)
             sL.removeAll()
             updateListView()
         }
@@ -308,7 +308,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     private fun updateArchive() {
         archivedLists.clear()
-        val archive = Model.getOldLists()
+        val archive = Model.archivedLists
 
         var empty = oldListView.findViewById<TextView>(R.id.emptyPlaceholderOldList)
         //Check if there are any list. If not, show no list message

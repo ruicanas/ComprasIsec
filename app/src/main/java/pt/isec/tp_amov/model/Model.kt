@@ -16,13 +16,12 @@ object Model{
             ++idProducts
             return idProducts
         }
-    private val archivedLists: MutableList<ShoppingList> = ArrayList()
-    private val allLists: MutableList<ShoppingList> = ArrayList()
     private var idList = 0
     private var idProducts = 0
+    val archivedLists: MutableList<ShoppingList> = ArrayList()
+    val allLists: MutableList<ShoppingList> = ArrayList()
     val allProducts: MutableList<DataProduct> = ArrayList()
     val config = Configuration()
-    lateinit var bitmap: Bitmap
 
     private fun searchForList(id: Int) : ShoppingList?{
         for(list in allLists){
@@ -33,10 +32,10 @@ object Model{
         return null
     }
 
+    //Get something by ID's
     fun getListById(id: Int) : ShoppingList?{
         return searchForList(id)
     }
-
     fun getProdById(prodID: Int, listID: Int): Product? {
         for (prod in getListById(listID)!!.productList) {
             if (prod.id == prodID)
@@ -45,47 +44,32 @@ object Model{
         return null
     }
 
-    /*fun getProdBitmap(id: Int): Bitmap {
-
-    }*/
-
-    fun getIdByName(listName: String) : Int{
-        for(list in allLists){
-            if(list.name == listName){
-                return list.id
-            }
-        }
-        return -1
-    }
-
-    fun getAllLists() : MutableList<ShoppingList>{
-        return allLists
-    }
-
-    fun getOldLists(): MutableList<ShoppingList> {
-        return archivedLists
-    }
-
     fun setDefaultListName(id: Int, name: String) {
         for (i in allLists) {
             if (i.id == id)
                 i.name = name
         }
     }
-
-    fun receiveProduct(name: String, brand: String, price: Double, amount: Double,
-                       unit: String, category: String, notes: String, img: Bitmap?, listId: Int): Boolean{
-        val prod = Product( idProductsCounter, name, brand, price, amount, unit, category, notes, img)
+    fun receiveProduct(name: String,
+                       brand: String,
+                       price: Double,
+                       amount: Double,
+                       unit: String,
+                       category: String,
+                       notes: String,
+                       img: Bitmap?,
+                       listId: Int): Boolean {
+        val prod =
+            Product(idProductsCounter, name, brand, price, amount, unit, category, notes, img)
         val dataProd = DataProduct(name, category)
-        if(!allProducts.contains(dataProd)){
+        if (!allProducts.contains(dataProd)) {
             allProducts.add(dataProd)
-            if(price > 0){
+            if (price > 0) {
                 addPriceData(name, category, price)
             }
-        }
-        else{
+        } else {
             incrementProdUsed(name, category)
-            if(price > 0){
+            if (price > 0) {
                 addPriceData(name, category, price)
             }
         }
@@ -93,33 +77,37 @@ object Model{
         shopList.addProduct(prod)
         return true
     }
-
-    fun updateDataBase(oldName: String, oldCategory: String, oldPrice: Double,
-                       newName: String, newCategory: String, newPrice: Double){
+    fun updateData(oldName: String,
+                   oldCategory: String,
+                   oldPrice: Double,
+                   newName: String,
+                   newCategory: String,
+                   newPrice: Double){
         handleOldData(oldName, oldCategory, oldPrice)
         handleNewData(newName, newCategory, newPrice)
     }
 
-    fun removeDataBase(oldName: String, oldCategory: String, oldPrice: Double){
+    //Manage products and lists from allProducts and allLists, respectively
+    fun removeProdData(oldName: String, oldCategory: String, oldPrice: Double){
         handleOldData(oldName, oldCategory, oldPrice)
     }
-
-    fun removeListDataBase(shoppingList: ShoppingList) {
+    fun removeListData(shoppingList: ShoppingList) {
         val duplicate = copyList(shoppingList)
         archiveList(duplicate)
         for(p in shoppingList.productList){
-            removeDataBase(p.name, p.category, p.price)
+            removeProdData(p.name, p.category, p.price)
         }
         allLists.remove(shoppingList)
     }
-
+    private fun archiveList(shoppingList: ShoppingList) {
+        archivedLists.add(shoppingList)
+    }
     private fun copyList(list: ShoppingList): ShoppingList {
         val duplicate = ShoppingList(list.name, list.id)
         for (prod in list.productList)
             duplicate.addProduct(prod)
         return duplicate
     }
-
     private fun incrementProdUsed(name: String, category: String) {
         for(dP in allProducts){
             if(dP.name == name && dP.category == category){
@@ -129,6 +117,28 @@ object Model{
         }
     }
 
+
+
+    //ManagePrices
+    fun getPrices(product: Product): String?{
+        for(dP in allProducts){
+            if(dP.name == product.name && dP.category == product.category){
+                return dP.lastPrices.toString()
+            }
+        }
+        return null
+    }
+    fun updateDataPrices(oldName: String,
+                         oldCategory: String,
+                         oldPrice: Double,
+                         newName: String,
+                         newCategory: String,
+                         newPrice: Double){
+        removePriceData(oldName, oldCategory, oldPrice)
+        if(newPrice > 0){
+            addPriceData(newName, newCategory, newPrice)
+        }
+    }
     private fun addPriceData(name: String, category: String, price: Double){
         for(dP in allProducts){
             if(dP.name == name && dP.category == category){
@@ -142,7 +152,6 @@ object Model{
             }
         }
     }
-
     private fun removePriceData(name: String, category: String, price: Double){
         for(dP in allProducts){
             if(dP.name == name && dP.category == category){
@@ -151,15 +160,7 @@ object Model{
         }
     }
 
-    fun getPrices(product: Product): String?{
-        for(dP in allProducts){
-            if(dP.name == product.name && dP.category == product.category){
-                return dP.lastPrices.toString()
-            }
-        }
-        return null
-    }
-
+    //Insert new data in all products and remove old data from the same list.
     private fun handleNewData(newName: String, newCategory: String, newPrice: Double) {
         val dataProd = DataProduct(newName, newCategory)
         if(!allProducts.contains(dataProd)){
@@ -171,7 +172,6 @@ object Model{
             addPriceData(newName, newCategory, newPrice)
         }
     }
-
     private fun handleOldData(oldName: String, oldCategory: String, oldPrice: Double){
         for(dP in allProducts){
             if(dP.name == oldName && dP.category == oldCategory){
@@ -185,34 +185,29 @@ object Model{
         }
     }
 
-    fun addList(name: String) : Int{
+    //Add a list by name
+    fun addListByName(name: String) : Int{
         val shopList = ShoppingList(name, idListCounter)
         allLists.add(shopList)
         return idList
     }
 
-    fun addList(list: ShoppingList): Int {
-        allLists.add(list)
-        return list.id
-    }
-
-    private fun archiveList(shoppingList: ShoppingList) {
-        archivedLists.add(shoppingList)
-    }
-
+    //Re-usage lists
     fun recreateList(id: Int) {
         for(list in archivedLists) {
             if (list.id == id) {
-                addList(recreateProducts(list))
+                addListByShoppingList(recreateProducts(list))
                 removeListFromArchive(list)
             }
         }
     }
-
+    private fun addListByShoppingList(list: ShoppingList): Int {
+        allLists.add(list)
+        return list.id
+    }
     private fun removeListFromArchive(list: ShoppingList) {
         archivedLists.remove(list)
     }
-
     private fun recreateProducts(oldList: ShoppingList): ShoppingList {
         var list = ShoppingList(oldList.name, oldList.id)
 
@@ -225,27 +220,5 @@ object Model{
         }
 
         return list
-    }
-
-    fun addPhoto(bitmap: Bitmap, name: String) {}
-
-    fun removeImageFromProduct(prodID: Int, listID: Int) {
-        val prod = getProdById(prodID, listID)
-    }
-
-    fun debugAllListsAsString() : String{
-        return allLists.toString()
-    }
-
-    fun debugAllProductsAsString() : String{
-        return allProducts.toString()
-    }
-
-    fun updateDataPrices(oldName: String, oldCategory: String, oldPrice: Double,
-                         newName: String, newCategory: String, newPrice: Double){
-        removePriceData(oldName, oldCategory, oldPrice)
-        if(newPrice > 0){
-            addPriceData(newName, newCategory, newPrice)
-        }
     }
 }
