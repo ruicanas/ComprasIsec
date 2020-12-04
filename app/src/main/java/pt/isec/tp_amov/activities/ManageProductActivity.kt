@@ -26,8 +26,10 @@ import pt.isec.tp_amov.model.ModelView
 import pt.isec.tp_amov.objects.Categories
 import pt.isec.tp_amov.objects.UnitsMeasure
 import java.io.File
+import java.lang.StringBuilder
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 /**
  * This activity is going to be responsible for the creation and edition of a product
@@ -77,19 +79,12 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             finish()
         }
 
+        //Handle spinners
         spCategory = findViewById(R.id.spinnerCat)
         spUnit = findViewById(R.id.spinnerUnit)
-        //create array adapter for the spinner
-        ArrayAdapter.createFromResource(this, R.array.category_array, android.R.layout.simple_spinner_item).also { adapter -> adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner
-            spCategory.adapter = adapter
-        }
-
-        //create array adapter for the spinner
-        ArrayAdapter.createFromResource(this, R.array.unit_array, android.R.layout.simple_spinner_item).also { adapter -> adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner
-            spUnit.adapter = adapter
-        }
+        loadCategories()
+        loadUnits()
+        //Check which type was received
         if(prodId != -1 && type == "edit"){
             fillOptions()
         }
@@ -139,6 +134,52 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         super.onSaveInstanceState(outState)
     }
 
+    private fun loadUnits() {
+        val arrayAdapter: ArrayAdapter<String> = ArrayAdapter(this, android.R.layout.simple_spinner_item, Model.config.units)
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spUnit.adapter = arrayAdapter
+    }
+
+    private fun loadCategories() {
+        val arrayAdapter: ArrayAdapter<String> = ArrayAdapter(this, android.R.layout.simple_spinner_item, Model.config.categories)
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spCategory.adapter = arrayAdapter
+    }
+
+    private fun removeItemCategoryDlg(item: String){
+        val builder = AlertDialog.Builder(this)     //Construct the builder
+        val inflater = this.layoutInflater
+        val viewLayout : View = inflater.inflate(R.layout.dialog_remove_item, null)  //The layout we want to inflate
+
+        val msg = StringBuilder()
+        msg.append(getString(R.string.remove_item_description_dlg)).append(" ").append(item).append("?")
+        viewLayout.findViewById<TextView>(R.id.tvRemoveItemDlg).text = msg.toString()
+
+        builder.setView(viewLayout)
+        builder.setPositiveButton(getString(R.string.delete_dlg)) {dialog, id ->
+            Model.config.categories.remove(item)
+        }
+        builder.setNegativeButton(getString(R.string.cancel_list)) { dialog, id -> dialog.dismiss() }
+        builder.show()
+    }
+
+    private fun removeItemUnitsDlg(item: String){
+        val builder = AlertDialog.Builder(this)     //Construct the builder
+        val inflater = this.layoutInflater
+        val viewLayout : View = inflater.inflate(R.layout.dialog_remove_item, null)  //The layout we want to inflate
+
+        val msg = StringBuilder()
+        msg.append(getString(R.string.remove_item_description_dlg)).append(" ").append(item).append("?")
+        viewLayout.findViewById<TextView>(R.id.tvRemoveItemDlg).text = msg.toString()
+
+        builder.setView(viewLayout)
+        builder.setPositiveButton(getString(R.string.delete_dlg)) {dialog, id ->
+            Model.config.units.remove(item)
+        }
+        builder.setNegativeButton(getString(R.string.cancel_list)) { dialog, id -> dialog.dismiss() }
+        builder.show()
+    }
+
     private fun fillOptions() {
         val sL = Model.getListById(listId)
         findViewById<EditText>(R.id.edProductName).setText(sL!!.returnProduct(prodId)!!.name)
@@ -162,17 +203,8 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
     }
 
     //Handle the spinners information
-    private fun getCategory(): Categories { //Not ideal strings
-        val prompt = spCategory.selectedItem.toString()
-        if (prompt == getString(R.string.fruit_vegetables))
-            return Categories.FRUIT_VEGETABLES
-        if (prompt == getString(R.string.dairy))
-            return Categories.DAIRY
-        if (prompt == getString(R.string.fat))
-            return Categories.FAT
-        if (prompt == getString(R.string.protein))
-            return Categories.PROTEIN
-        return Categories.STARCHY_FOOD
+    private fun getCategory(): String { //Not ideal strings
+        return spCategory.selectedItem.toString()
     }
 
     private fun searchCategory(category: String?){
@@ -180,7 +212,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
             return
         }
         var counter = 0
-        for(i in Categories.values()){
+        for(i in Model.config.categories){
             if(i.toString() == category){
                 spCategory.setSelection(counter)
                 spCategory.invalidate()
@@ -190,22 +222,13 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         }
     }
 
-    private fun getUnit(): UnitsMeasure {
-        val prompt = spUnit.selectedItem.toString()
-        if (prompt == getString(R.string.boxes))
-            return UnitsMeasure.BOXES
-        if (prompt == getString(R.string.kg))
-            return UnitsMeasure.KG
-        if (prompt == getString(R.string.grams))
-            return UnitsMeasure.GRAMS
-        if (prompt == getString(R.string.liter))
-            return UnitsMeasure.LITERS
-        return UnitsMeasure.UNITS
+    private fun getUnit(): String {
+        return spUnit.selectedItem.toString()
     }
 
-    private fun setCategory(category: Categories){ //Not ideal strings
+    private fun setCategory(category: String){ //Not ideal strings
         var counter = 0
-        for(i in Categories.values()){
+        for(i in Model.config.categories){
             if(i == category){
                 spCategory.setSelection(counter)
                 spCategory.invalidate()
@@ -215,9 +238,9 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         }
     }
 
-    private fun setUnit(unit: UnitsMeasure){
+    private fun setUnit(unit: String){
         var counter = 0
-        for(i in UnitsMeasure.values()){
+        for(i in Model.config.units){
             if(i == unit){
                 spUnit.setSelection(counter)
                 spUnit.invalidate()
@@ -297,15 +320,6 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         }
         return super.onOptionsItemSelected(item)
     }
-
-    //Will handle spinners
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        //setup listener for on spinner item selected
-        val spinner: Spinner = findViewById(R.id.spinnerCat)
-        spinner.onItemSelectedListener = this
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>?) {}
 
     //Will increment the amount of a product
     fun onIncQuantity(view: View) {
@@ -463,7 +477,7 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         }
     }*/
 
-    lateinit var newCatName: String
+
 
     fun onNewCategory(view: View) {
         ModelView.dialogNewCategoryShowing = true
@@ -489,11 +503,12 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         dialogNewCategory = builder.show()
     }
 
-    private fun addToCategories() {
-
+    private fun addToCategories(name: String) {
+        if(!Model.config.categories.contains(name)){
+            Model.config.categories.add(name)
+        }
     }
 
-    lateinit var newUnitName: String
 
     fun onNewUnitType(view: View) {
         ModelView.dialogNewUnitsShowing = true
@@ -519,8 +534,10 @@ class ManageProductActivity : AppCompatActivity(), AdapterView.OnItemSelectedLis
         dialogNewUnit = builder.show()
     }
 
-    private fun addToUnits() {
-
+    private fun addToUnits(name: String) {
+        if (!Model.config.units.contains(name)) {
+            Model.config.units.add(name)
+        }
     }
 
     fun onDeletePicture(view: View) {

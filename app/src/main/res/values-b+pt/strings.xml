@@ -79,4 +79,8 @@
     <string name="add">Adicionar</string>
     <string name="previously_created">Previamente Criadas</string>
 
+    <string name="settings">Definições</string>
+    <string name="optManageUnits">Gerir unidades definidas</string>
+    <string name="optManageCategories">Gerir categorias definidas</string>
+    <string name="optChangeLang">Mudar linguagem</string>
 </resources>

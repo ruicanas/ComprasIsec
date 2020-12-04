@@ -3,6 +3,7 @@ package pt.isec.tp_amov.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.view.Menu
 import android.view.MenuItem
 import androidx.recyclerview.widget.RecyclerView
@@ -11,11 +12,11 @@ import pt.isec.tp_amov.R
 import pt.isec.tp_amov.adapters.SearchProductAdapter
 import pt.isec.tp_amov.comparators.ComparatorCategoryData
 import pt.isec.tp_amov.comparators.ComparatorNameData
-import pt.isec.tp_amov.interfaces.ItemClickListener
+import pt.isec.tp_amov.interfaces.ItemClickListenerInterface
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.objects.DataProduct
 
-class SearchProductActivity : AppCompatActivity(), ItemClickListener {
+class SearchProductActivity : AppCompatActivity(), ItemClickListenerInterface<DataProduct> {
     private val dataList = ArrayList<DataProduct>(Model.allProducts)
     private var listId = -1
     lateinit var rvList: RecyclerView
@@ -30,7 +31,7 @@ class SearchProductActivity : AppCompatActivity(), ItemClickListener {
             finish()
         }
 
-        rvList = findViewById(R.id.rvList)
+        rvList = findViewById(R.id.rvDataSearch)
         adapter = SearchProductAdapter(dataList, this)
         lM = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
         rvList.adapter = adapter
@@ -42,7 +43,7 @@ class SearchProductActivity : AppCompatActivity(), ItemClickListener {
         val intent = Intent(this, ManageProductActivity::class.java)
         intent.putExtra("listId", listId)
         intent.putExtra("dataName", data.name)
-        intent.putExtra("dataCat", data.category.toString())
+        intent.putExtra("dataCat", data.category)
         intent.putExtra("type", "reuseData")
         startActivity(intent)
         finish()

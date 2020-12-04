@@ -2,26 +2,26 @@ package pt.isec.tp_amov.model
 
 import android.graphics.Bitmap
 import android.util.Log
-import android.widget.Toast
-import pt.isec.tp_amov.R
 import pt.isec.tp_amov.objects.*
+import pt.isec.tp_amov.utils.Configuration
 
 object Model{
-    private val archivedLists: MutableList<ShoppingList> = ArrayList()
-    val allProducts: MutableList<DataProduct> = ArrayList()
-    private val allLists: MutableList<ShoppingList> = ArrayList()
-    private var idList = 0
     private val idListCounter: Int
         get(){
             ++idList
             return idList
         }
-    private var idProducts = 0
     private val idProductsCounter: Int
         get(){
             ++idProducts
             return idProducts
         }
+    private val archivedLists: MutableList<ShoppingList> = ArrayList()
+    private val allLists: MutableList<ShoppingList> = ArrayList()
+    private var idList = 0
+    private var idProducts = 0
+    val allProducts: MutableList<DataProduct> = ArrayList()
+    val config = Configuration()
     lateinit var bitmap: Bitmap
 
     private fun searchForList(id: Int) : ShoppingList?{
@@ -74,7 +74,7 @@ object Model{
     }
 
     fun receiveProduct(name: String, brand: String, price: Double, amount: Double,
-                       unit: UnitsMeasure, category: Categories, notes: String, img: Bitmap?, listId: Int): Boolean{
+                       unit: String, category: String, notes: String, img: Bitmap?, listId: Int): Boolean{
         val prod = Product( idProductsCounter, name, brand, price, amount, unit, category, notes, img)
         val dataProd = DataProduct(name, category)
         if(!allProducts.contains(dataProd)){
@@ -94,13 +94,13 @@ object Model{
         return true
     }
 
-    fun updateDataBase(oldName: String, oldCategory: Categories, oldPrice: Double,
-                       newName: String, newCategory: Categories, newPrice: Double){
+    fun updateDataBase(oldName: String, oldCategory: String, oldPrice: Double,
+                       newName: String, newCategory: String, newPrice: Double){
         handleOldData(oldName, oldCategory, oldPrice)
         handleNewData(newName, newCategory, newPrice)
     }
 
-    fun removeDataBase(oldName: String, oldCategory: Categories, oldPrice: Double){
+    fun removeDataBase(oldName: String, oldCategory: String, oldPrice: Double){
         handleOldData(oldName, oldCategory, oldPrice)
     }
 
@@ -120,7 +120,7 @@ object Model{
         return duplicate
     }
 
-    private fun incrementProdUsed(name: String, category: Categories) {
+    private fun incrementProdUsed(name: String, category: String) {
         for(dP in allProducts){
             if(dP.name == name && dP.category == category){
                 dP.nTimesUsed++
@@ -129,7 +129,7 @@ object Model{
         }
     }
 
-    private fun addPriceData(name: String, category: Categories, price: Double){
+    private fun addPriceData(name: String, category: String, price: Double){
         for(dP in allProducts){
             if(dP.name == name && dP.category == category){
                 if(dP.lastPrices.size < 3){
@@ -143,7 +143,7 @@ object Model{
         }
     }
 
-    private fun removePriceData(name: String, category: Categories, price: Double){
+    private fun removePriceData(name: String, category: String, price: Double){
         for(dP in allProducts){
             if(dP.name == name && dP.category == category){
                 dP.lastPrices.remove(price)
@@ -160,7 +160,7 @@ object Model{
         return null
     }
 
-    private fun handleNewData(newName: String, newCategory: Categories, newPrice: Double) {
+    private fun handleNewData(newName: String, newCategory: String, newPrice: Double) {
         val dataProd = DataProduct(newName, newCategory)
         if(!allProducts.contains(dataProd)){
             allProducts.add(dataProd)
@@ -172,7 +172,7 @@ object Model{
         }
     }
 
-    private fun handleOldData(oldName: String, oldCategory: Categories, oldPrice: Double){
+    private fun handleOldData(oldName: String, oldCategory: String, oldPrice: Double){
         for(dP in allProducts){
             if(dP.name == oldName && dP.category == oldCategory){
                 dP.nTimesUsed--
@@ -241,8 +241,8 @@ object Model{
         return allProducts.toString()
     }
 
-    fun updateDataPrices(oldName: String, oldCategory: Categories, oldPrice: Double,
-                         newName: String, newCategory: Categories, newPrice: Double){
+    fun updateDataPrices(oldName: String, oldCategory: String, oldPrice: Double,
+                         newName: String, newCategory: String, newPrice: Double){
         removePriceData(oldName, oldCategory, oldPrice)
         if(newPrice > 0){
             addPriceData(newName, newCategory, newPrice)

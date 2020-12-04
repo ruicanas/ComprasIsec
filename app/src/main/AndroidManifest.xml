@@ -11,22 +11,23 @@
         android:required="true" />
 
     <application
-        android:exported="true"
         android:allowBackup="true"
+        android:exported="true"
         android:icon="@mipmap/app_icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/app_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.TP_AMOV">
-        <activity android:name=".activities.SearchProductActivity"
-            android:label="Search a product">
-        </activity>
-        <activity android:name=".activities.ManageProductActivity">
-        </activity>
+        <activity
+            android:name=".activities.ConfigsActivity"
+            android:label="Configurations"></activity>
+        <activity
+            android:name=".activities.SearchProductActivity"
+            android:label="Search a product"></activity>
+        <activity android:name=".activities.ManageProductActivity"></activity>
         <activity
             android:name=".activities.ShowListActivity"
-            android:label="@string/labelNewList">
-        </activity>
+            android:label="@string/labelNewList"></activity>
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

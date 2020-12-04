@@ -6,4 +6,8 @@
         android:title="@string/help"
         app:showAsAction="ifRoom"
         />
+    <item android:id="@+id/settings"
+        android:title="@string/settings"
+        android:icon="@drawable/ic_baseline_settings_24"
+        app:showAsAction="ifRoom"/>
 </menu>

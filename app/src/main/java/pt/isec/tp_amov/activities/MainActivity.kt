@@ -8,16 +8,17 @@ import android.os.StrictMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.*
+import android.widget.EditText
+import android.widget.ListView
+import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import pt.isec.tp_amov.R
-import pt.isec.tp_amov.adapters.HelpListAdapter
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.adapters.ShoppingListAdapter
 import pt.isec.tp_amov.model.ModelView
 import pt.isec.tp_amov.objects.Help
 import pt.isec.tp_amov.objects.ShoppingList
-import java.lang.StringBuilder
 import java.lang.reflect.Method
 
 class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
@@ -42,6 +43,9 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //DEALS WITH CONFIGURATIONS --> DONT FORGET TO EXPLAIN THIS
+        initialConfigs()
+
         pressAddListBtn()
 
         if (Build.VERSION.SDK_INT >= 24) {
@@ -77,9 +81,21 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        updateListView()
+    private fun initialConfigs() {
+        if(Model.config.units.isEmpty()) {
+            Model.config.units.add(getString(R.string.units))
+            Model.config.units.add(getString(R.string.kg))
+            Model.config.units.add(getString(R.string.grams))
+            Model.config.units.add(getString(R.string.liter))
+            Model.config.units.add(getString(R.string.boxes))
+        }
+        if(Model.config.categories.isEmpty()) {
+            Model.config.categories.add(getString(R.string.fruit_vegetables))
+            Model.config.categories.add(getString(R.string.starchy_food))
+            Model.config.categories.add(getString(R.string.dairy))
+            Model.config.categories.add(getString(R.string.protein))
+            Model.config.categories.add(getString(R.string.fat))
+        }
     }
 
     override fun onDestroy() {
@@ -181,6 +197,20 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_help, menu)
+        return true
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.settings){
+            val intent = Intent(this, ConfigsActivity::class.java)
+            startActivity(intent)
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
     /**
      * This method will receive the clicks that are going to be made on options
      * shown by the floating button on the main menu
