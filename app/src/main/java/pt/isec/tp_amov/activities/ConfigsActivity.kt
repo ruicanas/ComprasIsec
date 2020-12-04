@@ -9,26 +9,17 @@ import pt.isec.tp_amov.fragments.FragmentChangeCategory
 import pt.isec.tp_amov.fragments.FragmentChangeUnit
 import pt.isec.tp_amov.fragments.FragmentConfigOpts
 import pt.isec.tp_amov.interfaces.ConfigOptionsInterface
+import pt.isec.tp_amov.model.ModelView
 
 class ConfigsActivity : AppCompatActivity(), ConfigOptionsInterface{
     private val fm: FragmentManager = supportFragmentManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (savedInstanceState != null) {
-            val fragment = fm.getFragment(savedInstanceState, "rotate")
-            fm.beginTransaction().remove(fragment!!).commit()
-        } else {
-            setContentView(R.layout.activity_configs)
+        setContentView(R.layout.activity_configs)
+        if(savedInstanceState == null){
             init()
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        val fragment = fm.fragments[fm.fragments.size-1]
-        fm.putFragment(outState, "rotate", fragment)
-        super.onSaveInstanceState(outState)
     }
 
     private fun init() {

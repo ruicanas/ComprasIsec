@@ -28,6 +28,9 @@ object ModelView {
     lateinit var fragment: Fragment
     var fragmentManager: FragmentManager? = null
 
+    //MANAGE FRAGMENTS
+    var currentFrag = -1
+
     var currentFilter = -1
     var dialogText: String = ""
 }
