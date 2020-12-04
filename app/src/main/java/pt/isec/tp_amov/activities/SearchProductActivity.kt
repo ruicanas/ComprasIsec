@@ -26,11 +26,20 @@ class SearchProductActivity : AppCompatActivity(), ItemClickListenerInterface<Da
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_product)
+        getIntents()
+        verifyListId()
+        prepareList()
+    }
+
+    private fun getIntents() {
         listId = intent.getIntExtra("listId", -1)
+    }
+    private fun verifyListId() {
         if(listId == -1){
             finish()
         }
-
+    }
+    private fun prepareList(){
         rvList = findViewById(R.id.rvDataSearch)
         adapter = SearchProductAdapter(dataList, this)
         lM = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
@@ -38,7 +47,7 @@ class SearchProductActivity : AppCompatActivity(), ItemClickListenerInterface<Da
         rvList.layoutManager = lM
     }
 
-    //Deals with the clicks on item
+    //Deals with the clicks on an item
     override fun onItemClickListener(data: DataProduct) {
         val intent = Intent(this, ManageProductActivity::class.java)
         intent.putExtra("listId", listId)
@@ -49,11 +58,13 @@ class SearchProductActivity : AppCompatActivity(), ItemClickListenerInterface<Da
         finish()
     }
 
+    //Create the menu
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_search_prods, menu)
         return true
     }
 
+    //Items selected on the menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.orderName){
             orderByName()
@@ -64,11 +75,11 @@ class SearchProductActivity : AppCompatActivity(), ItemClickListenerInterface<Da
         return super.onOptionsItemSelected(item)
     }
 
+    //Groupings
     private fun orderByName() {
         dataList.sortWith(ComparatorNameData())
         adapter.notifyDataSetChanged()
     }
-
     private fun orderByCategory() {
         dataList.sortWith(ComparatorCategoryData())
         adapter.notifyDataSetChanged()
