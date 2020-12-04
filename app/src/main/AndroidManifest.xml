@@ -20,10 +20,10 @@
         android:theme="@style/Theme.TP_AMOV">
         <activity
             android:name=".activities.ConfigsActivity"
-            android:label="Configurations"></activity>
+            android:label="@string/configurations"></activity>
         <activity
             android:name=".activities.SearchProductActivity"
-            android:label="Search a product"></activity>
+            android:label="@string/search_product"></activity>
         <activity android:name=".activities.ManageProductActivity"></activity>
         <activity
             android:name=".activities.ShowListActivity"
