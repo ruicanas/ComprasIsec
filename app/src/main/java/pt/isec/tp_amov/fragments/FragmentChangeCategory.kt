@@ -54,7 +54,11 @@ class FragmentChangeCategory : Fragment(), ItemClickListenerInterface<String>{
         val builder = AlertDialog.Builder(act)     //Construct the builder
         val inflater = this.layoutInflater
         val viewLayout : View = inflater.inflate(R.layout.dialog_remove_item, null)  //The layout we want to inflate
-        viewLayout.findViewById<TextView>(R.id.tvRemoveItemDlg).text = "Remove ${data}?"
+        val sb = StringBuilder()
+        viewLayout.findViewById<TextView>(R.id.tvRemoveItemDlg).text = sb
+                .append(act.getString(R.string.remove_item_description_dlg))
+                .append(" ")
+                .append(data)
         builder.setView(viewLayout)
         builder.setPositiveButton(getString(R.string.delete_dlg)) {dialog, id ->
             Model.config.categories.remove(data)

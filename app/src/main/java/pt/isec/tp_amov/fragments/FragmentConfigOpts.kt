@@ -1,7 +1,6 @@
 package pt.isec.tp_amov.fragments
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import pt.isec.tp_amov.R
 import pt.isec.tp_amov.interfaces.ConfigOptionsInterface
 
@@ -51,8 +49,8 @@ class FragmentConfigOpts : Fragment() {
     private fun prepareOptions(){
         lvList.setOnItemClickListener { parent, view, position, id ->
             when(position){
-                0 -> actConfig?.SwapToChangeUnit()
-                1 -> actConfig?.SwapToChangeCategory()
+                0 -> actConfig?.swapToChangeUnit()
+                1 -> actConfig?.swapToChangeCategory()
             }
         }
     }

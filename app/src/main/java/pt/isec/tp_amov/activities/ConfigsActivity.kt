@@ -14,16 +14,16 @@ class ConfigsActivity : AppCompatActivity(), ConfigOptionsInterface{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_configs)
-        hideFrags()
+        init()
     }
 
-    private fun hideFrags() {
+    private fun init() {
         fm.beginTransaction()
             .replace(R.id.fragContainer, FragmentConfigOpts())
             .commit()
     }
 
-    override fun SwapToChangeCategory() {
+    override fun swapToChangeCategory() {
         fm.beginTransaction()
             .setCustomAnimations(android.R.animator.fade_in,0)
             .replace(R.id.fragContainer, FragmentChangeCategory())
@@ -31,7 +31,7 @@ class ConfigsActivity : AppCompatActivity(), ConfigOptionsInterface{
             .commit()
     }
 
-    override fun SwapToChangeUnit() {
+    override fun swapToChangeUnit() {
         fm.beginTransaction()
             .setCustomAnimations(android.R.animator.fade_in,0)
             .replace(R.id.fragContainer, FragmentChangeUnit())
