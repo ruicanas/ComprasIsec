@@ -466,7 +466,7 @@ class ManageProductActivity : AppCompatActivity(){
     }
 
     //Add a new type of categories or new type of units
-    private fun onNewCategory(view: View) {
+    fun onNewCategory(view: View) {
         ModelView.dialogNewCategoryShowing = true
         val inflater = this.layoutInflater
         val view: View = inflater.inflate(R.layout.dialog_new_category, null) //The layout to inflate
@@ -496,7 +496,7 @@ class ManageProductActivity : AppCompatActivity(){
                 loadCategories()
         }
     }
-    private fun onNewUnitType(view: View) {
+    fun onNewUnitType(view: View) {
         ModelView.dialogNewUnitsShowing = true
         val inflater = this.layoutInflater
         val view: View = inflater.inflate(R.layout.dialog_new_unit, null) //The layout to inflate
