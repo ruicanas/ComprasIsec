@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="6dp"
     app:cardElevation="6dp"
-    android:layout_margin="6dp"
+    android:layout_margin="15dp"
     android:foreground="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
@@ -14,39 +14,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:padding="15dp"
         android:background="@color/secondaryColor">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingHorizontal="10dp"
-            android:paddingTop="10dp"
             android:gravity="center_vertical"
             >
             <TextView
-                android:id="@+id/tvDataName"
+                android:id="@+id/tvConfigsName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Name"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginEnd="20dp"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="10dp"
-            android:gravity="center_vertical"
-            >
-            <TextView
-                android:id="@+id/tvDataCat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Category"
-                android:textSize="15sp"
                 android:layout_marginEnd="20dp"
                 />
         </LinearLayout>

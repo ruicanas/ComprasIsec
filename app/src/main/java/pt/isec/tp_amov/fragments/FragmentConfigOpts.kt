@@ -36,7 +36,9 @@ class FragmentConfigOpts : Fragment() {
         lvList = view.findViewById(R.id.lvConfigList)
         adapter = ArrayAdapter(view.context, android.R.layout.simple_selectable_list_item, configsOptions)
         lvList.adapter = adapter
-        fillConfigs()
+        if(configsOptions.size == 0) {
+            fillConfigs()
+        }
         prepareOptions()
         return view
     }
@@ -44,7 +46,6 @@ class FragmentConfigOpts : Fragment() {
     private fun fillConfigs(){
         configsOptions.add(getString(R.string.optManageUnits))
         configsOptions.add(getString(R.string.optManageCategories))
-        configsOptions.add(getString(R.string.optChangeLang))
     }
 
     private fun prepareOptions(){
@@ -52,7 +53,6 @@ class FragmentConfigOpts : Fragment() {
             when(position){
                 0 -> actConfig?.SwapToChangeUnit()
                 1 -> actConfig?.SwapToChangeCategory()
-                2 -> actConfig?.SwapToChangeLanguage()
             }
         }
     }

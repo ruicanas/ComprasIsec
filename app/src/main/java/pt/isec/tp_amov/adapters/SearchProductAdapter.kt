@@ -9,7 +9,7 @@ import pt.isec.tp_amov.interfaces.ItemClickListenerInterface
 import pt.isec.tp_amov.objects.DataProduct
 
 class SearchProductAdapter(val data: ArrayList<DataProduct>,
-                           val itemClickInterface: ItemClickListenerInterface) : RecyclerView.Adapter<StoredProductsHolder>() {
+                           val itemClickInterface: ItemClickListenerInterface<DataProduct>) : RecyclerView.Adapter<StoredProductsHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoredProductsHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.recyclerview_search_list, parent,false)
 
@@ -21,7 +21,7 @@ class SearchProductAdapter(val data: ArrayList<DataProduct>,
     }
 
     override fun onBindViewHolder(holder: StoredProductsHolder, position: Int) {
-        holder.update(data[position].name, data[position].category.toString())
+        holder.update(data[position].name, data[position].category)
         holder.itemView.setOnClickListener{
             itemClickInterface.onItemClickListener(data[position])
         }

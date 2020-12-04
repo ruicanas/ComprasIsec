@@ -11,29 +11,8 @@
 
 
     <fragment
-        android:id="@+id/fragConfigOpts"
-        android:name="pt.isec.tp_amov.fragments.FragmentConfigOpts"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-    </fragment>
-    <fragment
-        android:id="@+id/fragConfigUnit"
-        android:name="pt.isec.tp_amov.fragments.FragmentChangeUnit"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-    </fragment>
-    <fragment
-        android:id="@+id/fragConfigCategory"
-        android:name="pt.isec.tp_amov.fragments.FragmentChangeCategory"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-    </fragment>
-    <fragment
-        android:id="@+id/fragConfigLang"
-        android:name="pt.isec.tp_amov.fragments.FragmentChangeLanguage"
+        android:id="@+id/fragContainer"
+        android:name="pt.isec.tp_amov.fragments.BlankFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >

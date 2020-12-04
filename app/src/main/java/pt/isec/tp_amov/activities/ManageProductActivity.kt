@@ -84,27 +84,12 @@ class ManageProductActivity : AppCompatActivity(){
     }
 
     private fun loadUnits() {
-        if(Model.config.units.isEmpty()) {
-            Model.config.units.add(getString(R.string.units))
-            Model.config.units.add(getString(R.string.kg))
-            Model.config.units.add(getString(R.string.grams))
-            Model.config.units.add(getString(R.string.liter))
-            Model.config.units.add(getString(R.string.boxes))
-        }
         val arrayAdapter: ArrayAdapter<String> = ArrayAdapter(this, android.R.layout.simple_spinner_item, Model.config.units)
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spUnit.adapter = arrayAdapter
     }
 
     private fun loadCategories() {
-        if(Model.config.categories.isEmpty()) {
-            Model.config.categories.add(getString(R.string.fruit_vegetables))
-            Model.config.categories.add(getString(R.string.starchy_food))
-            Model.config.categories.add(getString(R.string.dairy))
-            Model.config.categories.add(getString(R.string.protein))
-            Model.config.categories.add(getString(R.string.fat))
-        }
-
         val arrayAdapter: ArrayAdapter<String> = ArrayAdapter(this, android.R.layout.simple_spinner_item, Model.config.categories)
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spCategory.adapter = arrayAdapter

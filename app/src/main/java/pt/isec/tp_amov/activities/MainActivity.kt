@@ -27,6 +27,9 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //DEALS WITH CONFIGURATIONS --> DONT FORGET TO EXPLAIN THIS
+        initialConfigs()
+
         pressAddListBtn()
 
         if (Build.VERSION.SDK_INT >= 24) {
@@ -42,6 +45,23 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         onOpenList(lvList)
         adapter = ShoppingListAdapter(allLists)
         lvList.adapter = adapter
+    }
+
+    private fun initialConfigs() {
+        if(Model.config.units.isEmpty()) {
+            Model.config.units.add(getString(R.string.units))
+            Model.config.units.add(getString(R.string.kg))
+            Model.config.units.add(getString(R.string.grams))
+            Model.config.units.add(getString(R.string.liter))
+            Model.config.units.add(getString(R.string.boxes))
+        }
+        if(Model.config.categories.isEmpty()) {
+            Model.config.categories.add(getString(R.string.fruit_vegetables))
+            Model.config.categories.add(getString(R.string.starchy_food))
+            Model.config.categories.add(getString(R.string.dairy))
+            Model.config.categories.add(getString(R.string.protein))
+            Model.config.categories.add(getString(R.string.fat))
+        }
     }
 
     private fun updateListView() {
