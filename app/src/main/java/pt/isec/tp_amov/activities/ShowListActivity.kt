@@ -107,6 +107,11 @@ class ShowListActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         updateListView()
+        when (ModelView.currentFilter) {
+            1 -> orderByName()
+            2 -> orderByProdsBought()
+            3 -> orderByCategory()
+        }
     }
     private fun updateListView() {
         productList.clear()
@@ -173,14 +178,17 @@ class ShowListActivity : AppCompatActivity() {
                 return true
             }
             R.id.orderName -> {
+                ModelView.currentFilter = 1
                 orderByName()
                 return true
             }
             R.id.orderProdsBought -> {
+                ModelView.currentFilter = 2
                 orderByProdsBought()
                 return true
             }
             else -> {
+                ModelView.currentFilter = 3
                 orderByCategory()
                 return true
             }

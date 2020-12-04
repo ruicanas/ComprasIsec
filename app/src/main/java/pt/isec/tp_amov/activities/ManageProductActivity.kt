@@ -197,8 +197,16 @@ class ManageProductActivity : AppCompatActivity(){
             Toast.makeText(applicationContext, getString(R.string.no_product_price), Toast.LENGTH_LONG).show()
             return false
         }
-        if (quantity == "0") { //TODO - prevent zero (find better way)
+        if (quantity == "0") {
             Toast.makeText(applicationContext, getString(R.string.no_product_quantity), Toast.LENGTH_LONG).show()
+            return false
+        }
+        if (getUnit() == "") {
+            Toast.makeText(applicationContext, getString(R.string.must_create_unit), Toast.LENGTH_LONG).show()
+            return false
+        }
+        if (getCategory() == "") {
+            Toast.makeText(applicationContext, getString(R.string.must_create_category), Toast.LENGTH_LONG).show()
             return false
         }
         return true
@@ -484,6 +492,8 @@ class ManageProductActivity : AppCompatActivity(){
     private fun addToCategories(name: String) {
         if(!Model.config.categories.contains(name)){
             Model.config.categories.add(name)
+            if (Model.config.categories.size == 1)
+                loadCategories()
         }
     }
     private fun onNewUnitType(view: View) {
@@ -513,6 +523,8 @@ class ManageProductActivity : AppCompatActivity(){
     private fun addToUnits(name: String) {
         if (!Model.config.units.contains(name)) {
             Model.config.units.add(name)
+            if (Model.config.units.size == 1)
+                loadUnits()
         }
     }
 
@@ -543,7 +555,11 @@ class ManageProductActivity : AppCompatActivity(){
         }
     }
     private fun getCategory(): String { //Not ideal strings
-        return spCategory.selectedItem.toString()
+        return try {
+            spCategory.selectedItem.toString()
+        } catch (e: NullPointerException) {
+            ""
+        }
     }
     private fun setUnit(unit: String){
         var counter = 0
@@ -557,7 +573,11 @@ class ManageProductActivity : AppCompatActivity(){
         }
     }
     private fun getUnit(): String {
-        return spUnit.selectedItem.toString()
+        return try {
+            spUnit.selectedItem.toString()
+        } catch (e: NullPointerException) {
+            ""
+        }
     }
 
     //Units and categories loaded

@@ -78,9 +78,11 @@
     <string name="insert_category_name">Inserir nome da categoria</string>
     <string name="add">Adicionar</string>
     <string name="previously_created">Previamente Criadas</string>
-
     <string name="settings">Definições</string>
     <string name="optManageUnits">Gerir unidades definidas</string>
     <string name="optManageCategories">Gerir categorias definidas</string>
-    <string name="optChangeLang">Mudar linguagem</string>
+    <string name="must_create_unit">Tem de criar uma unidade</string>
+    <string name="must_create_category">Tem de criar uma categoria</string>
+    <string name="configurations">Configuração</string>
+    <string name="search_product">Procurar Produto</string>
 </resources>

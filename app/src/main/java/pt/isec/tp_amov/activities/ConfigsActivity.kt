@@ -2,6 +2,7 @@ package pt.isec.tp_amov.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import pt.isec.tp_amov.R
 import pt.isec.tp_amov.fragments.FragmentChangeCategory
@@ -11,10 +12,23 @@ import pt.isec.tp_amov.interfaces.ConfigOptionsInterface
 
 class ConfigsActivity : AppCompatActivity(), ConfigOptionsInterface{
     private val fm: FragmentManager = supportFragmentManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_configs)
-        init()
+
+        if (savedInstanceState != null) {
+            val fragment = fm.getFragment(savedInstanceState, "rotate")
+            fm.beginTransaction().remove(fragment!!).commit()
+        } else {
+            setContentView(R.layout.activity_configs)
+            init()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        val fragment = fm.fragments[fm.fragments.size-1]
+        fm.putFragment(outState, "rotate", fragment)
+        super.onSaveInstanceState(outState)
     }
 
     private fun init() {
@@ -40,9 +54,9 @@ class ConfigsActivity : AppCompatActivity(), ConfigOptionsInterface{
     }
 
     override fun onBackPressed() {
-        if(fm.backStackEntryCount > 0){
+        if (fm.backStackEntryCount > 0) {
             fm.popBackStack()
-        }else {
+        } else {
             super.onBackPressed()
         }
     }
