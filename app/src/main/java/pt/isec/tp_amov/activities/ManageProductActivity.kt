@@ -476,7 +476,7 @@ class ManageProductActivity : AppCompatActivity(){
         ModelView.dialogNewCategoryShowing = true
         val inflater = this.layoutInflater
         val view: View = inflater.inflate(R.layout.dialog_new_category, null) //The layout to inflate
-        val editText = view.findViewById<EditText>(R.id.newUnitName)
+        val editText = view.findViewById<EditText>(R.id.newCategoryName)
 
         val builder = AlertDialog.Builder(this)
         builder.setView(view)

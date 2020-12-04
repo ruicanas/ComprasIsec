@@ -26,17 +26,19 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     private var archivedLists = ArrayList<ShoppingList>()
     private var allLists = ArrayList<ShoppingList>()
     private var hintList = ArrayList<Help>()
-    lateinit var lvList: ListView
+
     private lateinit var adapter: ShoppingListAdapter
-    lateinit var archiveAdapter: ShoppingListAdapter
     private lateinit var helpAdapter: HelpListAdapter
     private lateinit var oldListView: View
-    //This is for closing the dialog of reuse lists
 
+    //This is for closing the dialog of reuse lists
     private lateinit var dialogHelp: AlertDialog
     private lateinit var dialogOldList: AlertDialog
     private lateinit var dialogNewList: AlertDialog
     private lateinit var dialogRemove: AlertDialog
+
+    lateinit var lvList: ListView
+    lateinit var archiveAdapter: ShoppingListAdapter
 
     var listID = -1;
     var editText: EditText? = null
@@ -44,59 +46,12 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //DEALS WITH CONFIGURATIONS --> DONT FORGET TO EXPLAIN THIS
-        initialConfigs()
-
+        initialConfigs()    //DEALS WITH CONFIGURATIONS --> DON'T FORGET TO EXPLAIN THIS
         pressAddListBtn()
-
-        if (Build.VERSION.SDK_INT >= 24) {
-            try {
-                val m: Method = StrictMode::class.java.getMethod("disableDeathOnFileUriExposure")
-                m.invoke(null)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-        lvList = findViewById(R.id.lvMainList)
-        onOpenList(lvList)
-        adapter = ShoppingListAdapter(allLists)
-        lvList.adapter = adapter
-
-        archiveAdapter = ShoppingListAdapter(archivedLists)
-        createHints()
-        helpAdapter = HelpListAdapter(hintList)
-
-        if (savedInstanceState != null) {
-            if (ModelView.dialogNewListShowing) {
-                createListDialog()
-                editText!!.setText(ModelView.dialogText)
-            }
-            if (ModelView.dialogHelpShowing)
-                helpDialog()
-            if (ModelView.dialogOldListShowing)
-                selectOldListsDialog()
-            if (ModelView.dialogRemoveShowing) {
-                removeListDlg(Model.getListById(ModelView.removeListID)!!)
-            }
-        }
-    }
-
-    private fun initialConfigs() {
-        if(Model.config.units.isEmpty()) {
-            Model.config.units.add(getString(R.string.units))
-            Model.config.units.add(getString(R.string.kg))
-            Model.config.units.add(getString(R.string.grams))
-            Model.config.units.add(getString(R.string.liter))
-            Model.config.units.add(getString(R.string.boxes))
-        }
-        if(Model.config.categories.isEmpty()) {
-            Model.config.categories.add(getString(R.string.fruit_vegetables))
-            Model.config.categories.add(getString(R.string.starchy_food))
-            Model.config.categories.add(getString(R.string.dairy))
-            Model.config.categories.add(getString(R.string.protein))
-            Model.config.categories.add(getString(R.string.fat))
-        }
+        dealsWithVersions()
+        prepareLists()
+        prepareHelpAdapter()
+        handleModelView(savedInstanceState)
     }
 
     override fun onDestroy() {
@@ -136,6 +91,95 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         super.onResume()
     }
 
+    //onCreate functions
+    private fun initialConfigs() {
+        if(Model.config.units.isEmpty()) {
+            Model.config.units.add(getString(R.string.units))
+            Model.config.units.add(getString(R.string.kg))
+            Model.config.units.add(getString(R.string.grams))
+            Model.config.units.add(getString(R.string.liter))
+            Model.config.units.add(getString(R.string.boxes))
+        }
+        if(Model.config.categories.isEmpty()) {
+            Model.config.categories.add(getString(R.string.fruit_vegetables))
+            Model.config.categories.add(getString(R.string.starchy_food))
+            Model.config.categories.add(getString(R.string.dairy))
+            Model.config.categories.add(getString(R.string.protein))
+            Model.config.categories.add(getString(R.string.fat))
+        }
+    }
+
+    /**
+     * This method will get the view that is holding the floating button
+     * and then set a listener. This listener is needed to make the pop menu show up
+     */
+    private fun pressAddListBtn() {
+        val fab: View = findViewById(R.id.add_fab)
+        fab.setOnClickListener {
+            showPopup(fab)
+        }
+    }
+    /**
+     * This method will show the popup menu, and will set a listener
+     * in order to be able to receive all the clicks
+     */
+    private fun showPopup(v: View) {
+        PopupMenu(this, v).apply{
+            setOnMenuItemClickListener(this@MainActivity)
+            inflate(R.menu.menu_opt_list)
+            show()
+        }
+    }
+
+    private fun dealsWithVersions() {
+        if (Build.VERSION.SDK_INT >= 24) {
+            try {
+                val m: Method = StrictMode::class.java.getMethod("disableDeathOnFileUriExposure")
+                m.invoke(null)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun prepareLists() {
+        lvList = findViewById(R.id.lvMainList)
+        onOpenList(lvList)
+        adapter = ShoppingListAdapter(allLists)
+        lvList.adapter = adapter
+
+        //Prepare adapters
+        archiveAdapter = ShoppingListAdapter(archivedLists)
+    }
+
+    private fun prepareHelpAdapter() {
+        createHints()
+        helpAdapter = HelpListAdapter(hintList)
+    }
+
+    private fun createHints() {
+        hintList.add(Help(getString(R.string.plus), getString(R.string.add_new_list)))
+        hintList.add(Help(getString(R.string.hold), getString(R.string.opt_remove_list)))
+        hintList.add(Help(getString(R.string.press), getString(R.string.edit_existing_list)))
+    }
+
+    private fun handleModelView(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            if (ModelView.dialogNewListShowing) {
+                createListDialog()
+                editText!!.setText(ModelView.dialogText)
+            }
+            if (ModelView.dialogHelpShowing)
+                helpDialog()
+            if (ModelView.dialogOldListShowing)
+                selectOldListsDialog()
+            if (ModelView.dialogRemoveShowing) {
+                removeListDlg(Model.getListById(ModelView.removeListID)!!)
+            }
+        }
+    }
+
+    //onResume function
     private fun updateListView() {
         allLists.clear()
         val slChosen = Model.getAllLists()
@@ -153,28 +197,13 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         adapter.notifyDataSetChanged()
     }
 
-    private fun updateArchive() {
-        archivedLists.clear()
-        val archive = Model.getOldLists()
-
-        var empty = oldListView.findViewById<TextView>(R.id.emptyPlaceholderOldList)
-        //Check if there are any list. If not, show no list message
-        if (archive.size == 0)
-            empty.text = getString(R.string.no_lists)
-        else
-            empty.text = "" //Clear textView
-
-        for(list in archive){
-            archivedLists.add(list)
-        }
-        archiveAdapter.notifyDataSetChanged()
-    }
-
+    //Inflate menu --> menu_help
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_help, menu)
         return true
     }
 
+    //Select items from a menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.settings){
             val intent = Intent(this, ConfigsActivity::class.java)
@@ -185,29 +214,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             helpDialog()
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    /**
-     * This method will show the popup menu, and will set a listener
-     * in order to be able to receive all the clicks
-     */
-    private fun showPopup(v: View) {
-        PopupMenu(this, v).apply{
-            setOnMenuItemClickListener(this@MainActivity)
-            inflate(R.menu.menu_opt_list)
-            show()
-        }
-    }
-
-    /**
-     * This method will get the view that is holding the floating button
-     * and then set a listener. This listener is needed to make the pop menu show up
-     */
-    private fun pressAddListBtn() {
-        val fab: View = findViewById(R.id.add_fab)
-        fab.setOnClickListener {
-            showPopup(fab)
-        }
     }
 
     /**
@@ -226,6 +232,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         return false
     }
 
+    //Dialogs
     private fun createListDialog() {
         ModelView.dialogNewListShowing = true
         val builder = AlertDialog.Builder(this)     //Construct the builder
@@ -299,15 +306,21 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         dialogOldList = builder.show()
     }
 
-    private fun onSelectOldList(list: ListView) {
-        list.setOnItemClickListener { parent, view, position, id ->
-            val sl: ShoppingList = archiveAdapter.getItem(position) as ShoppingList    //It was changed
-            val intent = Intent(this, ShowListActivity::class.java)
-            Model.recreateList(sl.id)
-            intent.putExtra("listId", sl.id)
-            dialogOldList.dismiss()
-            startActivity(intent)
+    private fun updateArchive() {
+        archivedLists.clear()
+        val archive = Model.getOldLists()
+
+        var empty = oldListView.findViewById<TextView>(R.id.emptyPlaceholderOldList)
+        //Check if there are any list. If not, show no list message
+        if (archive.size == 0)
+            empty.text = getString(R.string.no_lists)
+        else
+            empty.text = "" //Clear textView
+
+        for(list in archive){
+            archivedLists.add(list)
         }
+        archiveAdapter.notifyDataSetChanged()
     }
 
     private fun helpDialog() {
@@ -328,6 +341,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         dialogHelp = builder.show()
     }
 
+    //onItemClickListeners
     private fun onOpenList(listView: ListView) {
         listView.setOnItemClickListener { parent, view, position, id ->
             val sL: ShoppingList = adapter.getItem(position) as ShoppingList    //It was changed
@@ -343,9 +357,14 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
     }
 
-    private fun createHints() {
-        hintList.add(Help(getString(R.string.plus), getString(R.string.add_new_list)))
-        hintList.add(Help(getString(R.string.hold), getString(R.string.opt_remove_list)))
-        hintList.add(Help(getString(R.string.press), getString(R.string.edit_existing_list)))
+    private fun onSelectOldList(list: ListView) {
+        list.setOnItemClickListener { parent, view, position, id ->
+            val sl: ShoppingList = archiveAdapter.getItem(position) as ShoppingList    //It was changed
+            val intent = Intent(this, ShowListActivity::class.java)
+            Model.recreateList(sl.id)
+            intent.putExtra("listId", sl.id)
+            dialogOldList.dismiss()
+            startActivity(intent)
+        }
     }
 }
