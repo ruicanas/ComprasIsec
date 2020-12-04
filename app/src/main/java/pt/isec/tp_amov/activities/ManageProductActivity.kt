@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat
 import pt.isec.tp_amov.R
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.model.ModelView
+import pt.isec.tp_amov.objects.Product
 import java.lang.StringBuilder
 
 
@@ -29,22 +30,22 @@ import java.lang.StringBuilder
  */
 
 class ManageProductActivity : AppCompatActivity(){
-    private val tagMpa = "ManageProductActivity"
+
+    private lateinit var dialogNewCategory: AlertDialog
+    private lateinit var dialogNewUnit: AlertDialog
 
     private lateinit var spCategory: Spinner
     private lateinit var spUnit: Spinner
     private lateinit var type: String
+    private lateinit var imageView: ImageView
+
     private var dataName: String? = null
     private var dataCat: String? = null
     private var listId = -1
     private var prodId = -1
 
     private var bitmap: Bitmap? = null
-    private lateinit var imageView: ImageView
     private var edText: String = ""
-
-    private lateinit var dialogNewCategory: AlertDialog
-    private lateinit var dialogNewUnit: AlertDialog
 
     /**
      * Camera vals
@@ -57,50 +58,25 @@ class ManageProductActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_product)
-
         imageView = findViewById(R.id.productImageView)
-
-        listId = intent.getIntExtra("listId", -1)
-        prodId = intent.getIntExtra("productId", -1)
-        type = intent.getStringExtra("type")!!
-        dataName = intent.getStringExtra("dataName")
-        dataCat = intent.getStringExtra("dataCat")
-
-        //Verify if the ID is valid
-        if(listId == -1){
-            Log.i(tagMpa, "onCreate: Received an invalid list id.")
-            finish()
-        }
-
-        //Handle spinners
-        spCategory = findViewById(R.id.spinnerCat)
-        spUnit = findViewById(R.id.spinnerUnit)
-        loadCategories()
-        loadUnits()
-        //Check which type was received
-        if(prodId != -1 && type == "edit"){
-            fillOptions()
-        }
-        else if(type == "reuseData" && dataName != null && dataCat != null){
-            fillPartialOpts()
-        }
-
-        val currency = findViewById<TextView>(R.id.currency)
-        currency.text = getString(R.string.currency)
-
-        if (savedInstanceState != null) {
-            if (ModelView.dialogNewCategoryShowing)
-                onNewCategory(findViewById(R.id.addNewCategory))
-            if (ModelView.dialogNewUnitsShowing)
-                onNewUnitType(findViewById(R.id.addNewUnit))
-            if (ModelView.hasImage) {
-                val byteArray: ByteArray = savedInstanceState.getByteArray("image")!!
-                bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-                imageView.setImageBitmap(bitmap)
-            }
-        }
+        getIntents()
+        prepareSpinners()
+        checkReceivedType()
+        handleCurrency()
+        handleModelView(savedInstanceState)
     }
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (ModelView.dialogNewCategoryShowing) {
+            if (edText.isNotEmpty())
+                ModelView.dialogText = edText
+        }
+        if (ModelView.dialogNewUnitsShowing) {
+            if (edText.isNotEmpty())
+                ModelView.dialogText = edText
+        }
 
+        super.onSaveInstanceState(outState)
+    }
     override fun onDestroy() {
         try {
             if (dialogNewUnit.isShowing)
@@ -114,132 +90,51 @@ class ManageProductActivity : AppCompatActivity(){
         super.onDestroy()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        if (ModelView.dialogNewCategoryShowing) {
-            if (edText.isNotEmpty())
-                ModelView.dialogText = edText
+    //onCreate functions
+    private fun getIntents() {
+        listId = intent.getIntExtra("listId", -1)
+        prodId = intent.getIntExtra("productId", -1)
+        type = intent.getStringExtra("type")!!
+        dataName = intent.getStringExtra("dataName")
+        dataCat = intent.getStringExtra("dataCat")
+
+        //Verify if the ID is valid
+        if(listId == -1){
+            finish()
         }
-        if (ModelView.dialogNewUnitsShowing) {
-            if (edText.isNotEmpty())
-                ModelView.dialogText = edText
+
+    }
+    private fun prepareSpinners() {
+        //Handle spinners
+        spCategory = findViewById(R.id.spinnerCat)
+        spUnit = findViewById(R.id.spinnerUnit)
+        loadCategories()
+        loadUnits()
+    }
+    private fun checkReceivedType() {
+        //Check which type was received
+        if(prodId != -1 && type == "edit"){
+            fillOptions()
         }
-
-        super.onSaveInstanceState(outState)
-    }
-
-    private fun loadUnits() {
-        val arrayAdapter: ArrayAdapter<String> = ArrayAdapter(this, android.R.layout.simple_spinner_item, Model.config.units)
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spUnit.adapter = arrayAdapter
-    }
-
-    private fun loadCategories() {
-        val arrayAdapter: ArrayAdapter<String> = ArrayAdapter(this, android.R.layout.simple_spinner_item, Model.config.categories)
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spCategory.adapter = arrayAdapter
-    }
-
-    private fun removeItemCategoryDlg(item: String){
-        val builder = AlertDialog.Builder(this)     //Construct the builder
-        val inflater = this.layoutInflater
-        val viewLayout : View = inflater.inflate(R.layout.dialog_remove_item, null)  //The layout we want to inflate
-
-        val msg = StringBuilder()
-        msg.append(getString(R.string.remove_item_description_dlg)).append(" ").append(item).append("?")
-        viewLayout.findViewById<TextView>(R.id.tvRemoveItemDlg).text = msg.toString()
-
-        builder.setView(viewLayout)
-        builder.setPositiveButton(getString(R.string.delete_dlg)) {dialog, id ->
-            Model.config.categories.remove(item)
+        else if(type == "reuseData" && dataName != null && dataCat != null){
+            fillPartialOpts()
         }
-        builder.setNegativeButton(getString(R.string.cancel_list)) { dialog, id -> dialog.dismiss() }
-        builder.show()
     }
-
-    private fun removeItemUnitsDlg(item: String){
-        val builder = AlertDialog.Builder(this)     //Construct the builder
-        val inflater = this.layoutInflater
-        val viewLayout : View = inflater.inflate(R.layout.dialog_remove_item, null)  //The layout we want to inflate
-
-        val msg = StringBuilder()
-        msg.append(getString(R.string.remove_item_description_dlg)).append(" ").append(item).append("?")
-        viewLayout.findViewById<TextView>(R.id.tvRemoveItemDlg).text = msg.toString()
-
-        builder.setView(viewLayout)
-        builder.setPositiveButton(getString(R.string.delete_dlg)) {dialog, id ->
-            Model.config.units.remove(item)
-        }
-        builder.setNegativeButton(getString(R.string.cancel_list)) { dialog, id -> dialog.dismiss() }
-        builder.show()
+    private fun handleCurrency() {
+        val currency = findViewById<TextView>(R.id.currency)
+        currency.text = getString(R.string.currency)
     }
-
-    private fun fillOptions() {
-        val sL = Model.getListById(listId)
-        findViewById<EditText>(R.id.edProductName).setText(sL!!.returnProduct(prodId)!!.name)
-        findViewById<EditText>(R.id.edBrand).setText(sL.returnProduct(prodId)!!.brand)
-        findViewById<EditText>(R.id.edPrice).setText(sL.returnProduct(prodId)!!.price.toString())
-        findViewById<EditText>(R.id.edNotes).setText(sL.returnProduct(prodId)!!.notes)
-        findViewById<EditText>(R.id.edQuantity).setText(sL.returnProduct(prodId)!!.amount.toString())
-
-        val imageBtn = findViewById<ImageButton>(R.id.deleteImageBtn)
-        val img = sL.returnProduct(prodId)!!.image
-        findViewById<ImageView>(R.id.productImageView).setImageBitmap(img)
-        if (img != null)
-            imageBtn.visibility = View.VISIBLE
-
-        setCategory(sL.returnProduct(prodId)!!.category)
-        setUnit(sL.returnProduct(prodId)!!.units)
-    }
-    private fun fillPartialOpts() {
-        findViewById<EditText>(R.id.edProductName).setText(dataName)
-        searchCategory(dataCat)
-    }
-
-    //Handle the spinners information
-    private fun getCategory(): String { //Not ideal strings
-        return spCategory.selectedItem.toString()
-    }
-
-    private fun searchCategory(category: String?){
-        if(category == null){
-            return
-        }
-        var counter = 0
-        for(i in Model.config.categories){
-            if(i.toString() == category){
-                spCategory.setSelection(counter)
-                spCategory.invalidate()
-                break
+    private fun handleModelView(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            if (ModelView.dialogNewCategoryShowing)
+                onNewCategory(findViewById(R.id.addNewCategory))
+            if (ModelView.dialogNewUnitsShowing)
+                onNewUnitType(findViewById(R.id.addNewUnit))
+            if (ModelView.hasImage) {
+                val byteArray: ByteArray = savedInstanceState.getByteArray("image")!!
+                bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+                imageView.setImageBitmap(bitmap)
             }
-            counter++
-        }
-    }
-
-    private fun getUnit(): String {
-        return spUnit.selectedItem.toString()
-    }
-
-    private fun setCategory(category: String){ //Not ideal strings
-        var counter = 0
-        for(i in Model.config.categories){
-            if(i == category){
-                spCategory.setSelection(counter)
-                spCategory.invalidate()
-                break
-            }
-            counter++
-        }
-    }
-
-    private fun setUnit(unit: String){
-        var counter = 0
-        for(i in Model.config.units){
-            if(i == unit){
-                spUnit.setSelection(counter)
-                spUnit.invalidate()
-                break
-            }
-            counter++
         }
     }
 
@@ -267,6 +162,34 @@ class ManageProductActivity : AppCompatActivity(){
         val notes: String = findViewById<EditText>(R.id.edNotes).text.toString()
         val quantity: String = findViewById<EditText>(R.id.edQuantity).text.toString()
 
+        if(!testFields(name, price, quantity)){
+            return false
+        }
+        testBitmap()
+
+        if(item.itemId == R.id.newProdCheck) {
+            optNewProd(name, brand, price, quantity, notes)
+        }
+
+        if(item.itemId == R.id.editProdCheck){
+            val prod = Model.getProdById(prodId, listId)
+            if(prod!!.name != name) {
+                addNew(prod, name, brand, price, quantity, notes)
+            }
+            else {
+                //If the product is in the database and it was modified, we're just going to modify our product
+                if (prod.price == price.toDouble()) {
+                    samePrice(prod, name, brand, price, quantity, notes)
+                }
+                else {
+                    newPrice(prod, name, brand, price, quantity, notes)
+                }
+            }
+            finish()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+    private fun testFields(name: String, price: String, quantity: String) : Boolean{
         if (name.isEmpty()) {
             Toast.makeText(applicationContext, getString(R.string.no_product_name), Toast.LENGTH_LONG).show()
             return false
@@ -279,42 +202,86 @@ class ManageProductActivity : AppCompatActivity(){
             Toast.makeText(applicationContext, getString(R.string.no_product_quantity), Toast.LENGTH_LONG).show()
             return false
         }
-
-        bitmap = try {
+        return true
+    }
+    private fun testBitmap() {
+        this.bitmap = try {
             val bitmapDrawable: BitmapDrawable = imageView.drawable as BitmapDrawable
             bitmapDrawable.bitmap
         } catch (e: TypeCastException) {
             null
         }
-
-        if(item.itemId == R.id.newProdCheck) {
-            Model.receiveProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), notes, bitmap, listId)
-            finish()
-        }
-
-        if(item.itemId == R.id.editProdCheck){
-            val prod = Model.getProdById(prodId, listId)
-
-            if(prod!!.name != name) {
-                //If the name of the product changed and the product doesn't exist in the database, adds the product to the "database" and to the list
-                //We cant forget to update the database, because we got one item that is not being used anymore
-                Model.updateDataBase(prod.name, prod.category, prod.price, name, getCategory(), price.toDouble())
-                prod.editProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), bitmap, notes)
-            } else {
-                //If the product is in the database and it was modified, we're just going to modify our product
-                if (prod.price == price.toDouble()) {
-                    prod.editProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), bitmap, notes)
-                } else {
-                    Model.updateDataPrices(prod.name, prod.category, prod.price, name, getCategory(), price.toDouble())
-                    prod.editProduct(name, brand, price.toDouble(), quantity.toDouble(), getUnit(), getCategory(), bitmap, notes)
-                }
-            }
-            finish()
-        }
-        return super.onOptionsItemSelected(item)
+    }
+    private fun optNewProd(name: String, brand: String, price: String, quantity: String, notes: String) {
+        Model.receiveProduct(
+            name,
+            brand,
+            price.toDouble(),
+            quantity.toDouble(),
+            getUnit(),
+            getCategory(),
+            notes,
+            bitmap,
+            listId
+        )
+        finish()
+    }
+    private fun addNew(prod:Product, name: String, brand: String, price: String, quantity: String, notes: String) {
+        //If the name of the product changed and the product doesn't exist in the database, adds the product to the "database" and to the list
+        //We cant forget to update the database, because we got one item that is not being used anymore
+        Model.updateDataBase(
+            prod.name,
+            prod.category,
+            prod.price,
+            name,
+            getCategory(),
+            price.toDouble()
+        )
+        prod.editProduct(
+            name,
+            brand,
+            price.toDouble(),
+            quantity.toDouble(),
+            getUnit(),
+            getCategory(),
+            bitmap,
+            notes
+        )
+    }
+    private fun samePrice(prod:Product, name: String, brand: String, price: String, quantity: String, notes: String) {
+        prod.editProduct(
+            name,
+            brand,
+            price.toDouble(),
+            quantity.toDouble(),
+            getUnit(),
+            getCategory(),
+            bitmap,
+            notes
+        )
+    }
+    private fun newPrice(prod:Product, name: String, brand: String, price: String, quantity: String, notes: String) {
+        Model.updateDataPrices(
+            prod.name,
+            prod.category,
+            prod.price,
+            name,
+            getCategory(),
+            price.toDouble()
+        )
+        prod.editProduct(
+            name,
+            brand,
+            price.toDouble(),
+            quantity.toDouble(),
+            getUnit(),
+            getCategory(),
+            bitmap,
+            notes
+        )
     }
 
-    //Will increment the amount of a product
+    //onClicks of the buttons '+' and '-'
     fun onIncQuantity(view: View) {
         val editText: EditText = findViewById(R.id.edQuantity)
         val text: String = editText.text.toString()
@@ -333,8 +300,6 @@ class ManageProductActivity : AppCompatActivity(){
             Log.i("onQuantityInc double", num.toString())
         }
     }
-
-    //Will decrement the amount of a product
     fun onDecQuantity(view: View) {
         val editText: EditText = findViewById(R.id.edQuantity)
         val text: String = editText.text.toString()
@@ -360,6 +325,7 @@ class ManageProductActivity : AppCompatActivity(){
         }
     }
 
+    //onClicks of the buttons on this layout
     fun onOpenCamera(view: View) {
         //Ask for camera permissions
         if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
@@ -372,8 +338,7 @@ class ManageProductActivity : AppCompatActivity(){
             startActivityForResult(takePicture, cameraIntentCode)
         }
     }
-
-    fun onOpenGalley(view: View) {
+    fun onOpenGallery(view: View) {
         //Ask for storage permissions
         if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
             ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -389,6 +354,7 @@ class ManageProductActivity : AppCompatActivity(){
         }
     }
 
+    //Ask for permissions to use or the camera or the gallery
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == cameraPermissionCode) { //CAMERA PERMISSION ACCESS
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -417,8 +383,8 @@ class ManageProductActivity : AppCompatActivity(){
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
+    //onActivityResult
     private lateinit var filePath : String
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == cameraIntentCode && resultCode == Activity.RESULT_OK && data != null) { //Camera Access
             if (data.extras == null)
@@ -458,21 +424,42 @@ class ManageProductActivity : AppCompatActivity(){
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    /*lateinit var currentPhotoPath: String
-    private fun saveImage(bitmap: Bitmap): File {
-        // Create an image file name
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmm").format(Date())
-        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+    //Delete picture
+    fun onDeletePicture(view: View) {
+        ModelView.hasImage = false
+        ModelView.deleteImageButton = false
+        val btn = findViewById<ImageButton>(R.id.deleteImageBtn)
+        btn.visibility = View.INVISIBLE
 
-        return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir *//* directory *//*).apply {
-            // Save a file: path for use with ACTION_VIEW intents
-            currentPhotoPath = absolutePath
-        }
-    }*/
+        imageView.setImageBitmap(null)
+        imageView.invalidate()
+    }
 
+    //Methods that will fully or partially fill with information the layout
+    private fun fillOptions() {
+        val sL = Model.getListById(listId)
+        findViewById<EditText>(R.id.edProductName).setText(sL!!.returnProduct(prodId)!!.name)
+        findViewById<EditText>(R.id.edBrand).setText(sL.returnProduct(prodId)!!.brand)
+        findViewById<EditText>(R.id.edPrice).setText(sL.returnProduct(prodId)!!.price.toString())
+        findViewById<EditText>(R.id.edNotes).setText(sL.returnProduct(prodId)!!.notes)
+        findViewById<EditText>(R.id.edQuantity).setText(sL.returnProduct(prodId)!!.amount.toString())
 
+        val imageBtn = findViewById<ImageButton>(R.id.deleteImageBtn)
+        val img = sL.returnProduct(prodId)!!.image
+        findViewById<ImageView>(R.id.productImageView).setImageBitmap(img)
+        if (img != null)
+            imageBtn.visibility = View.VISIBLE
 
-    fun onNewCategory(view: View) {
+        setCategory(sL.returnProduct(prodId)!!.category)
+        setUnit(sL.returnProduct(prodId)!!.units)
+    }
+    private fun fillPartialOpts() {
+        findViewById<EditText>(R.id.edProductName).setText(dataName)
+        searchCategory(dataCat)
+    }
+
+    //Add a new type of categories or new type of units
+    private fun onNewCategory(view: View) {
         ModelView.dialogNewCategoryShowing = true
         val inflater = this.layoutInflater
         val view: View = inflater.inflate(R.layout.dialog_new_category, null) //The layout to inflate
@@ -495,15 +482,12 @@ class ManageProductActivity : AppCompatActivity(){
         }
         dialogNewCategory = builder.show()
     }
-
     private fun addToCategories(name: String) {
         if(!Model.config.categories.contains(name)){
             Model.config.categories.add(name)
         }
     }
-
-
-    fun onNewUnitType(view: View) {
+    private fun onNewUnitType(view: View) {
         ModelView.dialogNewUnitsShowing = true
         val inflater = this.layoutInflater
         val view: View = inflater.inflate(R.layout.dialog_new_unit, null) //The layout to inflate
@@ -527,20 +511,65 @@ class ManageProductActivity : AppCompatActivity(){
         }
         dialogNewUnit = builder.show()
     }
-
     private fun addToUnits(name: String) {
         if (!Model.config.units.contains(name)) {
             Model.config.units.add(name)
         }
     }
 
-    fun onDeletePicture(view: View) {
-        ModelView.hasImage = false
-        ModelView.deleteImageButton = false
-        val btn = findViewById<ImageButton>(R.id.deleteImageBtn)
-        btn.visibility = View.INVISIBLE
+    //Getters and setters of categories and units
+    private fun searchCategory(category: String?){
+        if(category == null){
+            return
+        }
+        var counter = 0
+        for(i in Model.config.categories){
+            if(i.toString() == category){
+                spCategory.setSelection(counter)
+                spCategory.invalidate()
+                break
+            }
+            counter++
+        }
+    }
+    private fun setCategory(category: String){ //Not ideal strings
+        var counter = 0
+        for(i in Model.config.categories){
+            if(i == category){
+                spCategory.setSelection(counter)
+                spCategory.invalidate()
+                break
+            }
+            counter++
+        }
+    }
+    private fun getCategory(): String { //Not ideal strings
+        return spCategory.selectedItem.toString()
+    }
+    private fun setUnit(unit: String){
+        var counter = 0
+        for(i in Model.config.units){
+            if(i == unit){
+                spUnit.setSelection(counter)
+                spUnit.invalidate()
+                break
+            }
+            counter++
+        }
+    }
+    private fun getUnit(): String {
+        return spUnit.selectedItem.toString()
+    }
 
-        imageView.setImageBitmap(null)
-        imageView.invalidate()
+    //Units and categories loaded
+    private fun loadUnits() {
+        val arrayAdapter: ArrayAdapter<String> = ArrayAdapter(this, android.R.layout.simple_spinner_item, Model.config.units)
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spUnit.adapter = arrayAdapter
+    }
+    private fun loadCategories() {
+        val arrayAdapter: ArrayAdapter<String> = ArrayAdapter(this, android.R.layout.simple_spinner_item, Model.config.categories)
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spCategory.adapter = arrayAdapter
     }
 }

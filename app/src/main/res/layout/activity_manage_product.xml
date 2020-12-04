@@ -256,7 +256,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="onOpenGalley"
+                android:onClick="onOpenGallery"
                 android:text="@string/from_gallery_btn"
                 android:textAllCaps="false" />
 
