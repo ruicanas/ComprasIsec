@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
+import android.util.Log
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
@@ -19,7 +21,7 @@ import pt.isec.tp_amov.objects.Help
 import pt.isec.tp_amov.objects.ShoppingList
 import java.lang.reflect.Method
 
-class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
+class MainActivity : AppCompatActivity(){
     private var archivedLists = ArrayList<ShoppingList>()
     private var allLists = ArrayList<ShoppingList>()
     private var hintList = ArrayList<Help>()
@@ -36,7 +38,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     lateinit var lvList: ListView
     lateinit var archiveAdapter: ShoppingListAdapter
-    private var popupMenu: PopupMenu? = null
 
     var listID = -1;
     var editText: EditText? = null
@@ -75,7 +76,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
         if (ModelView.dialogRemoveShowing) {
             if (listID != -1)
-                ModelView.removeListID = listID;
+                ModelView.removeListID = listID
         }
         super.onSaveInstanceState(outState)
     }
@@ -108,25 +109,9 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
      * and then set a listener. This listener is needed to make the pop menu show up
      */
     private fun pressAddListBtn() {
-        val view: View = findViewById(R.id.add_fab)
-        view.setOnClickListener {
-            showPopup(view)
-        }
-    }
-    /**
-     * This method will show the popup menu, and will set a listener
-     * in order to be able to receive all the clicks
-     */
-    private fun showPopup(v: View) {
-        popupMenu = PopupMenu(this, v).apply{
-            setOnMenuItemClickListener(this@MainActivity)
-            inflate(R.menu.menu_opt_list)
-            ModelView.popupShowing = true
-            setOnDismissListener {
-                menu.close()
-                dismiss()
-            }
-            show()
+        val fab: View = findViewById(R.id.add_fab)
+        fab.setOnClickListener {
+            createListDialog()
         }
     }
 
@@ -204,29 +189,13 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     //Select items from a menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.settings){
+        if (item.itemId == R.id.settings) {
             val intent = Intent(this, ConfigsActivity::class.java)
             startActivity(intent)
             return true
-        }
-        else if(item.itemId == R.id.helpList) {
+        } else if (item.itemId == R.id.helpList) {
             helpDialog()
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    /**
-     * This method will receive the clicks that are going to be made on options
-     * shown by the floating button on the main menu
-     */
-    override fun onMenuItemClick(item: MenuItem): Boolean {
-        if(item.itemId == R.id.new_opt){
-            ModelView.popupShowing = false
-            createListDialog()
-            return true
-        }
-        if (item.itemId == R.id.reuse_opt) {
-            ModelView.popupShowing = false
+        } else if (item.itemId == R.id.reuse_opt) {
             selectOldListsDialog()
             return true
         }
