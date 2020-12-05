@@ -31,4 +31,5 @@ object ModelView {
 
     var currentFilter = -1
     var dialogText: String = ""
+    var dialogTextProd: String = ""
 }

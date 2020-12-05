@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.CheckBox
 import android.widget.ListView
+import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import pt.isec.tp_amov.R
@@ -34,8 +35,8 @@ class ShowListActivity : AppCompatActivity() {
     lateinit var adapter: ProductListAdapter
     lateinit var helpAdapter: HelpListAdapter
 
-    private lateinit var dialogHelp: AlertDialog
-    private lateinit var dialogRemove: AlertDialog
+    private var dialogHelp: AlertDialog? = null
+    private var dialogRemove: AlertDialog? = null
 
     //onCreate
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -134,14 +135,12 @@ class ShowListActivity : AppCompatActivity() {
 
     //Remaining
     override fun onDestroy() {
-        try {
-            if (dialogHelp.isShowing)
-                dialogHelp.dismiss()
-        } catch (e: UninitializedPropertyAccessException) {}
-        try {
-            if (dialogRemove.isShowing)
-                dialogRemove.dismiss()
-        } catch (e: UninitializedPropertyAccessException) {}
+        if (dialogHelp != null)
+            if (dialogHelp!!.isShowing)
+                dialogHelp!!.dismiss()
+        if (dialogRemove != null)
+            if (dialogRemove!!.isShowing)
+                dialogRemove!!.dismiss()
         super.onDestroy()
     }
     override fun onSaveInstanceState(outState: Bundle) {
