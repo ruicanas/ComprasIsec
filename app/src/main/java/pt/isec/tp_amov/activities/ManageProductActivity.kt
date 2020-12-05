@@ -1,6 +1,7 @@
 package pt.isec.tp_amov.activities
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
@@ -161,7 +162,7 @@ class ManageProductActivity : AppCompatActivity(){
         val quantity: String = findViewById<EditText>(R.id.edQuantity).text.toString()
         val price: String = findViewById<EditText>(R.id.edPrice).text.toString()
 
-        if(!testFields(name, price, quantity)){
+        if(!testFields(name, quantity)){
             return false
         }
         testBitmap()
@@ -191,7 +192,7 @@ class ManageProductActivity : AppCompatActivity(){
         }
         return super.onOptionsItemSelected(item)
     }
-    private fun testFields(name: String, price: String, quantity: String): Boolean { //Tests mandatory fields
+    private fun testFields(name: String, quantity: String): Boolean { //Tests mandatory fields
         if (name.isEmpty()) {
             Toast.makeText(applicationContext, getString(R.string.no_product_name), Toast.LENGTH_LONG).show()
             return false
@@ -438,6 +439,7 @@ class ManageProductActivity : AppCompatActivity(){
 
     //onActivityResult
     private lateinit var filePath : String
+    @SuppressLint("Recycle") //In order to suppress the warning at .query
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == cameraIntentCode && resultCode == Activity.RESULT_OK && data != null) { //Camera Access
             if (data.extras == null)
@@ -517,19 +519,19 @@ class ManageProductActivity : AppCompatActivity(){
         ModelView.dialogNewCategoryShowing = true
         val builder = AlertDialog.Builder(this)
         val inflater = this.layoutInflater
-        val view: View = inflater.inflate(R.layout.dialog_new_category, null) //The layout to inflate
-        editText = view.findViewById(R.id.newCategoryName)
+        val vView: View = inflater.inflate(R.layout.dialog_new_category, null) //The layout to inflate
+        editText = vView.findViewById(R.id.newCategoryName)
 
-        builder.setView(view)
+        builder.setView(vView)
         builder.setCancelable(true)
         builder.setOnCancelListener { ModelView.dialogNewCategoryShowing = false }
-        builder.setPositiveButton(getString(R.string.add)) { dialog, id ->
+        builder.setPositiveButton(getString(R.string.add)) { dialog, _ ->
             ModelView.dialogNewCategoryShowing = false
             dialog.dismiss()
             val newCatName = editText!!.text.toString()
             addToCategories(newCatName)
         }
-        builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, id ->
+        builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, _ ->
             ModelView.dialogNewCategoryShowing = false
             dialog.dismiss()
         }
@@ -546,19 +548,19 @@ class ManageProductActivity : AppCompatActivity(){
         ModelView.dialogNewUnitsShowing = true
         val builder = AlertDialog.Builder(this)
         val inflater = this.layoutInflater
-        val view: View = inflater.inflate(R.layout.dialog_new_unit, null) //The layout to inflate
-        editText = view.findViewById(R.id.newUnitName)
+        val vView: View = inflater.inflate(R.layout.dialog_new_unit, null) //The layout to inflate
+        editText = vView.findViewById(R.id.newUnitName)
 
-        builder.setView(view)
+        builder.setView(vView)
         builder.setCancelable(true)
         builder.setOnCancelListener { ModelView.dialogNewUnitsShowing = false }
-        builder.setPositiveButton(getString(R.string.add)) { dialog, id ->
+        builder.setPositiveButton(getString(R.string.add)) { dialog, _ ->
             ModelView.dialogNewUnitsShowing = false
             dialog.dismiss()
             val newUnitName = editText!!.text.toString()
             addToUnits(newUnitName)
         }
-        builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, id ->
+        builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, _ ->
             ModelView.dialogNewUnitsShowing = false
             dialog.dismiss()
         }
@@ -579,7 +581,7 @@ class ManageProductActivity : AppCompatActivity(){
         }
         var counter = 0
         for(i in Model.config.categories){
-            if(i.toString() == category){
+            if(i == category){
                 spCategory.setSelection(counter)
                 spCategory.invalidate()
                 break

@@ -8,7 +8,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.CheckBox
 import android.widget.ListView
-import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import pt.isec.tp_amov.R
@@ -31,9 +30,9 @@ class ShowListActivity : AppCompatActivity() {
     private var listId = -1
     private var prodId = -1
 
-    lateinit var lvList: ListView
-    lateinit var adapter: ProductListAdapter
-    lateinit var helpAdapter: HelpListAdapter
+    private lateinit var lvList: ListView
+    private lateinit var adapter: ProductListAdapter
+    private lateinit var helpAdapter: HelpListAdapter
 
     private var dialogHelp: AlertDialog? = null
     private var dialogRemove: AlertDialog? = null
@@ -81,7 +80,7 @@ class ShowListActivity : AppCompatActivity() {
         hintList.add(Help(getString(R.string.checkbox), getString(R.string.check_bought)))
     }
     private fun onOpenProduct() {
-        lvList.setOnItemClickListener { parent, view, position, id ->
+        lvList.setOnItemClickListener { _, _, position, _ ->
             val prod: Product = adapter.getItem(position) as Product    //It was changed
             val intent = Intent(this, ManageProductActivity::class.java)
             intent.putExtra("listId", this.listId)
@@ -89,7 +88,7 @@ class ShowListActivity : AppCompatActivity() {
             intent.putExtra("type", "edit")
             startActivity(intent)
         }
-        lvList.setOnItemLongClickListener { parent, view, position, id ->
+        lvList.setOnItemLongClickListener { _, _, position, _ ->
             val prod: Product = adapter.getItem(position) as Product    //It was changed
             removeItemDlg(prod)
             true
@@ -119,7 +118,7 @@ class ShowListActivity : AppCompatActivity() {
         //Add the elements to the vector
         val slChosen = Model.getListById(listId)?.productList
         if(slChosen != null) {
-            var empty = findViewById<TextView>(R.id.emptyPlaceholderProd)
+            val empty = findViewById<TextView>(R.id.emptyPlaceholderProd)
             //Check if there are any products. If not, show no products message
             if (slChosen.size == 0)
                 empty.text = getString(R.string.no_products)
@@ -228,14 +227,14 @@ class ShowListActivity : AppCompatActivity() {
         builder.setView(viewLayout)
         builder.setCancelable(true)
         builder.setOnCancelListener { ModelView.dialogRemoveShowingSL = false }
-        builder.setPositiveButton(getString(R.string.delete_dlg)) {dialog, id ->
+        builder.setPositiveButton(getString(R.string.delete_dlg)) { _, _ ->
             ModelView.dialogRemoveShowingSL = false
             Model.removeProdData(prod.name, prod.category, prod.price)
             val slChosen = Model.getListById(this.listId)
             slChosen?.removeProduct(prod.id)
             updateListView()
         }
-        builder.setNegativeButton(getString(R.string.cancel_list)) { dialog, id ->
+        builder.setNegativeButton(getString(R.string.cancel_list)) { dialog, _ ->
             dialog.dismiss()
             ModelView.dialogRemoveShowingSL = false
         }
@@ -245,14 +244,14 @@ class ShowListActivity : AppCompatActivity() {
         ModelView.dialogHelpShowingSL = true
         val inflater = this.layoutInflater
         val view: View = inflater.inflate(R.layout.dialog_help, null)  //The layout we want to inflate
-        var helpList = view.findViewById<ListView>(R.id.helpList)
+        val helpList = view.findViewById<ListView>(R.id.helpList)
         helpList.adapter = helpAdapter
 
         val builder = AlertDialog.Builder(this)
         builder.setView(view)
         builder.setCancelable(true)
         builder.setOnCancelListener { ModelView.dialogHelpShowingSL = false }
-        builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, id ->
+        builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, _ ->
             ModelView.dialogHelpShowingSL = false
             dialog.dismiss()
         }

@@ -1,13 +1,12 @@
 package pt.isec.tp_amov.activities
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
-import android.util.Log
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
@@ -36,11 +35,11 @@ class MainActivity : AppCompatActivity(){
     private var dialogNewList: AlertDialog? = null
     private var dialogRemove: AlertDialog? = null
 
-    lateinit var lvList: ListView
-    lateinit var archiveAdapter: ShoppingListAdapter
+    private lateinit var lvList: ListView
+    private lateinit var archiveAdapter: ShoppingListAdapter
 
-    var listID = -1;
-    var editText: EditText? = null
+    private var listID = -1
+    private var editText: EditText? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -168,7 +167,7 @@ class MainActivity : AppCompatActivity(){
         allLists.clear()
         val slChosen = Model.allLists
 
-        var empty = findViewById<TextView>(R.id.emptyPlaceholderList)
+        val empty = findViewById<TextView>(R.id.emptyPlaceholderList)
         //Check if there are any list. If not, show no list message
         if (slChosen.size == 0)
             empty.text = getString(R.string.no_lists)
@@ -189,15 +188,19 @@ class MainActivity : AppCompatActivity(){
 
     //Select items from a menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.settings) {
-            val intent = Intent(this, ConfigsActivity::class.java)
-            startActivity(intent)
-            return true
-        } else if (item.itemId == R.id.helpList) {
-            helpDialog()
-        } else if (item.itemId == R.id.reuse_opt) {
-            selectOldListsDialog()
-            return true
+        when (item.itemId) {
+            R.id.settings -> {
+                val intent = Intent(this, ConfigsActivity::class.java)
+                startActivity(intent)
+                return true
+            }
+            R.id.helpList -> {
+                helpDialog()
+            }
+            R.id.reuse_opt -> {
+                selectOldListsDialog()
+                return true
+            }
         }
         return false
     }
@@ -213,7 +216,7 @@ class MainActivity : AppCompatActivity(){
         builder.setView(viewLayout)
         builder.setCancelable(true)
         builder.setOnCancelListener { ModelView.dialogNewListShowing = false }
-        builder.setPositiveButton(getString(R.string.create_list)) { dialog, id ->
+        builder.setPositiveButton(getString(R.string.create_list)) { _, _ ->
             ModelView.dialogNewListShowing = false
             val intent = Intent(this, ShowListActivity::class.java)
             val listName = editText!!.text.toString()     //After the user write a name, this name will be save on listName
@@ -221,7 +224,7 @@ class MainActivity : AppCompatActivity(){
             intent.putExtra("listId", Model.addListByName(listName)) //And then, the listName, will be sent to the next activity.
             startActivity(intent)
         }
-        builder.setNegativeButton(getString(R.string.cancel_list)) { dialog, id ->
+        builder.setNegativeButton(getString(R.string.cancel_list)) { dialog, _ ->
             ModelView.dialogNewListShowing = false
             dialog.dismiss()
         }
@@ -243,19 +246,20 @@ class MainActivity : AppCompatActivity(){
         builder.setView(viewLayout)
         builder.setCancelable(true) //Can be canceled by touching outside the box
         builder.setOnCancelListener { ModelView.dialogRemoveShowing = false }
-        builder.setPositiveButton(getString(R.string.delete_dlg)) {dialog, id ->
+        builder.setPositiveButton(getString(R.string.delete_dlg)) { _, _ ->
             ModelView.dialogRemoveShowing = false
             Model.removeListData(sL)
             sL.removeAll()
             updateListView()
         }
-        builder.setNegativeButton(getString(R.string.cancel_list)) { dialog, id ->
+        builder.setNegativeButton(getString(R.string.cancel_list)) { dialog, _ ->
             ModelView.dialogRemoveShowing = false
             dialog.dismiss()
         }
         dialogRemove = builder.show() //Capture dialog so that it can be dismissed later
     }
 
+    @SuppressLint("InflateParams")  //Used to remove the warning given by inflater.inflate -> 'null' at root parameter
     private fun selectOldListsDialog() {
         ModelView.dialogOldListShowing = true
         val inflater = this.layoutInflater
@@ -270,7 +274,7 @@ class MainActivity : AppCompatActivity(){
         builder.setView(oldListView)
         builder.setCancelable(true)
         builder.setOnCancelListener { ModelView.dialogOldListShowing = false }
-        builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, id ->
+        builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, _ ->
             ModelView.dialogOldListShowing = false
             dialog.dismiss()
         }
@@ -281,7 +285,7 @@ class MainActivity : AppCompatActivity(){
         archivedLists.clear()
         val archive = Model.archivedLists
 
-        var empty = oldListView.findViewById<TextView>(R.id.emptyPlaceholderOldList)
+        val empty = oldListView.findViewById<TextView>(R.id.emptyPlaceholderOldList)
         //Check if there are any list. If not, show no list message
         if (archive.size == 0)
             empty.text = getString(R.string.no_lists)
@@ -298,14 +302,14 @@ class MainActivity : AppCompatActivity(){
         ModelView.dialogHelpShowing = true
         val inflater = this.layoutInflater
         val view: View = inflater.inflate(R.layout.dialog_help, null)  //The layout we want to inflate
-        var helpList = view.findViewById<ListView>(R.id.helpList)
+        val helpList = view.findViewById<ListView>(R.id.helpList)
         helpList.adapter = helpAdapter
 
         val builder = AlertDialog.Builder(this)
         builder.setView(view)
         builder.setCancelable(true)
         builder.setOnCancelListener { ModelView.dialogHelpShowing = false }
-        builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, id ->
+        builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, _ ->
             ModelView.dialogHelpShowing = false
             dialog.dismiss()
         }
@@ -314,14 +318,14 @@ class MainActivity : AppCompatActivity(){
 
     //onItemClickListeners
     private fun onOpenList(listView: ListView) {
-        listView.setOnItemClickListener { parent, view, position, id ->
+        listView.setOnItemClickListener { _, _, position, _ ->
             val sL: ShoppingList = adapter.getItem(position) as ShoppingList    //It was changed
             val intent = Intent(this, ShowListActivity::class.java)
             intent.putExtra("listId", sL.id)
             startActivity(intent)
         }
 
-        listView.setOnItemLongClickListener { parent, view, position, id ->
+        listView.setOnItemLongClickListener { _, _, position, _ ->
             val sL: ShoppingList = adapter.getItem(position) as ShoppingList    //It was changed
             removeListDlg(sL)
             true
@@ -329,7 +333,7 @@ class MainActivity : AppCompatActivity(){
     }
 
     private fun onSelectOldList(list: ListView) {
-        list.setOnItemClickListener { parent, view, position, id ->
+        list.setOnItemClickListener { _, _, position, _ ->
             val sl: ShoppingList = archiveAdapter.getItem(position) as ShoppingList    //It was changed
             val intent = Intent(this, ShowListActivity::class.java)
             Model.recreateList(sl.id)

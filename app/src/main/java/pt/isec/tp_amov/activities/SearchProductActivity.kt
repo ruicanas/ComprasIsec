@@ -3,7 +3,6 @@ package pt.isec.tp_amov.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.view.Menu
 import android.view.MenuItem
 import androidx.recyclerview.widget.RecyclerView
@@ -19,9 +18,9 @@ import pt.isec.tp_amov.objects.DataProduct
 class SearchProductActivity : AppCompatActivity(), ItemClickListenerInterface<DataProduct> {
     private val dataList = ArrayList<DataProduct>(Model.allProducts)
     private var listId = -1
-    lateinit var rvList: RecyclerView
-    lateinit var adapter: SearchProductAdapter
-    lateinit var lM: RecyclerView.LayoutManager
+    private lateinit var rvList: RecyclerView
+    private lateinit var adapter: SearchProductAdapter
+    private lateinit var lM: RecyclerView.LayoutManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

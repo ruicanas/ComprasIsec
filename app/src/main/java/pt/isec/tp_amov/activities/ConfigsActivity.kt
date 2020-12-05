@@ -2,14 +2,12 @@ package pt.isec.tp_amov.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import pt.isec.tp_amov.R
 import pt.isec.tp_amov.fragments.FragmentChangeCategory
 import pt.isec.tp_amov.fragments.FragmentChangeUnit
 import pt.isec.tp_amov.fragments.FragmentConfigOpts
 import pt.isec.tp_amov.interfaces.ConfigOptionsInterface
-import pt.isec.tp_amov.model.ModelView
 
 class ConfigsActivity : AppCompatActivity(), ConfigOptionsInterface{
     private val fm: FragmentManager = supportFragmentManager
