@@ -157,6 +157,11 @@ class ShowListActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
+        menu.close()
+        return true
+    }
+
     //Selected items from menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

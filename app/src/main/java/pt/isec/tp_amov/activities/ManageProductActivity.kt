@@ -132,8 +132,6 @@ class ManageProductActivity : AppCompatActivity(){
             }
             if (Model.getProdById(prodId, listId)!!.image != null) {
                 bitmap = Model.getProdById(prodId, listId)!!.image
-                /*val byteArray: ByteArray = savedInstanceState.getByteArray("image")!!
-                bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)*/
                 imageView.setImageBitmap(bitmap)
             }
         }
@@ -159,9 +157,9 @@ class ManageProductActivity : AppCompatActivity(){
     override fun onOptionsItemSelected(item: MenuItem): Boolean { //Process on menu item selected (there is only one)
         val name: String = findViewById<EditText>(R.id.edProductName).text.toString()
         val brand: String = findViewById<EditText>(R.id.edBrand).text.toString()
-        val price: String = findViewById<EditText>(R.id.edPrice).text.toString()
         val notes: String = findViewById<EditText>(R.id.edNotes).text.toString()
         val quantity: String = findViewById<EditText>(R.id.edQuantity).text.toString()
+        val price: String = findViewById<EditText>(R.id.edPrice).text.toString()
 
         if(!testFields(name, price, quantity)){
             return false
@@ -179,10 +177,13 @@ class ManageProductActivity : AppCompatActivity(){
             }
             else {
                 //If the product is in the database and it was modified, we're just going to modify our product
-                if (prod.price == price.toDouble()) {
-                    samePrice(prod, name, brand, price, quantity, notes)
-                }
-                else {
+                if (price != "") {
+                    if (prod.price == price.toDouble()) {
+                        samePrice(prod, name, brand, price, quantity, notes)
+                    } else {
+                        newPrice(prod, name, brand, price, quantity, notes)
+                    }
+                } else{
                     newPrice(prod, name, brand, price, quantity, notes)
                 }
             }
@@ -193,10 +194,6 @@ class ManageProductActivity : AppCompatActivity(){
     private fun testFields(name: String, price: String, quantity: String): Boolean { //Tests mandatory fields
         if (name.isEmpty()) {
             Toast.makeText(applicationContext, getString(R.string.no_product_name), Toast.LENGTH_LONG).show()
-            return false
-        }
-        if (price.isEmpty()) {
-            Toast.makeText(applicationContext, getString(R.string.no_product_price), Toast.LENGTH_LONG).show()
             return false
         }
         if (quantity == "0") {
@@ -222,17 +219,32 @@ class ManageProductActivity : AppCompatActivity(){
         }
     }
     private fun optNewProd(name: String, brand: String, price: String, quantity: String, notes: String) {
-        Model.receiveProduct(
-            name,
-            brand,
-            price.toDouble(),
-            quantity.toDouble(),
-            getUnit(),
-            getCategory(),
-            notes,
-            bitmap,
-            listId
-        )
+        if(price == "") {
+            Model.receiveProduct(
+                    name,
+                    brand,
+                    0.0,
+                    quantity.toDouble(),
+                    getUnit(),
+                    getCategory(),
+                    notes,
+                    bitmap,
+                    listId
+            )
+
+        }else {
+            Model.receiveProduct(
+                    name,
+                    brand,
+                    price.toDouble(),
+                    quantity.toDouble(),
+                    getUnit(),
+                    getCategory(),
+                    notes,
+                    bitmap,
+                    listId
+            )
+        }
         finish()
     }
     private fun addNew(prod:Product, name: String, brand: String, price: String, quantity: String, notes: String) {
@@ -258,36 +270,70 @@ class ManageProductActivity : AppCompatActivity(){
         )
     }
     private fun samePrice(prod:Product, name: String, brand: String, price: String, quantity: String, notes: String) {
-        prod.editProduct(
-            name,
-            brand,
-            price.toDouble(),
-            quantity.toDouble(),
-            getUnit(),
-            getCategory(),
-            bitmap,
-            notes
-        )
+        if(price == ""){
+            prod.editProduct(
+                    name,
+                    brand,
+                    0.0,
+                    quantity.toDouble(),
+                    getUnit(),
+                    getCategory(),
+                    bitmap,
+                    notes
+            )
+        }else {
+            prod.editProduct(
+                    name,
+                    brand,
+                    price.toDouble(),
+                    quantity.toDouble(),
+                    getUnit(),
+                    getCategory(),
+                    bitmap,
+                    notes
+            )
+        }
     }
     private fun newPrice(prod:Product, name: String, brand: String, price: String, quantity: String, notes: String) {
-        Model.updateDataPrices(
-            prod.name,
-            prod.category,
-            prod.price,
-            name,
-            getCategory(),
-            price.toDouble()
-        )
-        prod.editProduct(
-            name,
-            brand,
-            price.toDouble(),
-            quantity.toDouble(),
-            getUnit(),
-            getCategory(),
-            bitmap,
-            notes
-        )
+        if(price == ""){
+            Model.updateDataPrices(
+                    prod.name,
+                    prod.category,
+                    prod.price,
+                    name,
+                    getCategory(),
+                    0.0
+            )
+            prod.editProduct(
+                    name,
+                    brand,
+                    0.0,
+                    quantity.toDouble(),
+                    getUnit(),
+                    getCategory(),
+                    bitmap,
+                    notes
+            )
+        }else {
+            Model.updateDataPrices(
+                    prod.name,
+                    prod.category,
+                    prod.price,
+                    name,
+                    getCategory(),
+                    price.toDouble()
+            )
+            prod.editProduct(
+                    name,
+                    brand,
+                    price.toDouble(),
+                    quantity.toDouble(),
+                    getUnit(),
+                    getCategory(),
+                    bitmap,
+                    notes
+            )
+        }
     }
 
     //onClicks of the buttons '+' and '-' image buttons

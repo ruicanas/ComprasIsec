@@ -38,7 +38,12 @@ class ProductListAdapter(var products: ArrayList<Product>): BaseAdapter() {
         amount.text = products[position].amount.toString()
 
         val price = view.findViewById<TextView>(R.id.productPrice)
-        price.text = products[position].price.toString()
+        if(products[position].price > 0){
+            price.text = products[position].price.toString()
+        }
+        else{
+            price.text = "-"
+        }
 
         val category = view.findViewById<TextView>(R.id.productCategory)
         category.text = products[position].category

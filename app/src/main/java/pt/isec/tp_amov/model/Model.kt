@@ -1,6 +1,7 @@
 package pt.isec.tp_amov.model
 
 import android.graphics.Bitmap
+import android.provider.ContactsContract
 import android.util.Log
 import pt.isec.tp_amov.objects.*
 import pt.isec.tp_amov.utils.Configuration
@@ -59,8 +60,7 @@ object  Model{
                        notes: String,
                        img: Bitmap?,
                        listId: Int): Boolean {
-        val prod =
-            Product(idProductsCounter, name, brand, price, amount, unit, category, notes, img)
+        val prod = Product(idProductsCounter, name, brand, price, amount, unit, category, notes, img)
         val dataProd = DataProduct(name, category)
         if (!allProducts.contains(dataProd)) {
             allProducts.add(dataProd)
@@ -217,8 +217,19 @@ object  Model{
 
         for (prod in oldList.productList) {
             list.addProduct(Product(prod.id, prod.name, prod.brand, prod.price, prod.amount, prod.units, prod.category, prod.notes, prod.image))
+            var dataProd = DataProduct(prod.name, prod.category)
+            if (!allProducts.contains(dataProd)) {
+                allProducts.add(dataProd)
+                if (prod.price > 0) {
+                    addPriceData(prod.name, prod.category, prod.price)
+                }
+            } else {
+                incrementProdUsed(prod.name, prod.category)
+                if (prod.price > 0) {
+                    addPriceData(prod.name, prod.category, prod.price)
+                }
+            }
         }
-
         return list
     }
 }
