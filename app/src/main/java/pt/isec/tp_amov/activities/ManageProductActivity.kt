@@ -29,7 +29,6 @@ import pt.isec.tp_amov.objects.Product
  */
 
 class ManageProductActivity : AppCompatActivity(){
-
     private lateinit var dialogNewCategory: AlertDialog
     private lateinit var dialogNewUnit: AlertDialog
 

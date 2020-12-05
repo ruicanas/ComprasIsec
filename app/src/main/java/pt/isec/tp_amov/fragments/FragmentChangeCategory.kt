@@ -17,6 +17,7 @@ import pt.isec.tp_amov.R
 import pt.isec.tp_amov.adapters.ArrayRecyclerAdapter
 import pt.isec.tp_amov.interfaces.ItemClickListenerInterface
 import pt.isec.tp_amov.model.Model
+import pt.isec.tp_amov.model.ModelView
 
 
 class FragmentChangeCategory : Fragment(), ItemClickListenerInterface<String>{
@@ -26,6 +27,7 @@ class FragmentChangeCategory : Fragment(), ItemClickListenerInterface<String>{
     lateinit var adapter: ArrayRecyclerAdapter
     lateinit var lM: RecyclerView.LayoutManager
     lateinit var act : Context
+    private lateinit var dialogRemove: AlertDialog
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -35,6 +37,19 @@ class FragmentChangeCategory : Fragment(), ItemClickListenerInterface<String>{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
+
+        if (savedInstanceState != null) {
+            if (ModelView.categoryRemoveShowing)
+                removeListDlg(ModelView.removeString)
+        }
+    }
+
+    override fun onDestroy() {
+        try {
+            if (dialogRemove.isShowing)
+                dialogRemove.dismiss()
+        } catch (e: UninitializedPropertyAccessException) {}
+        super.onDestroy()
     }
 
     override fun onCreateView(
@@ -56,21 +71,35 @@ class FragmentChangeCategory : Fragment(), ItemClickListenerInterface<String>{
     }
 
     private fun removeListDlg(data: String){
+        ModelView.categoryRemoveShowing = false
+
         val builder = AlertDialog.Builder(act)     //Construct the builder
         val inflater = this.layoutInflater
         val viewLayout : View = inflater.inflate(R.layout.dialog_remove_item, null)  //The layout we want to inflate
         val sb = StringBuilder()
+        ModelView.removeString = data
         viewLayout.findViewById<TextView>(R.id.tvRemoveItemDlg).text = sb
                 .append(act.getString(R.string.remove_item_description_dlg))
                 .append(" ")
                 .append(data)
         builder.setView(viewLayout)
+        builder.setCancelable(true)
+        builder.setOnCancelListener {
+            ModelView.categoryRemoveShowing = false
+            ModelView.removeString = ""
+        }
         builder.setPositiveButton(getString(R.string.delete_dlg)) {dialog, id ->
+            ModelView.categoryRemoveShowing = false
+            ModelView.removeString = ""
             Model.config.categories.remove(data)
             adapter.data = ArrayList(Model.config.categories)
             adapter.notifyDataSetChanged()
         }
-        builder.setNegativeButton(getString(R.string.cancel_list)) { dialog, id -> dialog.dismiss() }
-        builder.show()
+        builder.setNegativeButton(getString(R.string.cancel_list)) { dialog, id ->
+            dialog.dismiss()
+            ModelView.categoryRemoveShowing = false
+            ModelView.removeString = ""
+        }
+        dialogRemove = builder.show()
     }
 }

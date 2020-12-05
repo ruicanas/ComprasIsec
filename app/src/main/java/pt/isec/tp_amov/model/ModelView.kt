@@ -29,7 +29,9 @@ object ModelView {
     var fragmentManager: FragmentManager? = null
 
     //MANAGE FRAGMENTS
-    var currentFrag = -1
+    var unitRemoveShowing = false
+    var categoryRemoveShowing = false
+    var removeString = ""
 
     var currentFilter = -1
     var dialogText: String = ""

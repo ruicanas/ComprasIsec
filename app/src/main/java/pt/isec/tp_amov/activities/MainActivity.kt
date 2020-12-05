@@ -8,10 +8,7 @@ import android.os.StrictMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
-import android.widget.ListView
-import android.widget.PopupMenu
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import pt.isec.tp_amov.R
 import pt.isec.tp_amov.adapters.HelpListAdapter
@@ -39,6 +36,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     lateinit var lvList: ListView
     lateinit var archiveAdapter: ShoppingListAdapter
+    private lateinit var popupMenu: PopupMenu
 
     var listID = -1;
     var editText: EditText? = null
@@ -55,6 +53,9 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     }
 
     override fun onDestroy() {
+        try {
+            popupMenu.dismiss()
+        } catch (e: UninitializedPropertyAccessException) {}
         try {
             if (dialogHelp.isShowing)
                 dialogHelp.dismiss()
@@ -124,9 +125,14 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
      * in order to be able to receive all the clicks
      */
     private fun showPopup(v: View) {
-        PopupMenu(this, v).apply{
+        popupMenu = PopupMenu(this, v).apply{
             setOnMenuItemClickListener(this@MainActivity)
             inflate(R.menu.menu_opt_list)
+            ModelView.popupShowing = true
+            setOnDismissListener {
+                menu.close()
+                dismiss()
+            }
             show()
         }
     }
@@ -165,6 +171,10 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     private fun handleModelView(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
+            /*if (ModelView.popupShowing) {
+                val btn = findViewById<View>(R.id.add_fab)
+                btn.callOnClick()
+            }*/
             if (ModelView.dialogNewListShowing) {
                 createListDialog()
                 editText!!.setText(ModelView.dialogText)
@@ -222,10 +232,12 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
      */
     override fun onMenuItemClick(item: MenuItem): Boolean {
         if(item.itemId == R.id.new_opt){
+            ModelView.popupShowing = false
             createListDialog()
             return true
         }
         if (item.itemId == R.id.reuse_opt) {
+            ModelView.popupShowing = false
             selectOldListsDialog()
             return true
         }
@@ -235,7 +247,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     //Dialogs
     private fun createListDialog() {
         ModelView.dialogNewListShowing = true
-        val builder = AlertDialog.Builder(this)     //Construct the builder
+        val builder = AlertDialog.Builder(this) //Construct the builder
         val inflater = this.layoutInflater
         val viewLayout : View = inflater.inflate(R.layout.dialog_ask_list_name, null)  //The layout we want to inflate
         editText = viewLayout.findViewById(R.id.listNameDlg)                  //Before entering the .sets of the builder we will save our textView
