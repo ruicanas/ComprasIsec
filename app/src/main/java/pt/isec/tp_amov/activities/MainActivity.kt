@@ -91,6 +91,16 @@ class MainActivity : AppCompatActivity(){
         super.onResume()
     }
 
+    override fun onPause() {
+        Model.save(applicationContext)
+        super.onPause()
+    }
+
+    override fun onStop() {
+        Model.save(applicationContext)
+        super.onStop()
+    }
+
     //onCreate functions
     private fun initialConfigs() {
         if(Model.config.units.isEmpty()) {

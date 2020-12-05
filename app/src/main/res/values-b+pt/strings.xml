@@ -85,4 +85,5 @@
     <string name="must_create_category">Tem de criar uma categoria</string>
     <string name="configurations">Configurações</string>
     <string name="search_product">Procurar Produto</string>
+    <string name="error_loading">Erro a carregar a aplicação</string>
 </resources>

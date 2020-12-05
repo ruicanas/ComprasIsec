@@ -6,6 +6,8 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.provider.ContactsContract
 import android.util.Log
+import android.widget.Toast
+import pt.isec.tp_amov.R
 import pt.isec.tp_amov.objects.*
 import pt.isec.tp_amov.utils.Configuration
 import java.io.*
@@ -261,6 +263,9 @@ object Model: Serializable {
             allLists = ois.readObject() as MutableList<ShoppingList>
             allProducts = ois.readObject() as MutableList<DataProduct>
             config = ois.readObject() as Configuration
-        } catch (e: IOException) {}
+            fis.close()
+        } catch (e: IOException) {
+            Toast.makeText(context, context.getString(R.string.error_loading), Toast.LENGTH_LONG).show()
+        }
     }
 }

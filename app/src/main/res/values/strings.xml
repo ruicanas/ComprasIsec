@@ -85,4 +85,5 @@
     <string name="must_create_category">You must create a Category</string>
     <string name="configurations">Configurations</string>
     <string name="search_product">Search a product</string>
+    <string name="error_loading">Error loading application</string>
 </resources>
