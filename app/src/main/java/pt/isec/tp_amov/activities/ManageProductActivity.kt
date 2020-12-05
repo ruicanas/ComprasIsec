@@ -89,6 +89,16 @@ class ManageProductActivity : AppCompatActivity(){
         super.onDestroy()
     }
 
+    override fun onPause() {
+        Model.save(applicationContext)
+        super.onPause()
+    }
+
+    override fun onStop() {
+        Model.save(applicationContext)
+        super.onStop()
+    }
+
     //onCreate functions
     private fun getIntents() {
         listId = intent.getIntExtra("listId", -1)
