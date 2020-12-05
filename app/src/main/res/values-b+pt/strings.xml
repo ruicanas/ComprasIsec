@@ -18,7 +18,7 @@
     <string name="titleRemoveIcon">removeProd</string>
     <string name="tileEditIcon">editProd</string>
 
-    <string name="titleAddProdList">Adicionar ao produto</string>
+    <string name="titleAddProdList">Adicionar produto a</string>
     <string name="titleEditProdList">Editar produto de uma lista </string>
     <string name="product_category">Categoria</string>
     <string name="product_price">Preço Unidade</string>
