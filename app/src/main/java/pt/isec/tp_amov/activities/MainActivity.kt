@@ -157,9 +157,11 @@ class MainActivity : AppCompatActivity(){
     }
 
     private fun createHints() {
-        hintList.add(Help(getString(R.string.plus), getString(R.string.add_new_list)))
+        hintList.add(Help(getString(R.string.add), getString(R.string.add_new_list)))
         hintList.add(Help(getString(R.string.hold), getString(R.string.opt_remove_list)))
         hintList.add(Help(getString(R.string.press), getString(R.string.edit_existing_list)))
+        hintList.add(Help(getString(R.string.bin), getString(R.string.create_from_old)))
+        hintList.add(Help(getString(R.string.config), getString(R.string.configure_units_cats)))
     }
 
     private fun handleModelView(savedInstanceState: Bundle?) {

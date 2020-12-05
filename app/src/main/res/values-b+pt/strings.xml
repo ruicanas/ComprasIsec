@@ -86,4 +86,10 @@
     <string name="configurations">Configurações</string>
     <string name="search_product">Procurar Produto</string>
     <string name="error_loading">Erro a carregar a aplicação</string>
+    <string name="bin">Lixo</string>
+    <string name="create_from_old">Criar lista de listas apagadas</string>
+    <string name="config">Configurar</string>
+    <string name="configure_units_cats">Configurar unidades e categorias</string>
+    <string name="magnifier">Lupa</string>
+    <string name="search_for_objects">Procurar por produtos existentes</string>
 </resources>

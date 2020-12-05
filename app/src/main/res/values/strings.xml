@@ -86,4 +86,10 @@
     <string name="configurations">Configurations</string>
     <string name="search_product">Search a product</string>
     <string name="error_loading">Error loading application</string>
+    <string name="bin">Bin</string>
+    <string name="create_from_old">Create list from old lists</string>
+    <string name="config">Config</string>
+    <string name="configure_units_cats">Configure units and categories</string>
+    <string name="search_for_objects">Search for existing objects</string>
+    <string name="magnifier">Magnifier</string>
 </resources>

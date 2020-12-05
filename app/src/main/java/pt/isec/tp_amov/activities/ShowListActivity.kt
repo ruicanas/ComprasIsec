@@ -78,6 +78,7 @@ class ShowListActivity : AppCompatActivity() {
         hintList.add(Help(getString(R.string.press), getString(R.string.edit_prod)))
         hintList.add(Help(getString(R.string.three_dots), getString(R.string.order_prod_list)))
         hintList.add(Help(getString(R.string.checkbox), getString(R.string.check_bought)))
+        hintList.add(Help(getString(R.string.magnifier), getString(R.string.search_for_objects)))
     }
     private fun onOpenProduct() {
         lvList.setOnItemClickListener { _, _, position, _ ->
