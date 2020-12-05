@@ -5,7 +5,7 @@ import android.util.Log
 import pt.isec.tp_amov.objects.*
 import pt.isec.tp_amov.utils.Configuration
 
-object Model{
+object  Model{
     private val idListCounter: Int
         get(){
             ++idList

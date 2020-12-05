@@ -47,21 +47,21 @@ class ShowListActivity : AppCompatActivity() {
         onOpenProduct()
         handlesModelView(savedInstanceState)
     }
-    private fun verifyList() {
+    private fun verifyList() { //Verifies the listID
         listId = intent.getIntExtra("listId", -1)
         if(listId == -1){
             finish()
         }
     }
-    private fun handlesTitles() {
-        if (Model.getListById(listId)?.name.isNullOrEmpty()) {
+    private fun handlesTitles() { //Set the title of new list
+        if (Model.getListById(listId)?.name.isNullOrEmpty()) { //In case user didn't specify a title
             supportActionBar?.title = getString(R.string.default_list_name)
             Model.setDefaultListName(listId, getString(R.string.default_list_name))
         } else {
             supportActionBar?.title = Model.getListById(listId)?.name
         }
     }
-    private fun prepareLists() {
+    private fun prepareLists() { //Prepares all the list. Created all the adapters
         lvList = findViewById(R.id.lvProductList)
         //Create a list on the Model
         lvList = findViewById(R.id.lvProductList)
@@ -72,7 +72,7 @@ class ShowListActivity : AppCompatActivity() {
         createHints()
         helpAdapter = HelpListAdapter(hintList)
     }
-    private fun createHints() {
+    private fun createHints() { //Add help strings to array list
         hintList.add(Help(getString(R.string.plus), getString(R.string.add_new_prod)))
         hintList.add(Help(getString(R.string.hold), getString(R.string.remove_prod)))
         hintList.add(Help(getString(R.string.press), getString(R.string.edit_prod)))

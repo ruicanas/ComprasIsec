@@ -42,13 +42,12 @@ class MainActivity : AppCompatActivity(){
     var listID = -1;
     var editText: EditText? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initialConfigs()    //DEALS WITH CONFIGURATIONS --> DON'T FORGET TO EXPLAIN THIS
+        versionControl()
         pressAddListBtn()
-        dealsWithVersions()
         prepareLists()
         prepareHelpAdapter()
         handleModelView(savedInstanceState)
@@ -73,6 +72,7 @@ class MainActivity : AppCompatActivity(){
         } catch (e: UninitializedPropertyAccessException) {}
         super.onDestroy()
     }
+
     override fun onSaveInstanceState(outState: Bundle) {
         if (ModelView.dialogNewListShowing && editText != null) {
             if (!editText!!.text.isNullOrEmpty())
@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity(){
         }
         super.onSaveInstanceState(outState)
     }
+
     override fun onResume() {
         updateListView()
         super.onResume()
@@ -106,6 +107,7 @@ class MainActivity : AppCompatActivity(){
             Model.config.categories.add(getString(R.string.fat))
         }
     }
+
     /**
      * This method will get the view that is holding the floating button
      * and then set a listener. This listener is needed to make the pop menu show up
@@ -117,7 +119,7 @@ class MainActivity : AppCompatActivity(){
         }
     }
 
-    private fun dealsWithVersions() {
+    private fun versionControl() {
         if (Build.VERSION.SDK_INT >= 24) {
             try {
                 val m: Method = StrictMode::class.java.getMethod("disableDeathOnFileUriExposure")
@@ -127,6 +129,7 @@ class MainActivity : AppCompatActivity(){
             }
         }
     }
+
     private fun prepareLists() {
         lvList = findViewById(R.id.lvMainList)
         onOpenList(lvList)
@@ -136,15 +139,18 @@ class MainActivity : AppCompatActivity(){
         //Prepare adapters
         archiveAdapter = ShoppingListAdapter(archivedLists)
     }
+
     private fun prepareHelpAdapter() {
         createHints()
         helpAdapter = HelpListAdapter(hintList)
     }
+
     private fun createHints() {
         hintList.add(Help(getString(R.string.plus), getString(R.string.add_new_list)))
         hintList.add(Help(getString(R.string.hold), getString(R.string.opt_remove_list)))
         hintList.add(Help(getString(R.string.press), getString(R.string.edit_existing_list)))
     }
+
     private fun handleModelView(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             if (ModelView.dialogNewListShowing) {
@@ -195,15 +201,15 @@ class MainActivity : AppCompatActivity(){
             helpDialog()
         } else if (item.itemId == R.id.reuse_opt) {
             selectOldListsDialog()
+            return true
         }
-        return super.onOptionsItemSelected(item)
+        return false
     }
 
-
     //Dialogs
-    private fun createListDialog() {
+    private fun createListDialog() { //Handles the new list dialog box
         ModelView.dialogNewListShowing = true
-        val builder = AlertDialog.Builder(this)     //Construct the builder
+        val builder = AlertDialog.Builder(this) //Construct the builder
         val inflater = this.layoutInflater
         val viewLayout : View = inflater.inflate(R.layout.dialog_ask_list_name, null)  //The layout we want to inflate
         editText = viewLayout.findViewById(R.id.listNameDlg)                  //Before entering the .sets of the builder we will save our textView
@@ -222,10 +228,10 @@ class MainActivity : AppCompatActivity(){
             ModelView.dialogNewListShowing = false
             dialog.dismiss()
         }
-        dialogNewList = builder.show()
+        dialogNewList = builder.show() //Capture dialog so that it can be dismissed later
     }
 
-    private fun removeListDlg(sL: ShoppingList) {
+    private fun removeListDlg(sL: ShoppingList) { //Handles the remove list dialog box
         ModelView.dialogRemoveShowing = true
         listID = sL.id
 
@@ -238,7 +244,7 @@ class MainActivity : AppCompatActivity(){
         viewLayout.findViewById<TextView>(R.id.tvRemoveItemDlg).text = msg.toString()
 
         builder.setView(viewLayout)
-        builder.setCancelable(true)
+        builder.setCancelable(true) //Can be canceled by touching outside the box
         builder.setOnCancelListener { ModelView.dialogRemoveShowing = false }
         builder.setPositiveButton(getString(R.string.delete_dlg)) {dialog, id ->
             ModelView.dialogRemoveShowing = false
@@ -250,7 +256,7 @@ class MainActivity : AppCompatActivity(){
             ModelView.dialogRemoveShowing = false
             dialog.dismiss()
         }
-        dialogRemove = builder.show()
+        dialogRemove = builder.show() //Capture dialog so that it can be dismissed later
     }
 
     private fun selectOldListsDialog() {
@@ -271,10 +277,10 @@ class MainActivity : AppCompatActivity(){
             ModelView.dialogOldListShowing = false
             dialog.dismiss()
         }
-        dialogOldList = builder.show()
+        dialogOldList = builder.show() //Capture dialog so that it can be dismissed later
     }
 
-    private fun updateArchive() {
+    private fun updateArchive() { //Updates the view with the removed lists
         archivedLists.clear()
         val archive = Model.archivedLists
 
@@ -288,10 +294,10 @@ class MainActivity : AppCompatActivity(){
         for(list in archive){
             archivedLists.add(list)
         }
-        archiveAdapter.notifyDataSetChanged()
+        archiveAdapter.notifyDataSetChanged() //Notify adapter of list change
     }
 
-    private fun helpDialog() {
+    private fun helpDialog() { //Handles the Help Dialog box
         ModelView.dialogHelpShowing = true
         val inflater = this.layoutInflater
         val view: View = inflater.inflate(R.layout.dialog_help, null)  //The layout we want to inflate
@@ -306,7 +312,7 @@ class MainActivity : AppCompatActivity(){
             ModelView.dialogHelpShowing = false
             dialog.dismiss()
         }
-        dialogHelp = builder.show()
+        dialogHelp = builder.show() //Capture dialog so that it can be dismissed later
     }
 
     //onItemClickListeners
