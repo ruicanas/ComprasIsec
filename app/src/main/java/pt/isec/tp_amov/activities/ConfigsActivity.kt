@@ -8,6 +8,7 @@ import pt.isec.tp_amov.fragments.FragmentChangeCategory
 import pt.isec.tp_amov.fragments.FragmentChangeUnit
 import pt.isec.tp_amov.fragments.FragmentConfigOpts
 import pt.isec.tp_amov.interfaces.ConfigOptionsInterface
+import pt.isec.tp_amov.model.Model
 
 class ConfigsActivity : AppCompatActivity(), ConfigOptionsInterface{
     private val fm: FragmentManager = supportFragmentManager
@@ -18,6 +19,11 @@ class ConfigsActivity : AppCompatActivity(), ConfigOptionsInterface{
         if(savedInstanceState == null){
             init()
         }
+    }
+
+    override fun onDestroy() {
+        Model.save(applicationContext)
+        super.onDestroy()
     }
 
     private fun init() {

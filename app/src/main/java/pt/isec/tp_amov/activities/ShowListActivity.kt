@@ -134,6 +134,7 @@ class ShowListActivity : AppCompatActivity() {
 
     //Remaining
     override fun onDestroy() {
+        Model.save(applicationContext)
         if (dialogHelp != null)
             if (dialogHelp!!.isShowing)
                 dialogHelp!!.dismiss()

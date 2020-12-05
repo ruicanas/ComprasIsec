@@ -1,9 +1,10 @@
 package pt.isec.tp_amov.objects
 
 import android.util.Log
+import java.io.Serializable
 import java.util.ArrayList
 
-data class ShoppingList (var name: String, val id: Int) {
+data class ShoppingList (var name: String, val id: Int): Serializable {
     val productList : MutableList<Product> = ArrayList()
 
     fun addProduct(prod: Product){

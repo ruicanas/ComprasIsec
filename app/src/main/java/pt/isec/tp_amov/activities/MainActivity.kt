@@ -2,6 +2,7 @@ package pt.isec.tp_amov.activities
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -18,6 +19,9 @@ import pt.isec.tp_amov.adapters.ShoppingListAdapter
 import pt.isec.tp_amov.model.ModelView
 import pt.isec.tp_amov.objects.Help
 import pt.isec.tp_amov.objects.ShoppingList
+import java.io.FileOutputStream
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 import java.lang.reflect.Method
 
 class MainActivity : AppCompatActivity(){
@@ -43,6 +47,7 @@ class MainActivity : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Model.load(applicationContext)
         setContentView(R.layout.activity_main)
         initialConfigs()    //DEALS WITH CONFIGURATIONS --> DON'T FORGET TO EXPLAIN THIS
         versionControl()
@@ -53,6 +58,7 @@ class MainActivity : AppCompatActivity(){
     }
 
     override fun onDestroy() {
+        Model.save(applicationContext)
         if (dialogHelp != null)
             if (dialogHelp!!.isShowing)
                 dialogHelp!!.dismiss()

@@ -30,6 +30,11 @@ class SearchProductActivity : AppCompatActivity(), ItemClickListenerInterface<Da
         prepareList()
     }
 
+    override fun onDestroy() {
+        Model.save(applicationContext)
+        super.onDestroy()
+    }
+
     private fun getIntents() {
         listId = intent.getIntExtra("listId", -1)
     }

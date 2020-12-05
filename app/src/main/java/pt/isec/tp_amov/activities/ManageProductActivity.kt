@@ -23,6 +23,7 @@ import pt.isec.tp_amov.R
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.model.ModelView
 import pt.isec.tp_amov.objects.Product
+import java.io.ByteArrayOutputStream
 
 
 /**
@@ -77,6 +78,7 @@ class ManageProductActivity : AppCompatActivity(){
         super.onSaveInstanceState(outState)
     }
     override fun onDestroy() {
+        Model.save(applicationContext)
         if (dialogNewUnit != null)
             if (dialogNewUnit!!.isShowing)
                 dialogNewUnit!!.dismiss()
@@ -132,8 +134,8 @@ class ManageProductActivity : AppCompatActivity(){
                 editText!!.setText(ModelView.dialogTextProd)
             }
             try {
-                if (Model.getProdById(prodId, listId)!!.image != null) {
-                    bitmap = Model.getProdById(prodId, listId)!!.image
+                if (Model.getProdById(prodId, listId)!!.image != null) { //this needs
+                    bitmap = transformIntoBitmap(Model.getProdById(prodId, listId)!!.image)
                     imageView.setImageBitmap(bitmap)
                 }
             } catch (e: KotlinNullPointerException) { }
@@ -231,7 +233,7 @@ class ManageProductActivity : AppCompatActivity(){
                     getUnit(),
                     getCategory(),
                     notes,
-                    bitmap,
+                    transformIntoByteArray(bitmap),
                     listId
             )
 
@@ -244,35 +246,35 @@ class ManageProductActivity : AppCompatActivity(){
                     getUnit(),
                     getCategory(),
                     notes,
-                    bitmap,
+                    transformIntoByteArray(bitmap),
                     listId
             )
         }
         finish()
     }
-    private fun addNew(prod:Product, name: String, brand: String, price: String, quantity: String, notes: String) {
+    private fun addNew(prod: Product, name: String, brand: String, price: String, quantity: String, notes: String) {
         //If the name of the product changed and the product doesn't exist in the database, adds the product to the "database" and to the list
         //We cant forget to update the database, because we got one item that is not being used anymore
         Model.updateData(
-            prod.name,
-            prod.category,
-            prod.price,
-            name,
-            getCategory(),
-            price.toDouble()
+                prod.name,
+                prod.category,
+                prod.price,
+                name,
+                getCategory(),
+                price.toDouble()
         )
         prod.editProduct(
-            name,
-            brand,
-            price.toDouble(),
-            quantity.toDouble(),
-            getUnit(),
-            getCategory(),
-            bitmap,
-            notes
+                name,
+                brand,
+                price.toDouble(),
+                quantity.toDouble(),
+                getUnit(),
+                getCategory(),
+                transformIntoByteArray(bitmap),
+                notes
         )
     }
-    private fun samePrice(prod:Product, name: String, brand: String, price: String, quantity: String, notes: String) {
+    private fun samePrice(prod: Product, name: String, brand: String, price: String, quantity: String, notes: String) {
         if(price == ""){
             prod.editProduct(
                     name,
@@ -281,7 +283,7 @@ class ManageProductActivity : AppCompatActivity(){
                     quantity.toDouble(),
                     getUnit(),
                     getCategory(),
-                    bitmap,
+                    transformIntoByteArray(bitmap),
                     notes
             )
         }else {
@@ -292,12 +294,12 @@ class ManageProductActivity : AppCompatActivity(){
                     quantity.toDouble(),
                     getUnit(),
                     getCategory(),
-                    bitmap,
+                    transformIntoByteArray(bitmap),
                     notes
             )
         }
     }
-    private fun newPrice(prod:Product, name: String, brand: String, price: String, quantity: String, notes: String) {
+    private fun newPrice(prod: Product, name: String, brand: String, price: String, quantity: String, notes: String) {
         if(price == ""){
             Model.updateDataPrices(
                     prod.name,
@@ -314,7 +316,7 @@ class ManageProductActivity : AppCompatActivity(){
                     quantity.toDouble(),
                     getUnit(),
                     getCategory(),
-                    bitmap,
+                    transformIntoByteArray(bitmap),
                     notes
             )
         }else {
@@ -333,7 +335,7 @@ class ManageProductActivity : AppCompatActivity(){
                     quantity.toDouble(),
                     getUnit(),
                     getCategory(),
-                    bitmap,
+                    transformIntoByteArray(bitmap),
                     notes
             )
         }
@@ -504,7 +506,7 @@ class ManageProductActivity : AppCompatActivity(){
 
         val imageBtn = findViewById<ImageButton>(R.id.deleteImageBtn)
         val img = sL.returnProduct(prodId)!!.image
-        findViewById<ImageView>(R.id.productImageView).setImageBitmap(img)
+        findViewById<ImageView>(R.id.productImageView).setImageBitmap(transformIntoBitmap(img))
         if (img != null)
             imageBtn.visibility = View.VISIBLE
 
@@ -638,5 +640,21 @@ class ManageProductActivity : AppCompatActivity(){
         val arrayAdapter: ArrayAdapter<String> = ArrayAdapter(this, android.R.layout.simple_spinner_item, Model.config.categories)
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spCategory.adapter = arrayAdapter
+    }
+
+    //Transform a non serializable object into a serializable byteArray
+    private fun transformIntoByteArray(bitmap: Bitmap?): ByteArray? {
+        if (bitmap != null) {
+            val stream = ByteArrayOutputStream()
+            bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            return stream.toByteArray()
+        }
+        return null
+    }
+    //Transform a serializable byteArray into a Bitmap
+    private fun transformIntoBitmap(byteArray: ByteArray?): Bitmap? {
+        if (byteArray != null)
+            return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+        return null
     }
 }

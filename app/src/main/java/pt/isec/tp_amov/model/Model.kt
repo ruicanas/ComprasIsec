@@ -1,12 +1,16 @@
 package pt.isec.tp_amov.model
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.os.Parcel
+import android.os.Parcelable
 import android.provider.ContactsContract
 import android.util.Log
 import pt.isec.tp_amov.objects.*
 import pt.isec.tp_amov.utils.Configuration
+import java.io.*
 
-object  Model{
+object Model: Serializable {
     private val idListCounter: Int
         get(){
             ++idList
@@ -19,10 +23,10 @@ object  Model{
         }
     private var idList = 0
     private var idProducts = 0
-    val archivedLists: MutableList<ShoppingList> = ArrayList()
-    val allLists: MutableList<ShoppingList> = ArrayList()
-    val allProducts: MutableList<DataProduct> = ArrayList()
-    val config = Configuration()
+    var archivedLists: MutableList<ShoppingList> = ArrayList()
+    var allLists: MutableList<ShoppingList> = ArrayList()
+    var allProducts: MutableList<DataProduct> = ArrayList()
+    var config = Configuration()
 
     private fun searchForList(id: Int) : ShoppingList?{
         for(list in allLists){
@@ -58,7 +62,7 @@ object  Model{
                        unit: String,
                        category: String,
                        notes: String,
-                       img: Bitmap?,
+                       img: ByteArray?,
                        listId: Int): Boolean {
         val prod = Product(idProductsCounter, name, brand, price, amount, unit, category, notes, img)
         val dataProd = DataProduct(name, category)
@@ -231,5 +235,38 @@ object  Model{
             }
         }
         return list
+    }
+
+    fun save(context: Context) {
+        val fos = context.openFileOutput("model.bin", Context.MODE_PRIVATE)
+        val os = ObjectOutputStream(fos)
+        os.writeObject(idList)
+        os.writeObject(idProducts)
+        os.writeObject(archivedLists)
+        os.writeObject(allLists)
+        os.writeObject(allProducts)
+        os.writeObject(config)
+        fos.close()
+    }
+
+    fun load(context: Context) {
+        try {
+            val fis = context.openFileInput("model.bin")
+            val ois = ObjectInputStream(fis)
+            idList = ois.readObject() as Int
+            idProducts = ois.readObject() as Int
+            archivedLists = ois.readObject() as MutableList<ShoppingList>
+            allLists = ois.readObject() as MutableList<ShoppingList>
+            allProducts = ois.readObject() as MutableList<DataProduct>
+            config = ois.readObject() as Configuration
+        } catch (e: IOException) {}
+    }
+
+    private fun saveBitmap() {
+
+    }
+
+    private fun loadBitmap() {
+
     }
 }
