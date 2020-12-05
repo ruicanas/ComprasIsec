@@ -131,10 +131,12 @@ class ManageProductActivity : AppCompatActivity(){
                 onNewUnitType(findViewById(R.id.addNewUnit))
                 editText!!.setText(ModelView.dialogTextProd)
             }
-            if (Model.getProdById(prodId, listId)!!.image != null) {
-                bitmap = Model.getProdById(prodId, listId)!!.image
-                imageView.setImageBitmap(bitmap)
-            }
+            try {
+                if (Model.getProdById(prodId, listId)!!.image != null) {
+                    bitmap = Model.getProdById(prodId, listId)!!.image
+                    imageView.setImageBitmap(bitmap)
+                }
+            } catch (e: KotlinNullPointerException) { }
         }
     }
 
