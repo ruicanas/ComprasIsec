@@ -21,14 +21,8 @@ object ModelView {
     var dialogHelpShowing = false
     var dialogOldListShowing = false
     var dialogRemoveShowing = false
-    var hasImage = false
     var deleteImageButton = false
     var popupShowing = false
-
-    //CONFIGS ACTIVITY VARS
-    var dialogRemoveConfigShowing = false
-    lateinit var fragment: Fragment
-    var fragmentManager: FragmentManager? = null
 
     //MANAGE FRAGMENTS
     var unitRemoveShowing = false

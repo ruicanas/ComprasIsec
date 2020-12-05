@@ -242,7 +242,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     }
 
     //Dialogs
-    private fun createListDialog() {
+    private fun createListDialog() { //Handles the new list dialog box
         ModelView.dialogNewListShowing = true
         val builder = AlertDialog.Builder(this) //Construct the builder
         val inflater = this.layoutInflater
@@ -263,10 +263,10 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             ModelView.dialogNewListShowing = false
             dialog.dismiss()
         }
-        dialogNewList = builder.show()
+        dialogNewList = builder.show() //Capture dialog so that it can be dismissed later
     }
 
-    private fun removeListDlg(sL: ShoppingList) {
+    private fun removeListDlg(sL: ShoppingList) { //Handles the remove list dialog box
         ModelView.dialogRemoveShowing = true
         listID = sL.id
 
@@ -279,7 +279,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         viewLayout.findViewById<TextView>(R.id.tvRemoveItemDlg).text = msg.toString()
 
         builder.setView(viewLayout)
-        builder.setCancelable(true)
+        builder.setCancelable(true) //Can be canceled by touching outside the box
         builder.setOnCancelListener { ModelView.dialogRemoveShowing = false }
         builder.setPositiveButton(getString(R.string.delete_dlg)) {dialog, id ->
             ModelView.dialogRemoveShowing = false
@@ -291,7 +291,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             ModelView.dialogRemoveShowing = false
             dialog.dismiss()
         }
-        dialogRemove = builder.show()
+        dialogRemove = builder.show() //Capture dialog so that it can be dismissed later
     }
 
     private fun selectOldListsDialog() {
@@ -312,10 +312,10 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             ModelView.dialogOldListShowing = false
             dialog.dismiss()
         }
-        dialogOldList = builder.show()
+        dialogOldList = builder.show() //Capture dialog so that it can be dismissed later
     }
 
-    private fun updateArchive() {
+    private fun updateArchive() { //Updates the view with the removed lists
         archivedLists.clear()
         val archive = Model.archivedLists
 
@@ -329,10 +329,10 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         for(list in archive){
             archivedLists.add(list)
         }
-        archiveAdapter.notifyDataSetChanged()
+        archiveAdapter.notifyDataSetChanged() //Notify adapter of list change
     }
 
-    private fun helpDialog() {
+    private fun helpDialog() { //Handles the Help Dialog box
         ModelView.dialogHelpShowing = true
         val inflater = this.layoutInflater
         val view: View = inflater.inflate(R.layout.dialog_help, null)  //The layout we want to inflate
@@ -347,7 +347,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             ModelView.dialogHelpShowing = false
             dialog.dismiss()
         }
-        dialogHelp = builder.show()
+        dialogHelp = builder.show() //Capture dialog so that it can be dismissed later
     }
 
     //onItemClickListeners

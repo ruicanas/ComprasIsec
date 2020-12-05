@@ -122,15 +122,16 @@ class ManageProductActivity : AppCompatActivity(){
         val currency = findViewById<TextView>(R.id.currency)
         currency.text = getString(R.string.currency)
     }
-    private fun handleModelView(savedInstanceState: Bundle?) {
+    private fun handleModelView(savedInstanceState: Bundle?) { //Restore state after the orientation change
         if (savedInstanceState != null) {
             if (ModelView.dialogNewCategoryShowing)
                 onNewCategory(findViewById(R.id.addNewCategory))
             if (ModelView.dialogNewUnitsShowing)
                 onNewUnitType(findViewById(R.id.addNewUnit))
-            if (ModelView.hasImage) {
-                val byteArray: ByteArray = savedInstanceState.getByteArray("image")!!
-                bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+            if (Model.getProdById(prodId, listId)!!.image != null) {
+                bitmap = Model.getProdById(prodId, listId)!!.image
+                /*val byteArray: ByteArray = savedInstanceState.getByteArray("image")!!
+                bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)*/
                 imageView.setImageBitmap(bitmap)
             }
         }
@@ -153,7 +154,7 @@ class ManageProductActivity : AppCompatActivity(){
     }
 
     //Will handle the items clicked by the user on the menu
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean { //Process on menu item selected (there is only one)
         val name: String = findViewById<EditText>(R.id.edProductName).text.toString()
         val brand: String = findViewById<EditText>(R.id.edBrand).text.toString()
         val price: String = findViewById<EditText>(R.id.edPrice).text.toString()
@@ -187,7 +188,7 @@ class ManageProductActivity : AppCompatActivity(){
         }
         return super.onOptionsItemSelected(item)
     }
-    private fun testFields(name: String, price: String, quantity: String) : Boolean{
+    private fun testFields(name: String, price: String, quantity: String): Boolean { //Tests mandatory fields
         if (name.isEmpty()) {
             Toast.makeText(applicationContext, getString(R.string.no_product_name), Toast.LENGTH_LONG).show()
             return false
@@ -210,7 +211,7 @@ class ManageProductActivity : AppCompatActivity(){
         }
         return true
     }
-    private fun testBitmap() {
+    private fun testBitmap() { //test if there is a bitmap associated with the imageView
         this.bitmap = try {
             val bitmapDrawable: BitmapDrawable = imageView.drawable as BitmapDrawable
             bitmapDrawable.bitmap
@@ -287,18 +288,18 @@ class ManageProductActivity : AppCompatActivity(){
         )
     }
 
-    //onClicks of the buttons '+' and '-'
+    //onClicks of the buttons '+' and '-' image buttons
     fun onIncQuantity(view: View) {
         val editText: EditText = findViewById(R.id.edQuantity)
         val text: String = editText.text.toString()
-        try {
+        try { //In case it is an Integer
             var num: Int = text.toInt()
             num += 1
             editText.setText(num.toString())
 
             Log.i("onQuantityInc int", num.toString())
         }
-        catch (nfe: NumberFormatException) {
+        catch (nfe: NumberFormatException) { //In case it is a double
             var num: Double = text.toDouble()
             num += 1.0
             editText.setText(num.toString())
@@ -309,7 +310,7 @@ class ManageProductActivity : AppCompatActivity(){
     fun onDecQuantity(view: View) {
         val editText: EditText = findViewById(R.id.edQuantity)
         val text: String = editText.text.toString()
-        try {
+        try { //In case it is an Integer
             var num: Int = text.toInt()
             if (num - 1 <= 0)
                 num = 0
@@ -319,7 +320,7 @@ class ManageProductActivity : AppCompatActivity(){
 
             Log.i("onQuantityDec int: ", num.toString())
         }
-        catch (nfe: NumberFormatException) {
+        catch (nfe: NumberFormatException) { //In case it is a double
             var num: Double = text.toDouble()
             if (num - 1.0 <= 0.0)
                 num = 0.0
@@ -336,12 +337,11 @@ class ManageProductActivity : AppCompatActivity(){
         //Ask for camera permissions
         if (ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), cameraPermissionCode)
-        else {
+        else { //In case the device already has permission
             Log.i("Permissions", "Camera permission already granted")
 
             val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            //code 1 is gallery access
-            startActivityForResult(takePicture, cameraIntentCode)
+            startActivityForResult(takePicture, cameraIntentCode) //code 1 is gallery access
         }
     }
     fun onOpenGallery(view: View) {
@@ -350,13 +350,12 @@ class ManageProductActivity : AppCompatActivity(){
             ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), galleryPermissionCode)
         }
-        else {
+        else { //In case the device already has permission
             Log.i("Permissions", "Galley permission already granted")
 
             val selectPicture = Intent(Intent.ACTION_PICK)
             selectPicture.type = "image/*"
-            //code 2 is gallery access
-            startActivityForResult(selectPicture, galleryIntentCode)
+            startActivityForResult(selectPicture, galleryIntentCode) //code 2 is gallery access
         }
     }
 
@@ -366,9 +365,9 @@ class ManageProductActivity : AppCompatActivity(){
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.i("Permissions", "Camera permission granted")
 
+                //Start activity takePicture
                 val takePicture = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                //code 1 is gallery access
-                startActivityForResult(takePicture, cameraIntentCode)
+                startActivityForResult(takePicture, cameraIntentCode) //code 1 is gallery access
             }
             else
                 Log.i("Permissions", "Camera permission denied")
@@ -377,10 +376,10 @@ class ManageProductActivity : AppCompatActivity(){
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.i("Permissions", "Gallery permission granted")
 
+                //Start activity selectPicture
                 val selectPicture = Intent(Intent.ACTION_PICK)
                 selectPicture.type = "image/*"
-                //code 2 is gallery access
-                startActivityForResult(selectPicture, galleryIntentCode)
+                startActivityForResult(selectPicture, galleryIntentCode) //code 2 is gallery access
             }
             else
                 Log.i("Permissions", "Gallery permission denied")
@@ -397,13 +396,13 @@ class ManageProductActivity : AppCompatActivity(){
                 Toast.makeText(applicationContext, "Error loading image", Toast.LENGTH_LONG).show()
 
             val bitmap = data.extras?.get("data") as Bitmap
-            imageView.setImageBitmap(bitmap) //set in image bitmap
-            ModelView.hasImage = true
+            imageView.setImageBitmap(bitmap) //Set bitmap in imageView
             val btn = findViewById<ImageButton>(R.id.deleteImageBtn)
-            btn.visibility = View.VISIBLE
-            ModelView.deleteImageButton = true
+            btn.visibility = View.VISIBLE //Button visibility true
+            ModelView.deleteImageButton = true //Flag to show the button in case of rotation
         }
         else if (requestCode == galleryIntentCode && resultCode == Activity.RESULT_OK && data != null) { //Gallery Access
+            //Reference to gallery image
             var uri = data.data?.apply {
                 val cursor = contentResolver.query(
                         this,
@@ -413,16 +412,16 @@ class ManageProductActivity : AppCompatActivity(){
                         null
                 )
 
+                //Get the filepath for the image
                 if (cursor != null && cursor.moveToFirst())
                     filePath = cursor.getString(0)
 
-                //Get the bitmap
+                //Get the bitmap from path
                 bitmap = BitmapFactory.decodeFile(filePath)
-                imageView.setImageBitmap(bitmap) //set in image bitmap
-                ModelView.hasImage = true
+                imageView.setImageBitmap(bitmap) //Set bitmap in imageView
                 val btn = findViewById<ImageButton>(R.id.deleteImageBtn)
-                btn.visibility = View.VISIBLE
-                ModelView.deleteImageButton = true
+                btn.visibility = View.VISIBLE //Button visibility true
+                ModelView.deleteImageButton = true //Flag to show the button in case of rotation
             }
             return
         }
@@ -430,14 +429,15 @@ class ManageProductActivity : AppCompatActivity(){
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    //Delete picture
+    //Delete picture from product
     fun onDeletePicture(view: View) {
-        ModelView.hasImage = false
         ModelView.deleteImageButton = false
         val btn = findViewById<ImageButton>(R.id.deleteImageBtn)
+        Model.getProdById(prodId, listId)!!.image = null
         btn.visibility = View.INVISIBLE
 
         imageView.setImageBitmap(null)
+        imageView.adjustViewBounds = true
         imageView.invalidate()
     }
 
