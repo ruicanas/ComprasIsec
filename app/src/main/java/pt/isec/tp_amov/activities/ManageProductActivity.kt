@@ -29,8 +29,8 @@ import pt.isec.tp_amov.objects.Product
  */
 
 class ManageProductActivity : AppCompatActivity(){
-    private lateinit var dialogNewCategory: AlertDialog
-    private lateinit var dialogNewUnit: AlertDialog
+    private var dialogNewCategory: AlertDialog? = null
+    private var dialogNewUnit: AlertDialog? = null
 
     private lateinit var spCategory: Spinner
     private lateinit var spUnit: Spinner
@@ -43,7 +43,7 @@ class ManageProductActivity : AppCompatActivity(){
     private var prodId = -1
 
     private var bitmap: Bitmap? = null
-    private var edText: String = ""
+    var editText: EditText? = null
 
     /**
      * Camera vals
@@ -65,25 +65,23 @@ class ManageProductActivity : AppCompatActivity(){
     }
     override fun onSaveInstanceState(outState: Bundle) {
         if (ModelView.dialogNewCategoryShowing) {
-            if (edText.isNotEmpty())
-                ModelView.dialogText = edText
+            if (editText != null)
+                ModelView.dialogTextProd = editText!!.text.toString()
         }
         if (ModelView.dialogNewUnitsShowing) {
-            if (edText.isNotEmpty())
-                ModelView.dialogText = edText
+            if (editText != null)
+                ModelView.dialogTextProd = editText!!.text.toString()
         }
 
         super.onSaveInstanceState(outState)
     }
     override fun onDestroy() {
-        try {
-            if (dialogNewUnit.isShowing)
-                dialogNewUnit.dismiss()
-        } catch (e: UninitializedPropertyAccessException) { }
-        try {
-            if (dialogNewCategory.isShowing)
-                dialogNewCategory.dismiss()
-        } catch (e: UninitializedPropertyAccessException) { }
+        if (dialogNewUnit != null)
+            if (dialogNewUnit!!.isShowing)
+                dialogNewUnit!!.dismiss()
+        if (dialogNewCategory != null)
+            if (dialogNewCategory!!.isShowing)
+                dialogNewCategory!!.dismiss()
 
         super.onDestroy()
     }
@@ -124,10 +122,14 @@ class ManageProductActivity : AppCompatActivity(){
     }
     private fun handleModelView(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
-            if (ModelView.dialogNewCategoryShowing)
+            if (ModelView.dialogNewCategoryShowing) {
                 onNewCategory(findViewById(R.id.addNewCategory))
-            if (ModelView.dialogNewUnitsShowing)
+                editText!!.setText(ModelView.dialogTextProd)
+            }
+            if (ModelView.dialogNewUnitsShowing) {
                 onNewUnitType(findViewById(R.id.addNewUnit))
+                editText!!.setText(ModelView.dialogTextProd)
+            }
             if (ModelView.hasImage) {
                 val byteArray: ByteArray = savedInstanceState.getByteArray("image")!!
                 bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
@@ -467,20 +469,19 @@ class ManageProductActivity : AppCompatActivity(){
     //Add a new type of categories or new type of units
     fun onNewCategory(view: View) {
         ModelView.dialogNewCategoryShowing = true
+        val builder = AlertDialog.Builder(this)
         val inflater = this.layoutInflater
         val view: View = inflater.inflate(R.layout.dialog_new_category, null) //The layout to inflate
-        val editText = view.findViewById<EditText>(R.id.newCategoryName)
+        editText = view.findViewById(R.id.newCategoryName)
 
-        val builder = AlertDialog.Builder(this)
         builder.setView(view)
         builder.setCancelable(true)
         builder.setOnCancelListener { ModelView.dialogNewCategoryShowing = false }
         builder.setPositiveButton(getString(R.string.add)) { dialog, id ->
             ModelView.dialogNewCategoryShowing = false
             dialog.dismiss()
-            val newCatName = editText.text.toString()
+            val newCatName = editText!!.text.toString()
             addToCategories(newCatName)
-            edText = ""
         }
         builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, id ->
             ModelView.dialogNewCategoryShowing = false
@@ -499,8 +500,7 @@ class ManageProductActivity : AppCompatActivity(){
         ModelView.dialogNewUnitsShowing = true
         val inflater = this.layoutInflater
         val view: View = inflater.inflate(R.layout.dialog_new_unit, null) //The layout to inflate
-        val editText = view.findViewById<EditText>(R.id.newUnitName)
-
+        editText = view.findViewById(R.id.newUnitName)
 
         val builder = AlertDialog.Builder(this)
         builder.setView(view)
@@ -509,9 +509,8 @@ class ManageProductActivity : AppCompatActivity(){
         builder.setPositiveButton(getString(R.string.add)) { dialog, id ->
             ModelView.dialogNewUnitsShowing = false
             dialog.dismiss()
-            val newUnitName = editText.text.toString()
+            val newUnitName = editText!!.text.toString()
             addToUnits(newUnitName)
-            edText = ""
         }
         builder.setNegativeButton(getString(R.string.dialog_back)) { dialog, id ->
             ModelView.dialogNewUnitsShowing = false

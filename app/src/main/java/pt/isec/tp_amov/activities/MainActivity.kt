@@ -29,10 +29,10 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     private lateinit var oldListView: View
 
     //This is for closing the dialog of reuse lists
-    private lateinit var dialogHelp: AlertDialog
-    private lateinit var dialogOldList: AlertDialog
-    private lateinit var dialogNewList: AlertDialog
-    private lateinit var dialogRemove: AlertDialog
+    private var dialogHelp: AlertDialog? = null
+    private var dialogOldList: AlertDialog? = null
+    private var dialogNewList: AlertDialog? = null
+    private var dialogRemove: AlertDialog? = null
 
     lateinit var lvList: ListView
     lateinit var archiveAdapter: ShoppingListAdapter
@@ -53,26 +53,18 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     }
 
     override fun onDestroy() {
-        try {
-            if (popupMenu != null)
-                popupMenu!!.dismiss()
-        } catch (e: UninitializedPropertyAccessException) {}
-        try {
-            if (dialogHelp.isShowing)
-                dialogHelp.dismiss()
-        } catch (e: UninitializedPropertyAccessException) {}
-        try {
-            if (dialogOldList.isShowing)
-                dialogOldList.dismiss()
-        } catch (e: UninitializedPropertyAccessException) {}
-        try {
-            if (dialogNewList.isShowing)
-                dialogNewList.dismiss()
-        } catch (e: UninitializedPropertyAccessException) {}
-        try {
-            if (dialogRemove.isShowing)
-                dialogRemove.dismiss()
-        } catch (e: UninitializedPropertyAccessException) {}
+        if (dialogHelp != null)
+            if (dialogHelp!!.isShowing)
+                dialogHelp!!.dismiss()
+        if (dialogOldList != null)
+            if (dialogOldList!!.isShowing)
+                dialogOldList!!.dismiss()
+        if (dialogNewList != null)
+            if (dialogNewList!!.isShowing)
+                dialogNewList!!.dismiss()
+        if (dialogRemove != null)
+            if (dialogRemove!!.isShowing)
+                dialogRemove!!.dismiss()
         super.onDestroy()
     }
 
@@ -248,6 +240,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         val inflater = this.layoutInflater
         val viewLayout : View = inflater.inflate(R.layout.dialog_ask_list_name, null)  //The layout we want to inflate
         editText = viewLayout.findViewById(R.id.listNameDlg)                  //Before entering the .sets of the builder we will save our textView
+
         builder.setView(viewLayout)
         builder.setCancelable(true)
         builder.setOnCancelListener { ModelView.dialogNewListShowing = false }
@@ -372,7 +365,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             val intent = Intent(this, ShowListActivity::class.java)
             Model.recreateList(sl.id)
             intent.putExtra("listId", sl.id)
-            dialogOldList.dismiss()
+            dialogOldList!!.dismiss()
             startActivity(intent)
         }
     }
