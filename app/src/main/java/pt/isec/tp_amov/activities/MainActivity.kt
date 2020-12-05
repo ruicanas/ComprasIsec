@@ -15,7 +15,6 @@ import pt.isec.tp_amov.adapters.HelpListAdapter
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.adapters.ShoppingListAdapter
 import pt.isec.tp_amov.model.ModelView
-import pt.isec.tp_amov.model.MyViewModel
 import pt.isec.tp_amov.objects.Help
 import pt.isec.tp_amov.objects.ShoppingList
 import java.lang.reflect.Method
@@ -37,9 +36,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     lateinit var lvList: ListView
     lateinit var archiveAdapter: ShoppingListAdapter
-    private lateinit var popupMenu: PopupMenu
-
-//    private val viewModel: MyViewModel by viewModels()
+    private var popupMenu: PopupMenu? = null
 
     var listID = -1;
     var editText: EditText? = null
@@ -48,8 +45,8 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initialConfigs()    //DEALS WITH CONFIGURATIONS --> DON'T FORGET TO EXPLAIN THIS
+        versionControl()
         pressAddListBtn()
-        dealsWithVersions()
         prepareLists()
         prepareHelpAdapter()
         handleModelView(savedInstanceState)
@@ -57,7 +54,8 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     override fun onDestroy() {
         try {
-            popupMenu.dismiss()
+            if (popupMenu != null)
+                popupMenu!!.dismiss()
         } catch (e: UninitializedPropertyAccessException) {}
         try {
             if (dialogHelp.isShowing)
@@ -118,9 +116,9 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
      * and then set a listener. This listener is needed to make the pop menu show up
      */
     private fun pressAddListBtn() {
-        val fab: View = findViewById(R.id.add_fab)
-        fab.setOnClickListener {
-            showPopup(fab)
+        val view: View = findViewById(R.id.add_fab)
+        view.setOnClickListener {
+            showPopup(view)
         }
     }
     /**
@@ -140,7 +138,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
     }
 
-    private fun dealsWithVersions() {
+    private fun versionControl() {
         if (Build.VERSION.SDK_INT >= 24) {
             try {
                 val m: Method = StrictMode::class.java.getMethod("disableDeathOnFileUriExposure")
@@ -174,10 +172,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     private fun handleModelView(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
-            /*if (ModelView.popupShowing) {
-                val btn = findViewById<View>(R.id.add_fab)
-                btn.callOnClick()
-            }*/
             if (ModelView.dialogNewListShowing) {
                 createListDialog()
                 editText!!.setText(ModelView.dialogText)
