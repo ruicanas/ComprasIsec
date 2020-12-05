@@ -1,7 +1,9 @@
 package pt.isec.tp_amov.model
 
+import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LiveData
 
 object ModelView {
     //SHOW LIST ACTIVITY VARS

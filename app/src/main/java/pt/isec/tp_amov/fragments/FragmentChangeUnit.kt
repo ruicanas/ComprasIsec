@@ -27,7 +27,9 @@ class FragmentChangeUnit : Fragment(), ItemClickListenerInterface<String>{
     lateinit var adapter: ArrayRecyclerAdapter
     lateinit var lM: RecyclerView.LayoutManager
     lateinit var act : Context
+
     private lateinit var dialogRemove: AlertDialog
+    private var removeStr = ""
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -37,19 +39,20 @@ class FragmentChangeUnit : Fragment(), ItemClickListenerInterface<String>{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-
-        if (savedInstanceState != null) {
-            if (ModelView.unitRemoveShowing)
-                removeListDlg(ModelView.removeString)
-        }
     }
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
         try {
             if (dialogRemove.isShowing)
                 dialogRemove.dismiss()
         } catch (e: UninitializedPropertyAccessException) {}
-        super.onDestroy()
+        super.onDestroyView()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (!removeStr.isNullOrEmpty())
+            ModelView.removeString = removeStr
+        super.onSaveInstanceState(outState)
     }
 
     override fun onCreateView(
@@ -63,6 +66,12 @@ class FragmentChangeUnit : Fragment(), ItemClickListenerInterface<String>{
         lM = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
         rvList.adapter = adapter
         rvList.layoutManager = lM
+
+        if (savedInstanceState != null) {
+            if (ModelView.unitRemoveShowing)
+                removeListDlg(ModelView.removeString)
+        }
+
         return view
     }
 
@@ -86,18 +95,18 @@ class FragmentChangeUnit : Fragment(), ItemClickListenerInterface<String>{
         builder.setCancelable(true)
         builder.setOnCancelListener {
             ModelView.unitRemoveShowing = false
-            ModelView.removeString = ""
+            removeStr = ""
         }
         builder.setPositiveButton(getString(R.string.delete_dlg)) {dialog, id ->
             ModelView.unitRemoveShowing = false
-            ModelView.removeString = ""
+            removeStr = ""
             Model.config.units.remove(data)
             adapter.data = ArrayList(Model.config.units)
             adapter.notifyDataSetChanged()
         }
         builder.setNegativeButton(getString(R.string.cancel_list)) { dialog, id ->
             ModelView.unitRemoveShowing = false
-            ModelView.removeString = ""
+            removeStr = ""
             dialog.dismiss()
         }
         dialogRemove = builder.show()

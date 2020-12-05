@@ -15,6 +15,7 @@ import pt.isec.tp_amov.adapters.HelpListAdapter
 import pt.isec.tp_amov.model.Model
 import pt.isec.tp_amov.adapters.ShoppingListAdapter
 import pt.isec.tp_amov.model.ModelView
+import pt.isec.tp_amov.model.MyViewModel
 import pt.isec.tp_amov.objects.Help
 import pt.isec.tp_amov.objects.ShoppingList
 import java.lang.reflect.Method
@@ -37,6 +38,8 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     lateinit var lvList: ListView
     lateinit var archiveAdapter: ShoppingListAdapter
     private lateinit var popupMenu: PopupMenu
+
+//    private val viewModel: MyViewModel by viewModels()
 
     var listID = -1;
     var editText: EditText? = null
