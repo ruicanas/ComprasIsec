@@ -5,13 +5,12 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
+import android.util.Log
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
-import android.widget.ListView
-import android.widget.PopupMenu
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import pt.isec.tp_amov.R
 import pt.isec.tp_amov.adapters.HelpListAdapter
@@ -22,7 +21,7 @@ import pt.isec.tp_amov.objects.Help
 import pt.isec.tp_amov.objects.ShoppingList
 import java.lang.reflect.Method
 
-class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
+class MainActivity : AppCompatActivity(){
     private var archivedLists = ArrayList<ShoppingList>()
     private var allLists = ArrayList<ShoppingList>()
     private var hintList = ArrayList<Help>()
@@ -42,6 +41,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     var listID = -1;
     var editText: EditText? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +73,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         } catch (e: UninitializedPropertyAccessException) {}
         super.onDestroy()
     }
-
     override fun onSaveInstanceState(outState: Bundle) {
         if (ModelView.dialogNewListShowing && editText != null) {
             if (!editText!!.text.isNullOrEmpty())
@@ -81,11 +80,10 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         }
         if (ModelView.dialogRemoveShowing) {
             if (listID != -1)
-                ModelView.removeListID = listID;
+                ModelView.removeListID = listID
         }
         super.onSaveInstanceState(outState)
     }
-
     override fun onResume() {
         updateListView()
         super.onResume()
@@ -108,7 +106,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             Model.config.categories.add(getString(R.string.fat))
         }
     }
-
     /**
      * This method will get the view that is holding the floating button
      * and then set a listener. This listener is needed to make the pop menu show up
@@ -116,18 +113,7 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     private fun pressAddListBtn() {
         val fab: View = findViewById(R.id.add_fab)
         fab.setOnClickListener {
-            showPopup(fab)
-        }
-    }
-    /**
-     * This method will show the popup menu, and will set a listener
-     * in order to be able to receive all the clicks
-     */
-    private fun showPopup(v: View) {
-        PopupMenu(this, v).apply{
-            setOnMenuItemClickListener(this@MainActivity)
-            inflate(R.menu.menu_opt_list)
-            show()
+            createListDialog()
         }
     }
 
@@ -141,7 +127,6 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
         }
     }
-
     private fun prepareLists() {
         lvList = findViewById(R.id.lvMainList)
         onOpenList(lvList)
@@ -151,18 +136,15 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         //Prepare adapters
         archiveAdapter = ShoppingListAdapter(archivedLists)
     }
-
     private fun prepareHelpAdapter() {
         createHints()
         helpAdapter = HelpListAdapter(hintList)
     }
-
     private fun createHints() {
         hintList.add(Help(getString(R.string.plus), getString(R.string.add_new_list)))
         hintList.add(Help(getString(R.string.hold), getString(R.string.opt_remove_list)))
         hintList.add(Help(getString(R.string.press), getString(R.string.edit_existing_list)))
     }
-
     private fun handleModelView(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             if (ModelView.dialogNewListShowing) {
@@ -205,32 +187,18 @@ class MainActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     //Select items from a menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.settings){
+        if (item.itemId == R.id.settings) {
             val intent = Intent(this, ConfigsActivity::class.java)
             startActivity(intent)
             return true
-        }
-        else if(item.itemId == R.id.helpList) {
+        } else if (item.itemId == R.id.helpList) {
             helpDialog()
+        } else if (item.itemId == R.id.reuse_opt) {
+            selectOldListsDialog()
         }
         return super.onOptionsItemSelected(item)
     }
 
-    /**
-     * This method will receive the clicks that are going to be made on options
-     * shown by the floating button on the main menu
-     */
-    override fun onMenuItemClick(item: MenuItem): Boolean {
-        if(item.itemId == R.id.new_opt){
-            createListDialog()
-            return true
-        }
-        if (item.itemId == R.id.reuse_opt) {
-            selectOldListsDialog()
-            return true
-        }
-        return false
-    }
 
     //Dialogs
     private fun createListDialog() {
