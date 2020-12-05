@@ -237,6 +237,7 @@ object Model: Serializable {
         return list
     }
 
+    //Save Model to storage
     fun save(context: Context) {
         val fos = context.openFileOutput("model.bin", Context.MODE_PRIVATE)
         val os = ObjectOutputStream(fos)
@@ -249,6 +250,7 @@ object Model: Serializable {
         fos.close()
     }
 
+    //Load Model from storage
     fun load(context: Context) {
         try {
             val fis = context.openFileInput("model.bin")
@@ -260,13 +262,5 @@ object Model: Serializable {
             allProducts = ois.readObject() as MutableList<DataProduct>
             config = ois.readObject() as Configuration
         } catch (e: IOException) {}
-    }
-
-    private fun saveBitmap() {
-
-    }
-
-    private fun loadBitmap() {
-
     }
 }
