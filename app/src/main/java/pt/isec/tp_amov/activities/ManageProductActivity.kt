@@ -98,7 +98,7 @@ class ManageProductActivity : AppCompatActivity(){
     }
 
     //onCreate functions
-    private fun getIntents() {
+    private fun getIntents() { //get intents passed through the extras
         listId = intent.getIntExtra("listId", -1)
         prodId = intent.getIntExtra("productId", -1)
         type = intent.getStringExtra("type")!!
@@ -111,14 +111,14 @@ class ManageProductActivity : AppCompatActivity(){
         }
 
     }
-    private fun prepareSpinners() {
+    private fun prepareSpinners() { //prepare spinners with categories
         //Handle spinners
         spCategory = findViewById(R.id.spinnerCat)
         spUnit = findViewById(R.id.spinnerUnit)
         loadCategories()
         loadUnits()
     }
-    private fun checkReceivedType() {
+    private fun checkReceivedType() { //check if product is being reused (from searchProductActivity) or edit another product
         //Check which type was received
         if(prodId != -1 && type == "edit"){
             fillOptions()
@@ -127,7 +127,7 @@ class ManageProductActivity : AppCompatActivity(){
             fillPartialOpts()
         }
     }
-    private fun handleCurrency() {
+    private fun handleCurrency() { //changes currency depending on the language
         val currency = findViewById<TextView>(R.id.currency)
         currency.text = getString(R.string.currency)
     }
@@ -142,14 +142,14 @@ class ManageProductActivity : AppCompatActivity(){
                 editText!!.setText(ModelView.dialogTextProd)
             }
             try {
-                if (Model.getProdById(prodId, listId)!!.image != null) { //this needs
+                if (Model.getProdById(prodId, listId)!!.image != null) { //checks if bitmap byteArray is null
                     bitmap = transformIntoBitmap(Model.getProdById(prodId, listId)!!.image)
                     imageView.setImageBitmap(bitmap)
-                    return
+                    return //in case there is already a bitmap on display, return
                 }
             } catch (e: KotlinNullPointerException) { }
             try {
-                if (Model.bitmap != null) {
+                if (Model.bitmap != null) { //checks if bitmap is null. For when a new product has not been saved yet
                     bitmap = Model.bitmap
                     imageView.setImageBitmap(bitmap)
                 }

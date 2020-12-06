@@ -69,7 +69,7 @@ class ShowListActivity : AppCompatActivity() {
         lvList.adapter = adapter
 
         //Helper list
-        createHints()
+        createHints() //creates the arrayList of hints
         helpAdapter = HelpListAdapter(hintList)
     }
     private fun createHints() { //Add help strings to array list
@@ -81,7 +81,7 @@ class ShowListActivity : AppCompatActivity() {
         hintList.add(Help(getString(R.string.magnifier), getString(R.string.search_for_objects)))
     }
     private fun onOpenProduct() {
-        lvList.setOnItemClickListener { _, _, position, _ ->
+        lvList.setOnItemClickListener { _, _, position, _ -> //click on product
             val prod: Product = adapter.getItem(position) as Product    //It was changed
             val intent = Intent(this, ManageProductActivity::class.java)
             intent.putExtra("listId", this.listId)
@@ -89,13 +89,13 @@ class ShowListActivity : AppCompatActivity() {
             intent.putExtra("type", "edit")
             startActivity(intent)
         }
-        lvList.setOnItemLongClickListener { _, _, position, _ ->
+        lvList.setOnItemLongClickListener { _, _, position, _ -> //hold to remove product
             val prod: Product = adapter.getItem(position) as Product    //It was changed
             removeItemDlg(prod)
             true
         }
     }
-    private fun handlesModelView(savedInstanceState: Bundle?) {
+    private fun handlesModelView(savedInstanceState: Bundle?) { //handles the saveInstanceState part of the onCreate
         if (savedInstanceState != null) {
             if (ModelView.dialogHelpShowingSL)
                 helpDialog()
@@ -104,7 +104,7 @@ class ShowListActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStop() {
+    override fun onStop() { //For when the app is forcefully closed
         Model.save(applicationContext)
         super.onStop()
     }
@@ -112,8 +112,8 @@ class ShowListActivity : AppCompatActivity() {
     //onResume
     override fun onResume() {
         super.onResume()
-        updateListView()
-        when (ModelView.currentFilter) {
+        updateListView() //update the list view with all products
+        when (ModelView.currentFilter) { //order by last filter
             1 -> orderByName()
             2 -> orderByProdsBought()
             3 -> orderByCategory()
@@ -126,12 +126,12 @@ class ShowListActivity : AppCompatActivity() {
         if(slChosen != null) {
             val empty = findViewById<TextView>(R.id.emptyPlaceholderProd)
             //Check if there are any products. If not, show no products message
-            if (slChosen.size == 0)
+            if (slChosen.size == 0) //if there are no products, show no products TextView
                 empty.text = getString(R.string.no_products)
             else
                 empty.text = "" //Clear textView
 
-            for(prod in slChosen){
+            for(prod in slChosen){ //list all products
                 productList.add(prod)
             }
             adapter.notifyDataSetChanged()
@@ -141,7 +141,7 @@ class ShowListActivity : AppCompatActivity() {
     //Remaining
     override fun onDestroy() {
         Model.save(applicationContext)
-        if (dialogHelp != null)
+        if (dialogHelp != null) //This is meant to close the dialog if it is opened preventing WindowLeaked
             if (dialogHelp!!.isShowing)
                 dialogHelp!!.dismiss()
         if (dialogRemove != null)
@@ -171,16 +171,16 @@ class ShowListActivity : AppCompatActivity() {
     //Selected items from menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.searchProd ->{
+            R.id.searchProd ->{ //search for already existing products
                 val intent = Intent(this, SearchProductActivity::class.java)
                 intent.putExtra("listId", listId)
                 startActivity(intent)
                 return true
             }
-            R.id.helpProd -> {
+            R.id.helpProd -> { //ask for help - will open dialog
                 helpDialog()
             }
-            R.id.addProd -> {
+            R.id.addProd -> { //add new product
                 val intent = Intent(this, ManageProductActivity::class.java)
                 intent.putExtra("listId", listId)
                 intent.putExtra("type", "create")
@@ -205,21 +205,21 @@ class ShowListActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-    private fun orderByCategory() {
+    private fun orderByCategory() { //order the list by category
         productList.sortWith(ComparatorCategory())
         adapter.notifyDataSetChanged()
     }
-    private fun orderByProdsBought() {
+    private fun orderByProdsBought() { //order the list by purchased
         productList.sortWith(ComparatorBought())
         adapter.notifyDataSetChanged()
     }
-    private fun orderByName() {
+    private fun orderByName() { //order the list by name
         productList.sortWith(ComparatorName())
         adapter.notifyDataSetChanged()
     }
 
     //Dialogs
-    private fun removeItemDlg(prod: Product){
+    private fun removeItemDlg(prod: Product){ //remove dialog that shows on long press of product
         ModelView.dialogRemoveShowingSL = true
         prodId = prod.id
 
@@ -232,7 +232,7 @@ class ShowListActivity : AppCompatActivity() {
         viewLayout.findViewById<TextView>(R.id.tvRemoveItemDlg).text = msg.toString()
 
         builder.setView(viewLayout)
-        builder.setCancelable(true)
+        builder.setCancelable(true) //can be canceled by touching outside
         builder.setOnCancelListener { ModelView.dialogRemoveShowingSL = false }
         builder.setPositiveButton(getString(R.string.delete_dlg)) { _, _ ->
             ModelView.dialogRemoveShowingSL = false
@@ -245,9 +245,9 @@ class ShowListActivity : AppCompatActivity() {
             dialog.dismiss()
             ModelView.dialogRemoveShowingSL = false
         }
-        dialogRemove = builder.show()
+        dialogRemove = builder.show() //captures dialog to dismiss later if needed
     }
-    private fun helpDialog() {
+    private fun helpDialog() { //shows help dialog
         ModelView.dialogHelpShowingSL = true
         val inflater = this.layoutInflater
         val view: View = inflater.inflate(R.layout.dialog_help, null)  //The layout we want to inflate
@@ -262,7 +262,7 @@ class ShowListActivity : AppCompatActivity() {
             ModelView.dialogHelpShowingSL = false
             dialog.dismiss()
         }
-        dialogHelp = builder.show()
+        dialogHelp = builder.show() //captures dialog to dismiss later if needed
     }
 
     //When the checkbox gets clicked
