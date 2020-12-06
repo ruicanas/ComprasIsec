@@ -85,6 +85,9 @@ object Model {
         shopList.addProduct(prod)
         return true
     }
+
+    //When a product is edit, the var 'allProducts' must be updated
+    //in order to decrement and increment(or create) the usage of a product.
     fun updateData(oldName: String,
                    oldCategory: String,
                    oldPrice: Double,
@@ -99,6 +102,8 @@ object Model {
     fun removeProdData(oldName: String, oldCategory: String, oldPrice: Double){
         handleOldData(oldName, oldCategory, oldPrice)
     }
+
+    //Remove a list from the main lists and adds it to the var 'archivedLists'
     fun removeListData(shoppingList: ShoppingList) {
         val duplicate = copyList(shoppingList)
         archiveList(duplicate)
@@ -116,14 +121,7 @@ object Model {
             duplicate.addProduct(prod)
         return duplicate
     }
-    private fun incrementProdUsed(name: String, category: String) {
-        for(dP in allProducts){
-            if(dP.name == name && dP.category == category){
-                dP.nTimesUsed++
-                break
-            }
-        }
-    }
+
 
 
 
@@ -136,6 +134,8 @@ object Model {
         }
         return null
     }
+
+    //Needed if a product price has changed. This will maintain the old prices updated
     fun updateDataPrices(oldName: String,
                          oldCategory: String,
                          oldPrice: Double,
@@ -168,7 +168,7 @@ object Model {
         }
     }
 
-    //Insert new data in all products and remove old data from the same list.
+    //Insert data in var 'allProducts'
     private fun handleNewData(newName: String, newCategory: String, newPrice: Double) {
         val dataProd = DataProduct(newName, newCategory)
         if(!allProducts.contains(dataProd)){
@@ -180,6 +180,8 @@ object Model {
             addPriceData(newName, newCategory, newPrice)
         }
     }
+
+    //Remove data in var 'allProducts'
     private fun handleOldData(oldName: String, oldCategory: String, oldPrice: Double){
         for(dP in allProducts){
             if(dP.name == oldName && dP.category == oldCategory){
@@ -188,6 +190,16 @@ object Model {
                     allProducts.remove(dP)
                 }
                 dP.lastPrices.remove(oldPrice)
+                break
+            }
+        }
+    }
+
+    //Increments the usage of a product in var 'allProducts'
+    private fun incrementProdUsed(name: String, category: String) {
+        for(dP in allProducts){
+            if(dP.name == name && dP.category == category){
+                dP.nTimesUsed++
                 break
             }
         }
@@ -209,13 +221,19 @@ object Model {
             }
         }
     }
+
+    //Add a list by receiving a ShoppingList
     private fun addListByShoppingList(list: ShoppingList): Int {
         allLists.add(list)
         return list.id
     }
+
     private fun removeListFromArchive(list: ShoppingList) {
         archivedLists.remove(list)
     }
+
+    //Recreates products that have been removed, since they were in a archived list.
+    //In this method, they are already being added to var 'allProducts' too.
     private fun recreateProducts(oldList: ShoppingList): ShoppingList {
         var list = ShoppingList(oldList.name, oldList.id)
 

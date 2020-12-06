@@ -21,7 +21,6 @@ import pt.isec.tp_amov.model.ModelView
 
 
 class FragmentChangeCategory : Fragment(), ItemClickListenerInterface<String>{
-    val TAG = "FragmentChangeCategory"
     private val dataList = ArrayList<String>(Model.config.categories)
     lateinit var rvList: RecyclerView
     lateinit var adapter: ArrayRecyclerAdapter
@@ -59,7 +58,6 @@ class FragmentChangeCategory : Fragment(), ItemClickListenerInterface<String>{
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.i(TAG, "onCreateView1: ")
         val view = inflater.inflate(R.layout.fragment_manage_category, container, false)
         rvList = view.findViewById(R.id.rvManageCategory)
         adapter = ArrayRecyclerAdapter(dataList, this)
@@ -97,6 +95,7 @@ class FragmentChangeCategory : Fragment(), ItemClickListenerInterface<String>{
             ModelView.categoryRemoveShowing = false
             removeStr = ""
         }
+
         builder.setPositiveButton(getString(R.string.delete_dlg)) {dialog, id ->
             ModelView.categoryRemoveShowing = false
             removeStr = ""

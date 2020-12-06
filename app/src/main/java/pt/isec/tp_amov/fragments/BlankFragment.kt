@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import pt.isec.tp_amov.R
 class BlankFragment : Fragment() {
+    //The usage of this fragment is just for the fragment layout.
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment

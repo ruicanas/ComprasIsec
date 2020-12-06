@@ -21,7 +21,6 @@ import pt.isec.tp_amov.objects.ShoppingList
 import java.lang.StringBuilder
 
 class FragmentChangeUnit : Fragment(), ItemClickListenerInterface<String>{
-    val TAG = "FragmentChangeUnits"
     private val dataList = ArrayList<String>(Model.config.units)
     lateinit var rvList: RecyclerView
     lateinit var adapter: ArrayRecyclerAdapter
@@ -46,7 +45,6 @@ class FragmentChangeUnit : Fragment(), ItemClickListenerInterface<String>{
             if (dialogRemove.isShowing)
                 dialogRemove.dismiss()
         } catch (e: UninitializedPropertyAccessException) {}
-        Model.save(act)
         super.onDestroyView()
     }
 
@@ -60,7 +58,6 @@ class FragmentChangeUnit : Fragment(), ItemClickListenerInterface<String>{
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.i(TAG, "onCreateView1: ")
         val view = inflater.inflate(R.layout.fragment_manage_units, container, false)
         rvList = view.findViewById(R.id.rvManageUnits)
         adapter = ArrayRecyclerAdapter(dataList, this)

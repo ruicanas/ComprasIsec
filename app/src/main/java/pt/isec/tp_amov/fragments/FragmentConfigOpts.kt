@@ -16,7 +16,6 @@ class FragmentConfigOpts : Fragment() {
     lateinit var lvList: ListView
     lateinit var adapter: ArrayAdapter<String>
     private var configsOptions = ArrayList<String>()
-    val TAG = "FragmentChangeLanguage"
 
     var actConfig : ConfigOptionsInterface? = null
 
@@ -34,7 +33,6 @@ class FragmentConfigOpts : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.i(TAG, "onCreateView1: ")
         val view = inflater.inflate(R.layout.fragment_choose_opt, container, false)
         lvList = view.findViewById(R.id.lvConfigList)
         adapter = ArrayAdapter(view.context, android.R.layout.simple_selectable_list_item, configsOptions)

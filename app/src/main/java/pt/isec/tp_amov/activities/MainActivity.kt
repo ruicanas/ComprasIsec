@@ -106,6 +106,7 @@ class MainActivity : AppCompatActivity(){
         }
     }
 
+
     private fun versionControl() {
         if (Build.VERSION.SDK_INT >= 24) {
             try {
@@ -117,6 +118,7 @@ class MainActivity : AppCompatActivity(){
         }
     }
 
+    //fun to find the views and create the adapters
     private fun prepareLists() {
         lvList = findViewById(R.id.lvMainList)
         onOpenList(lvList)
@@ -140,6 +142,7 @@ class MainActivity : AppCompatActivity(){
         hintList.add(Help(getString(R.string.config), getString(R.string.configure_units_cats)))
     }
 
+    //fun responsible to show dialogs in case of a change of orientation
     private fun handleModelView(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             if (ModelView.dialogNewListShowing) {
@@ -312,6 +315,7 @@ class MainActivity : AppCompatActivity(){
 
     //onItemClickListeners
     private fun onOpenList(listView: ListView) {
+        //If the user clicks at any list, the list is going to be shown at ShowListActivity
         listView.setOnItemClickListener { _, _, position, _ ->
             val sL: ShoppingList = adapter.getItem(position) as ShoppingList    //It was changed
             val intent = Intent(this, ShowListActivity::class.java)
@@ -319,6 +323,7 @@ class MainActivity : AppCompatActivity(){
             startActivity(intent)
         }
 
+        //If the user long click any list, he will enter in this listener
         listView.setOnItemLongClickListener { _, _, position, _ ->
             val sL: ShoppingList = adapter.getItem(position) as ShoppingList    //It was changed
             removeListDlg(sL)
@@ -326,6 +331,7 @@ class MainActivity : AppCompatActivity(){
         }
     }
 
+    //In case the user want to reuse a deleted list
     private fun onSelectOldList(list: ListView) {
         list.setOnItemClickListener { _, _, position, _ ->
             val sl: ShoppingList = archiveAdapter.getItem(position) as ShoppingList    //It was changed
