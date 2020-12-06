@@ -30,6 +30,7 @@ object Model {
     var allLists: MutableList<ShoppingList> = ArrayList()
     var allProducts: MutableList<DataProduct> = ArrayList()
     var config = Configuration()
+    var bitmap: Bitmap? = null
 
     private fun searchForList(id: Int) : ShoppingList?{
         for(list in allLists){

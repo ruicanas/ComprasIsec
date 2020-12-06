@@ -74,7 +74,10 @@ class ManageProductActivity : AppCompatActivity(){
             if (editText != null)
                 ModelView.dialogTextProd = editText!!.text.toString()
         }
-
+        try {
+            if  (bitmap != null)
+                Model.bitmap = bitmap
+        } catch (e: KotlinNullPointerException) {}
         super.onSaveInstanceState(outState)
     }
     override fun onDestroy() {
@@ -141,6 +144,13 @@ class ManageProductActivity : AppCompatActivity(){
             try {
                 if (Model.getProdById(prodId, listId)!!.image != null) { //this needs
                     bitmap = transformIntoBitmap(Model.getProdById(prodId, listId)!!.image)
+                    imageView.setImageBitmap(bitmap)
+                    return
+                }
+            } catch (e: KotlinNullPointerException) { }
+            try {
+                if (Model.bitmap != null) {
+                    bitmap = Model.bitmap
                     imageView.setImageBitmap(bitmap)
                 }
             } catch (e: KotlinNullPointerException) { }
@@ -651,7 +661,7 @@ class ManageProductActivity : AppCompatActivity(){
     private fun transformIntoByteArray(bitmap: Bitmap?): ByteArray? {
         if (bitmap != null) {
             val stream = ByteArrayOutputStream()
-            bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            bitmap!!.compress(Bitmap.CompressFormat.PNG, 50, stream)
             return stream.toByteArray()
         }
         return null
