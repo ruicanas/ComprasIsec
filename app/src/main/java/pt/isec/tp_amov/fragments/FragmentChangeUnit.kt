@@ -46,6 +46,7 @@ class FragmentChangeUnit : Fragment(), ItemClickListenerInterface<String>{
             if (dialogRemove.isShowing)
                 dialogRemove.dismiss()
         } catch (e: UninitializedPropertyAccessException) {}
+        Model.save(act)
         super.onDestroyView()
     }
 
