@@ -241,30 +241,43 @@ object Model: Serializable {
 
     //Save Model to storage
     fun save(context: Context) {
+        val dirs = context.filesDir
+        if (dirs.exists()) {
+            Toast.makeText(context, "Delete", Toast.LENGTH_LONG).show()
+            dirs.delete()
+        }
         val fos = context.openFileOutput("model.bin", Context.MODE_PRIVATE)
         val os = ObjectOutputStream(fos)
-        os.writeObject(idList)
-        os.writeObject(idProducts)
+        os.write(idList)
+        os.write(idProducts)
         os.writeObject(archivedLists)
         os.writeObject(allLists)
         os.writeObject(allProducts)
         os.writeObject(config)
+        os.flush()
+        os.close()
         fos.close()
     }
 
     //Load Model from storage
     fun load(context: Context) {
         try {
-            val fis = context.openFileInput("model.bin")
+            val file = File("model.bin")
+            val fis = context.openFileInput(file.path)
             val ois = ObjectInputStream(fis)
-            idList = ois.readObject() as Int
-            idProducts = ois.readObject() as Int
-            archivedLists = ois.readObject() as MutableList<ShoppingList>
-            allLists = ois.readObject() as MutableList<ShoppingList>
-            allProducts = ois.readObject() as MutableList<DataProduct>
+            idList = ois.read()
+            idProducts = ois.read()
+            archivedLists = ois.readObject() as ArrayList<ShoppingList>
+            allLists = ois.readObject() as ArrayList<ShoppingList>
+            allProducts = ois.readObject() as ArrayList<DataProduct>
             config = ois.readObject() as Configuration
+            ois.close()
             fis.close()
+        } catch (eof: EOFException) {
+            eof.printStackTrace()
+            Toast.makeText(context, "EOF", Toast.LENGTH_LONG).show()
         } catch (e: IOException) {
+            e.printStackTrace()
             Toast.makeText(context, context.getString(R.string.error_loading), Toast.LENGTH_LONG).show()
         }
     }

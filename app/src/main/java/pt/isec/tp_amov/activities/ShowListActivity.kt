@@ -105,7 +105,7 @@ class ShowListActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        Model.save(applicationContext)
+//        Model.save(applicationContext)
         super.onPause()
     }
 

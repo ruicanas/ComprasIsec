@@ -47,8 +47,8 @@ class MainActivity : AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Model.load(applicationContext)
         setContentView(R.layout.activity_main)
+        Model.load(applicationContext)
         initialConfigs()    //DEALS WITH CONFIGURATIONS --> DON'T FORGET TO EXPLAIN THIS
         versionControl()
         pressAddListBtn()
@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity(){
     }
 
     override fun onPause() {
-        Model.save(applicationContext)
+//        Model.save(applicationContext)
         super.onPause()
     }
 

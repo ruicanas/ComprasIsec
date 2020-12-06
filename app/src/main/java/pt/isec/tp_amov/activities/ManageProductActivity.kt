@@ -90,7 +90,7 @@ class ManageProductActivity : AppCompatActivity(){
     }
 
     override fun onPause() {
-        Model.save(applicationContext)
+//        Model.save(applicationContext)
         super.onPause()
     }
 
