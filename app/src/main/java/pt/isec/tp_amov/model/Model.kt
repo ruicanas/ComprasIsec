@@ -249,6 +249,7 @@ object Model: Serializable {
         os.writeObject(allLists)
         os.writeObject(allProducts)
         os.writeObject(config)
+        os.close()
         fos.close()
     }
 
@@ -263,9 +264,27 @@ object Model: Serializable {
             allLists = ois.readObject() as MutableList<ShoppingList>
             allProducts = ois.readObject() as MutableList<DataProduct>
             config = ois.readObject() as Configuration
+            ois.close()
             fis.close()
+        } catch (e: FileNotFoundException) {
+            initializeDefault(context)
         } catch (e: IOException) {
+            e.printStackTrace()
             Toast.makeText(context, context.getString(R.string.error_loading), Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun initializeDefault(context: Context) {
+        config.categories.add(context.getString(R.string.fruit_vegetables))
+        config.categories.add(context.getString(R.string.starchy_food))
+        config.categories.add(context.getString(R.string.dairy))
+        config.categories.add(context.getString(R.string.protein))
+        config.categories.add(context.getString(R.string.fat))
+
+        config.units.add(context.getString(R.string.units))
+        config.units.add(context.getString(R.string.kg))
+        config.units.add(context.getString(R.string.grams))
+        config.units.add(context.getString(R.string.liter))
+        config.units.add(context.getString(R.string.boxes))
     }
 }
