@@ -243,7 +243,6 @@ object Model: Serializable {
     fun save(context: Context) {
         val dirs = context.filesDir
         if (dirs.exists()) {
-            Toast.makeText(context, "Delete", Toast.LENGTH_LONG).show()
             dirs.delete()
         }
         val fos = context.openFileOutput("model.bin", Context.MODE_PRIVATE)
@@ -275,10 +274,28 @@ object Model: Serializable {
             fis.close()
         } catch (eof: EOFException) {
             eof.printStackTrace()
-            Toast.makeText(context, "EOF", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, context.getString(R.string.error_loading), Toast.LENGTH_LONG).show()
+        } catch (e: FileNotFoundException) {
+            initialConfigs(context)
         } catch (e: IOException) {
             e.printStackTrace()
-            Toast.makeText(context, context.getString(R.string.error_loading), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun initialConfigs(context: Context) {
+        if(config.units.isEmpty()) {
+            config.units.add(context.getString(R.string.units))
+            config.units.add(context.getString(R.string.kg))
+            config.units.add(context.getString(R.string.grams))
+            config.units.add(context.getString(R.string.liter))
+            config.units.add(context.getString(R.string.boxes))
+        }
+        if(config.categories.isEmpty()) {
+            config.categories.add(context.getString(R.string.fruit_vegetables))
+            config.categories.add(context.getString(R.string.starchy_food))
+            config.categories.add(context.getString(R.string.dairy))
+            config.categories.add(context.getString(R.string.protein))
+            config.categories.add(context.getString(R.string.fat))
         }
     }
 }

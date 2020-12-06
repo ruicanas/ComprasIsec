@@ -49,7 +49,6 @@ class MainActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         Model.load(applicationContext)
-        initialConfigs()    //DEALS WITH CONFIGURATIONS --> DON'T FORGET TO EXPLAIN THIS
         versionControl()
         pressAddListBtn()
         prepareLists()
@@ -89,11 +88,6 @@ class MainActivity : AppCompatActivity(){
     override fun onResume() {
         updateListView()
         super.onResume()
-    }
-
-    override fun onPause() {
-//        Model.save(applicationContext)
-        super.onPause()
     }
 
     override fun onStop() {

@@ -89,11 +89,6 @@ class ManageProductActivity : AppCompatActivity(){
         super.onDestroy()
     }
 
-    override fun onPause() {
-//        Model.save(applicationContext)
-        super.onPause()
-    }
-
     override fun onStop() {
         Model.save(applicationContext)
         super.onStop()
