@@ -95,8 +95,6 @@ class MainActivity : AppCompatActivity(){
         super.onStop()
     }
 
-    //onCreate functions
-
     /**
      * This method will get the view that is holding the floating button
      * and then set a listener. This listener is needed to make the pop menu show up

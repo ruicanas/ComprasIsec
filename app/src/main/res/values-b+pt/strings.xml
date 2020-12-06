@@ -92,4 +92,5 @@
     <string name="configure_units_cats">Configurar unidades e categorias</string>
     <string name="magnifier">Lupa</string>
     <string name="search_for_objects">Procurar por produtos existentes</string>
+    <string name="saved">Guardado</string>
 </resources>

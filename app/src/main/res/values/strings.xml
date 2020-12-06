@@ -92,4 +92,5 @@
     <string name="configure_units_cats">Configure units and categories</string>
     <string name="search_for_objects">Search for existing objects</string>
     <string name="magnifier">Magnifier</string>
+    <string name="saved">Saved</string>
 </resources>

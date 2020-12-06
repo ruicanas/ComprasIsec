@@ -11,8 +11,9 @@ import pt.isec.tp_amov.R
 import pt.isec.tp_amov.objects.*
 import pt.isec.tp_amov.utils.Configuration
 import java.io.*
+import javax.security.auth.login.LoginException
 
-object Model: Serializable {
+object Model {
     private val idListCounter: Int
         get(){
             ++idList
@@ -239,21 +240,24 @@ object Model: Serializable {
         return list
     }
 
+    //There is a problem either during save or load.
+    //For some reason either writing or falling
+
     //Save Model to storage
     fun save(context: Context) {
         val dirs = context.filesDir
         if (dirs.exists()) {
             dirs.delete()
+            Toast.makeText(context, context.getString(R.string.saved), Toast.LENGTH_SHORT).show()
         }
         val fos = context.openFileOutput("model.bin", Context.MODE_PRIVATE)
         val os = ObjectOutputStream(fos)
-        os.write(idList)
-        os.write(idProducts)
+        os.writeObject(idList)
+        os.writeObject(idProducts)
         os.writeObject(archivedLists)
         os.writeObject(allLists)
         os.writeObject(allProducts)
         os.writeObject(config)
-        os.flush()
         os.close()
         fos.close()
     }
@@ -261,24 +265,27 @@ object Model: Serializable {
     //Load Model from storage
     fun load(context: Context) {
         try {
-            val file = File("model.bin")
-            val fis = context.openFileInput(file.path)
-            val ois = ObjectInputStream(fis)
-            idList = ois.read()
-            idProducts = ois.read()
-            archivedLists = ois.readObject() as ArrayList<ShoppingList>
-            allLists = ois.readObject() as ArrayList<ShoppingList>
-            allProducts = ois.readObject() as ArrayList<DataProduct>
-            config = ois.readObject() as Configuration
-            ois.close()
-            fis.close()
+            val dirs = context.filesDir
+            if (dirs.exists()) {
+                val file = File("model.bin")
+                val fis = context.openFileInput(file.path)
+                val ois = ObjectInputStream(fis)
+                idList = ois.readObject() as Int
+                idProducts = ois.readObject() as Int
+                archivedLists = ois.readObject() as ArrayList<ShoppingList>
+                allLists = ois.readObject() as ArrayList<ShoppingList>
+                allProducts = ois.readObject() as ArrayList<DataProduct>
+                config = ois.readObject() as Configuration
+                ois.close()
+                fis.close()
+            }
         } catch (eof: EOFException) {
             eof.printStackTrace()
-            Toast.makeText(context, context.getString(R.string.error_loading), Toast.LENGTH_LONG).show()
-        } catch (e: FileNotFoundException) {
             initialConfigs(context)
+            Toast.makeText(context, context.getString(R.string.error_loading), Toast.LENGTH_LONG).show()
         } catch (e: IOException) {
             e.printStackTrace()
+            initialConfigs(context)
         }
     }
 
